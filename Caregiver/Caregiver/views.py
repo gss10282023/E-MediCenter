@@ -12,4 +12,16 @@ def caregiver_dashboard(request):
 def book_caregiver_page(request):
     return render(request, 'BookCaregiverPage.html')
 
+def about(request):
+    return render(request,'AboutusPage.html')
+
+def donation(request):
+    return render(request,'DonationPage.html')
+
+def login(request):
+    return render(request,'LoginPage.html')
+
+def SignUp(request):
+    return render(request,"signup.html")
+
 
