@@ -1,0 +1,92 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+#sidebar {
+    background-color: #333;
+    color: black;
+    width: 170px;
+    position: fixed;
+    height: 100%;
+    overflow: auto;
+}
+
+
+#upper-main-content {
+    margin-left: 190px;
+    padding: 10px;
+}
+
+#main-background{
+    margin-left: 170px;
+    padding: 10px;
+    background-color:#CCCCCC;
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    overflow: auto;
+}
+.sidebar-link {
+    display: -webkit-box;
+    padding: 30px;
+    color: white;
+    text-decoration: none;
+}
+.sidebar-link:hover {
+    background-color: #575757;
+}
+
+
+.sidebar-title {
+    padding-top: 40px;
+    color: #FFD700;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    margin-left:20px;
+}
+
+.bottom {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    padding: 10px;
+}
+
+/*.upper-main-content-login {*/
+/*    display: -webkit-box;*/
+/*    padding: 30px;*/
+/*    margin-left:1600px;*/
+/*    font-size: 16px;*/
+/*    color: black;*/
+/*    text-decoration: none;*/
+/*}*/
+
+#upper-main-content {
+    display: flex;  /* 使用 flexbox 布局 */
+    justify-content: space-between;  /* 分隔左右内容 */
+    align-items: center;  /* 垂直居中 align */
+}
+.upper-main-content-login {
+    background-color: #333;
+    color: white;
+    padding: 10px;
+    text-decoration: none;
+}
+h1 {
+    margin: 0;  /* 删除默认的 margin */
+}
+p {
+    margin: 0;  /* 删除默认的 margin */
+}
+
+#table-container {
+    transform: scale(0.8);  /* 这将缩小为原始大小的 80% */
+    transform-origin: center;  /* 缩放基点设置为左上角 */
+    margin-left: 20%;
+}
+
+#table-container td,th{
+    test-align:center;
+}

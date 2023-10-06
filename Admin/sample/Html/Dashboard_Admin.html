@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link  rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.css">
+    <!-- jQuery -->
+    <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <!-- DataTables JavaScript -->
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.js"></script>
+</head>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Administrator Home</title>
+
+
+<body>
+
+<div id="sidebar">
+    <p class="sidebar-title">@E-Medcenter</p>
+    <a href="#" class="sidebar-link">Dashboard</a>
+    <a href="#" class="sidebar-link">Doctors</a>
+    <a href="#" class="sidebar-link">Feedback</a>
+    <a href="#" class="sidebar-link">Customers</a>
+    <div class="bottom">
+        <a href="#" class="sidebar-link">Logout</a>
+    </div>
+</div>
+
+
+
+
+<div id="upper-main-content-login ">
+
+</div>
+
+
+<div id="upper-main-content">
+    <div>  <!-- 添加一个新的 div，用于包装 h1 和 p -->
+        <h1>Welcome Back, Admin!</h1>
+        <p>This is your dashboard, where you can manage your system.</p>
+    </div>
+    <a href="#" class="upper-main-content-login">Admin</a>  <!-- 将链接移动到右边 -->
+</div>
+
+<div id="main-background">
+
+</div>
+<div id="table-container">
+    <table id="example" class="display">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Position</th>
+            <th>Office</th>
+            <th>Extn.</th>
+            <th>Start date</th>
+            <th>Salary</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Your table data goes here -->
+        <tr>
+            <td>Tiger Nixon</td>
+            <td>System Architect</td>
+            <td>Edinburgh</td>
+            <td>5421</td>
+            <td>2011/04/25</td>
+            <td>$320,800</td>
+        </tr>
+        <!-- ... other rows ... -->
+        </tbody>
+    </table>
+</div>
+
+<script type="text/javascript">
+    $(document).ready( function () {
+        $('#example').DataTable();
+    });
+
+</script>
+
+
+</body>
