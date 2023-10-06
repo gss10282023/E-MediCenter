@@ -17,22 +17,30 @@
 
 <body>
     <header>
-        <a href="#" class="logo">E-MedCenter</a>  <!-- 占位符链接 -->
+        <a href="#" class="logo">E-MedCenter</a>
         <div class="navbar">
             <ul>
-                <li><a href="#">Home</a></li>  <!-- 占位符链接 -->
+                <li><a href="#">Home</a>
+                </li>
                 <li><a href="#">Book</a>
                     <ul>
                         <li><a href="{% url 'BookCaregiverPage' %}">Caregiver</a></li>
-                        <li><a href="#">Practitioner</a></li>  <!-- 你没有提供Practitioner的URL名称，所以我保留了原始的#链接 -->
+                        <li><a href="">Practitioner</a>
                     </ul>
                 </li>
-                <li><a href="#">Donation</a></li>  <!-- 同样，我保留了Donation和其他没有提供URL名称的链接 -->
-                <li><a href="{% url 'ServiceInformationPage' %}">Service Information</a></li>
-                <li><a href="#">About Us</a></li>  <!-- 如果你提供了相应的URL名称，我会更新这些链接 -->
-                <li><a href="#">Sign in/up</a></li>
+                <li><a href="{% url 'Donation' %}">Donation</a></li>
+                <li><a href="{% url 'ServiceInformationPage' %}">About us</a></li>
+                <li><a href="{% url 'AboutusPage' %}">Support</a></li>
+                <li><a href="{% url 'Login' %}">Login/Sign up</a></li>
             </ul>
         </div>
+    
+    
+        <!-- write your section here(under section) -->
+        <section>
+    
+        </section>
+    
     </header>
 
     <div class="center-content d-flex flex-column align-items-center justify-content-center" style="min-height: calc(100vh - 56px);">  
@@ -227,9 +235,9 @@
                 <ul>
                     <li><a href="">HOME</a></li>
                     <li><a href="">Book</a></li>
-                    <li><a href="">Donation</a></li>
-                    <li><a href="{% url 'ServiceInformationPage' %}">Service Information</a></li>
-                    <li><a href="">ABOUT</a></li>
+                    <li><a href="{% url 'Donation' %}">Donation</a></li>
+                    <li><a href="{% url 'ServiceInformationPage' %}">About Us</a></li>
+                    <li><a href="{% url 'AboutusPage' %}">Support</a></li>
                     <li><a href="">CONTACT US</a></li>
                 </ul>
             </div>
