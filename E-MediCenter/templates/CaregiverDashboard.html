@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Caregiver Dashboard</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/dashboard.css' %}" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.css">
+    <!-- jQuery -->
+    <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <!-- DataTables JavaScript -->
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.js"></script>
+</head>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Doctor Home</title>
+
+<body>
+
+    <div id="sidebar">
+        <p class="sidebar-title">@E-Medcenter</p>
+        <a href="#" class="sidebar-link">Overview</a>
+        <a href="#" class="sidebar-link">Orders</a>
+        <a href="#" class="sidebar-link">My profile</a>
+        <div class="bottom">
+            <a href="#" class="sidebar-link">Logout</a>
+        </div>
+    </div>
+
+    <div id="upper-main-content-login "></div>
+
+    <div id="upper-main-content">
+        <div>
+            <!-- New div to wrap h1 and p -->
+            <h1>Welcome Back, Caregiver!</h1>
+        </div>
+        <a href="#" class="upper-main-content-login">Caregiver</a>
+        <!-- Move link to the right -->
+    </div>
+
+    <div class="centered-container">
+        <div class="centered-box">
+            <div class="col-12 text-center">
+                <h2><strong>No Up Coming Appointment</strong></h2>
+                <p style="font-size: 0.8rem;">you currently have no appointment</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="divider"></div> 
+
+    <div class="row">
+        <div class="column">
+            <div class="card">
+                <img src="static/res/img1.jpeg" alt="Jane" style="width:100%">
+                <div class="container">
+                    <h2>Jane Doe</h2>
+                    <p class="title">Board game with Jane</p>
+                    <p>Sat, 19 Aug 12:00 - Sat, 19 Aug 14:00</p>
+                    <p>example@example.com</p>
+                    <p><button class="button">Review</button></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="column">
+            <div class="card">
+                <img src="static/res/img2.jpeg" alt="Mike" style="width:100%">
+                <div class="container">
+                    <h2>Mike Ross</h2>
+                    <p class="title">Reading book with Mike</p>
+                    <p>Sat, 19 Aug 12:00 - Sat, 19 Aug 14:00</p>
+                    <p>example@example.com</p>
+                    <p><button class="button">Review</button></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="column">
+            <div class="card">
+                <img src="static/res/img3.jpeg" alt="John" style="width:100%">
+                <div class="container">
+                    <h2>May Doe</h2>
+                    <p class="title">Afternoon tea with May</p>
+                    <p>Sat, 19 Aug 12:00 - Sat, 19 Aug 14:00</p>
+                    <p>example@example.com</p>
+                    <p><button class="button">Review</button></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="pagination">
+        <a href="#">&#8249;</a> <!-- Left Arrow for Previous Page -->
+        <a href="#">1</a> <!-- Page Number 1 -->
+        <a href="#">2</a> <!-- Page Number 2 -->
+        <a href="#">3</a> <!-- Page Number 3 -->
+        <a href="#">4</a> <!-- Page Number 4 -->
+        <a href="#">5</a> <!-- Page Number 5 -->
+        <a href="#">6</a> <!-- Page Number 6 -->
+        <a href="#">7</a> <!-- Page Number 7 -->
+        <a href="#">8</a> <!-- Page Number 8 -->
+        <a href="#">&#8250;</a> <!-- Right Arrow for Next Page -->
+    </div>    
+
+</body>
+
+</html>
