@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/doctor.css' %}" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.css">
+    <!-- jQuery -->
+    <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <!-- DataTables JavaScript -->
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.js"></script>
+</head>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Doctor Home</title>
+
+
+<body>
+
+<div id="sidebar">
+    <p class="sidebar-title">@E-Medcenter</p>
+    <a href="#" class="sidebar-link">Dashboard</a>
+    <a href="#" class="sidebar-link">Patients</a>
+    <div class="bottom">
+        <a href="#" class="sidebar-link">Logout</a>
+    </div>
+</div>
+
+<div id="upper-main-content-login ">
+
+</div>
+
+<div id="upper-main-content">
+    <div>  
+        <h1>Welcome Back, Doctor!</h1>  
+    </div>
+    <a href="#" class="upper-main-content-login">Doctor</a>  
+</div>
+
+<div id="main-background">
+    <form>
+        <div>
+          <h2 for="title" style="margin-left:25%">Medical Report for John Doe</h2>
+        </div>
+        <div class="form-group">
+            <label for="email" style="margin-left:32%">Diagnosis</label>
+            <input type="text" id="diagnosis" name="diagnosis" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Treatment advice</label>
+            <input type="text" id="advice" name="advice" required>
+        </div>
+        <button type="button" class="edit-button">Edit</button>
+        <button type="button" class="save-button">Save</button>
+        <!-- <div class="form-buttons">
+            <button type="button" class="edit-button">Edit</button>
+            <button type="button" class="save-button">Save</button>
+        </div> -->
+        
+    </form>
+</div>
+    
