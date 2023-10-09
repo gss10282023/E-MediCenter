@@ -1,3 +1,5 @@
+@import url("http://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800,900&display=swap");
+
 * {
     font-family: 'Poppins';
     box-sizing: border-box;
@@ -5,11 +7,12 @@
     margin: 0;
     list-style: none;
     letter-spacing: 1px;
-    font-size: smaller;
 }
 
 body {
-    margin: 0%;
+    padding-top: 100px;
+    min-height: 200vh;
+    background-color: white;
 }
 
 .back-arrow {
@@ -58,17 +61,7 @@ body {
   .back-arrow:hover:after {
     background-color: #007bff; 
   }
-  
 
-h2 {
-    font-weight: bolder;
-}
-
-h5 {
-    font-weight: 700;
-}
-
-/* ... other styles ... */
 
 #booking-hall .hall-show .card {
     justify-content: space-between;
@@ -144,17 +137,3 @@ button[type=submit]:disabled {
   cursor: pointer; /* Cursor on hover */
 }
 
-body {
-  display: flex;
-  flex-direction: column;
-  min-height: 50vh;
-}
-
-.footer {
-  margin-top: auto;
-}
-
-p, div, h1, h2, h3 {
-  margin: 0;
-  padding: 0;
-}

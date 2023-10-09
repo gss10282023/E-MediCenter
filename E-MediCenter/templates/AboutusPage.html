@@ -5,6 +5,7 @@
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <script src="https://unpkg.com/ionicons@4.5.10-0/dist/ionicons.js"></script>
     <title>About Us</title>
     {% load static %}
@@ -32,13 +33,6 @@
             <li><a href="{% url 'Login' %}">Login/Sign up</a></li>
         </ul>
     </div>
-
-
-    <!-- write your section here(under section) -->
-    <section>
-
-    </section>
-
 </header>
 
 
@@ -103,13 +97,6 @@
     }
 </script>
 
-
-<script>
-    window.addEventListener("scroll",()=>{
-        let header=document.querySelector("header");
-        header.classList.toggle("sticky",window.scrollY>0);
-    })
-</script>
 
 <footer class="footer">
     <div class="row">
