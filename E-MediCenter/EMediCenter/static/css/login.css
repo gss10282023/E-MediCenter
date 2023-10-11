@@ -227,3 +227,13 @@ header.sticky ul li a{
     text-decoration: underline;
 }
 
+.error-message {
+    color: red;
+    display: none;
+    font-size: 12px;
+}
+
+#generalError {
+    color: red;
+    font-weight: bold;
+}
