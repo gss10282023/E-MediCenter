@@ -13,5 +13,4 @@ urlpatterns = [
     path("admin_dashboard/",views.admin_dashboard, name="admin"),
     path("user_dashboard/",views.customer_dashboard, name="customer"),
     path("doctor_dashboard/",views.doctor_dashboard, name="doctor"),
-
 ]

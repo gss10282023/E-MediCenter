@@ -45,17 +45,17 @@ def login_view(request):
                 
                 if user.is_active:
                     login(request, user)
-                    
-                    profile = user.userprofile  # Assuming the related name is 'userprofile'
-
-                    if user.is_staff:
-                        return HttpResponseRedirect('/admin_dashboard/')  # 重定向到管理员的页面
-                    elif profile.is_doctor:
-                        return HttpResponseRedirect('/doctor_dashboard/')  # 重定向到医生的页面
-                    elif profile.is_caregiver:
-                        return HttpResponseRedirect('/caregiver_dashboard/')  
-                    else:
-                        return HttpResponseRedirect('/user_dashboard/')  
+                    try:
+                        profile = user.userprofile  # Assuming the related name is 'userprofile'
+                        if user.is_staff:
+                            return HttpResponseRedirect('/admin_dashboard/')  # 重定向到管理员的页面
+                        elif profile.is_doctor:
+                            return HttpResponseRedirect('/doctor_dashboard/')  # 重定向到医生的页面
+                        elif profile.is_caregiver:
+                            return HttpResponseRedirect('/caregiver_dashboard/')  
+                        else:
+                            return HttpResponseRedirect('/user_dashboard/')  
+                    except:
                         error_message = "User profile not found."
                 else:
                     error_message = "Your account is inactive."
@@ -75,3 +75,4 @@ def customer_dashboard(request):
 
 def doctor_dashboard(request):
     return render(request,"doctor_dashboard.html")
+
