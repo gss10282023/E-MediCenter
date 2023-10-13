@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-%7rr#p18j%+-_1@+z_00ezb9x6j3a!lu2c4*-c91=$j+n@h_j4
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1']
 
 # Application definition
 
@@ -127,3 +127,10 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
+
+# settings.py
+# settings.py
+
+MEDIA_URL = '/avatars/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'EMediCenter/')
+

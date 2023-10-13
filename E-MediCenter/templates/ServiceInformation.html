@@ -12,6 +12,14 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/Information.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'css/fold.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'css/footer.css' %}" />
+    <style>
+        .user-avatar {
+            vertical-align: middle;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+        }
+    </style>
     <title>Service Information</title>
 </head>
 
@@ -31,8 +39,19 @@
                 <li><a href="{% url 'Donation' %}">Donation</a></li>
                 <li><a href="{% url 'ServiceInformationPage' %}">About us</a></li>
                 <li><a href="{% url 'AboutusPage' %}">Support</a></li>
+                {% if user.is_authenticated %}
+                <!-- 如果用户已登录，显示头像和身份特定的链接 -->
+                <li>
+                    <a href="{% url 'profile' %}">
+                        <img src="{{ user.userprofile.avatar.url }}" alt="{{ user.username }}" class="user-avatar" >
+                    </a>
+                </li>
+
+
+                {% else %}
+                <!-- 如果用户未登录，显示'Login/Signup'链接 -->
                 <li><a href="{% url 'Login' %}">Login/Sign up</a></li>
-            </ul>
+                {% endif %}
         </div>
     
     </header>

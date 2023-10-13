@@ -1,5 +1,13 @@
 @import url("http://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800,900&display=swap");
 
+.user-avatar {
+    vertical-align: middle;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+
 *{
 
     margin: 0;
@@ -113,8 +121,6 @@ header.sticky .logo,
 header.sticky ul li a{
     color: #000;
 }
-
-
 
 
 

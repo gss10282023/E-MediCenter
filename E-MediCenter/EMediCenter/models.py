@@ -1,3 +1,7 @@
+import os
+import random
+
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
 
@@ -8,7 +12,18 @@ class UserProfile(models.Model):
     height = models.PositiveIntegerField(null=True, blank=True)  # 单位可以是厘米
     weight = models.PositiveIntegerField(null=True, blank=True)  # 单位可以是千克
     gender = models.CharField(max_length=10, null=True, blank=True, choices=[('Male', 'M'), ('Female', 'F'), ('Other', 'O')])
-    avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
+    avatar = models.ImageField(upload_to='avatars/', default='default.jpg')  # 用户头像字段
+    # 其他字段...
+
+    def save(self, *args, **kwargs):
+        # 如果avatar没有被设置，从默认头像中随机选择一个
+        if not self.avatar:
+            avatars_path = os.path.join(settings.BASE_DIR, 'EMediCenter', 'avatars')
+            default_avatars = [avatar for avatar in os.listdir(avatars_path) if avatar.startswith('default')]
+            chosen_avatar = random.choice(default_avatars)
+            self.avatar = os.path.join('avatars', chosen_avatar)
+
+        super(UserProfile, self).save(*args, **kwargs)
 
 class GP(models.Model):
     GPID = models.BigIntegerField(primary_key=True)

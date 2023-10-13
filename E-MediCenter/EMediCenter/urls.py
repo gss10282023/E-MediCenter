@@ -1,5 +1,7 @@
 from django.urls import path
 from . import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path("", views.book_caregiver_page, name="home"),  
@@ -13,4 +15,8 @@ urlpatterns = [
     path("admin_dashboard/",views.admin_dashboard, name="admin"),
     path("user_dashboard/",views.customer_dashboard, name="customer"),
     path("doctor_dashboard/",views.doctor_dashboard, name="doctor"),
+    path("profile/",views.user_profile,name="profile")
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

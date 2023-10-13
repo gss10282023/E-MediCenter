@@ -76,3 +76,15 @@ def customer_dashboard(request):
 def doctor_dashboard(request):
     return render(request,"doctor_dashboard.html")
 
+def user_profile(request):
+    if not request.user.is_authenticated:
+        return redirect('Login')
+
+    if request.user.userprofile.is_doctor:
+        return redirect('doctor_dashboard')
+    elif request.user.userprofile.is_caregiver:
+        return redirect('caregiver_dashboard')
+    elif request.user.is_staff:
+        return redirect('admin_dashboard')
+    else:
+        return render(request, 'regular_user_dashboard.html')
