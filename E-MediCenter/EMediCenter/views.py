@@ -1,3 +1,4 @@
+import random
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
@@ -11,6 +12,7 @@ from .models import UserProfile
 from django.core.exceptions import ObjectDoesNotExist  # Import ObjectDoesNotExist
 import re
 from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 
 
  
@@ -130,7 +132,6 @@ def SignUp(request):
         email = request.POST.get('email')
         password = request.POST.get('password')
         is_caregiver = request.POST.get('remember-me')  # checkbox  
-        print(is_caregiver)
 
         try:
             # Check if the email already exists
@@ -138,39 +139,45 @@ def SignUp(request):
                 raise ValidationError("Email already exists.")
             
             # Check if the email is in a valid format
-            if not is_valid_email(email):
-                raise ValidationError("Invalid email format.")
+            # 若您使用Django自带的validate_email，请确保它已被导入
+            # from django.core.validators import validate_email
+            validate_email(email)
 
             # Validate the password using the custom validation function
+            # 若您使用Django自带的validate_password，请确保它已被导入
+            # from django.contrib.auth.password_validation import validate_password
             validate_password(password)
 
-            user = User.objects.create_user(email, email, password)
-            # UserProfile.objects.create(user=user)
-            user_profile = UserProfile(user=user)
-            if(is_caregiver == "on"):
-                user_profile.is_caregiver = 1
+            user = User.objects.create_user(username=email, email=email, password=password)
+            
+            # 创建UserProfile
+            if is_caregiver == "on":
+                is_caregiver_bool = True
             else:
-                user_profile.is_caregiver = 0
+                is_caregiver_bool = False
             
-            user_profile.save()
-            user.save()
-            
-            # # Login the user automatically
-            # login(request, user)
-            
-            # Redirect to the desired dashboard page
+            chosen_number = random.randint(1, 3)
+            chosen_avatar = f"avatars/default{chosen_number}.jpeg"
+
+            UserProfile.objects.create(
+                user=user,
+                avatar=chosen_avatar,
+                is_caregiver=is_caregiver_bool,
+            )
+
+            # 登录用户并重定向到相应的dashboard
             login(request, user)
-            if user.userprofile.is_caregiver:
+            if is_caregiver_bool:
                 return HttpResponseRedirect('/caregiver_dashboard/')  
             else:
                 return HttpResponseRedirect('/user_dashboard/') 
-            # return redirect('Login')
         except ValidationError as e:
             error_message = str(e)
             
     if request.method == 'GET':
         error_message = ""
-    #TODO:
+    
+    # TODO: error_message的处理（如果需要）
     error_message = error_message[2:-2]
     return render(request, 'signup.html', {'error_message': error_message})
 
