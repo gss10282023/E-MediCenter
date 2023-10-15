@@ -161,12 +161,30 @@
     <p class="copyright">Cosas Learning Ⓒ 2022 - All Rights Reserved</p>
  </footer> 
 
-<script>
-    window.addEventListener("scroll", () => {
-        let header = document.querySelector("header");
-        header.classList.toggle("sticky", window.scrollY > 0);
-    });
-</script>
+ <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+ <script>
+   window.addEventListener("scroll", () => {
+     let header = document.querySelector("header");
+     header.classList.toggle("sticky", window.scrollY > 0);
+   });
+ 
+   $(document).ready(function() {
+     // Function to clear the error message
+     function clearErrorMessage() {
+       $('.error-message').text('');
+     }
+ 
+     // Listen to input events on email and password fields
+     $('#email, #password').on('input', clearErrorMessage);
+ 
+     // Remove error message when input fields are focused
+     $('#email, #password').on('focus', clearErrorMessage);
+ 
+     // Optional: Clear the error message when the form is submitted
+     $('#signup-form').on('submit', clearErrorMessage);
+   });
+ </script>
+ 
 </body>
 
 </html>
