@@ -159,6 +159,7 @@ def SignUp(request):
             # login(request, user)
             
             # Redirect to the desired dashboard page
+            login(request, user)
             if user.userprofile.is_caregiver:
                 return HttpResponseRedirect('/caregiver_dashboard/')  
             else:
@@ -194,4 +195,4 @@ def user_profile(request):
     elif request.user.is_staff:
         return redirect('admin_dashboard')
     else:
-        return render(request, 'regular_user_dashboard.html')
+        return render(request, 'Customer.html')
