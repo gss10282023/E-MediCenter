@@ -1,0 +1,175 @@
+
+
+body {
+
+    min-height: 200vh;
+    background-color: white;
+
+}
+
+.background{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    min-height: 100vh;
+    width: 100%;
+    background-color: black;
+    justify-content:flex-start;
+    align-items: center;
+    z-index: 0;
+    font-family: "Apple Braille";
+
+}
+
+
+.content{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 28vh 5vw 20vh;
+    width: 50%;
+    height: 60vh;
+    background-color: black;
+
+
+}
+.content h1{
+    font-size: 4vw;
+    color: white;
+    background-color: black;
+
+
+
+
+
+
+}
+.content p{
+    color: white;
+    font-size: 1.3vw;
+    background-color: black;
+    margin-top: 3vh;
+
+
+}
+.backgroundButton{
+    width: 40%;
+    margin-top: 2.5vh;
+    padding: 1.5vh;
+    cursor: pointer;
+    transition: all 0.5s;
+    border-radius: 1.8vh;
+    background-color: white;
+    color: black;
+    text-align: center;
+    font-size: 1vw;
+
+}
+.backgroundButton span{
+    cursor: pointer;
+    position: relative;
+    transition: 0.5s;
+}
+.backgroundButton span:after {
+    content: '\00bb';
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    right: -2vw;
+    transition: 0.5s;
+}
+
+.backgroundButton:hover span {
+    padding-right: 1.5vw;
+}
+
+.backgroundButton:hover span:after {
+    opacity: 1;
+    right: 0;
+}
+
+
+#caregiver{
+    display: flex;
+    flex-direction: row-reverse;
+    flex-wrap: wrap;
+    min-height: 80vh;
+    width: 100%;
+    background-color: white;
+    justify-content:flex-start;
+    align-items: center;
+    z-index: 0;
+    font-family: "Apple Braille";
+}
+.showingPicture{
+    width: 29vw;
+    max-height: 72vh;
+    text-align: center;
+    background-color: white;
+    margin-right: 5vw;
+    padding: 0;
+
+}
+.backgroundPicture{
+    width: 100%;
+    height: 40vh;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+.contentRight{
+    margin-right: 2vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    max-height: 30vh;
+    background-color: white;
+}
+.contentRight h1{
+    font-size: 1.8vw;
+    margin-bottom: 0.6vh;
+
+}
+.contentRight p{
+    font-size: 0.8vw;
+}
+
+#gp{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    min-height: 80vh;
+    width: 100%;
+    background-color: white;
+    justify-content:flex-start;
+    align-items: center;
+    z-index: 0;
+    font-family: "Apple Braille";
+}
+.showingPicture2{
+    width: 29vw;
+    max-height: 72vh;
+    text-align: center;
+    background-color: white;
+    margin-left: 5vw;
+    padding: 0;
+
+}
+.backgroundPicture2{
+    width: 100%;
+    height: 40vh;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+.contentLeft{
+    margin-left: 2vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    max-height: 30vh;
+    background-color: white;
+}
+.contentLeft h1{
+    font-size: 1.8vw;
+    margin-bottom: 0.6vh;
+}
+.contentLeft p{
+    font-size: 0.8vw;
+}

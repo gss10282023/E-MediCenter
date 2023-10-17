@@ -14,7 +14,8 @@ import re
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 
-
+def home_page(request):
+    return render(request, 'index.html')
  
 def service_information_page(request):
     return render(request, 'ServiceInformation.html')

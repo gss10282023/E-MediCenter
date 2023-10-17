@@ -1,48 +1,99 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html class="no-js" lang="">
 
 <head>
+  <title>E-MedCenter</title>
   <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="keywords" content="Book Gp, Caregiver, Doctor">
+  <meta name="description" content="Book Gp and Caregiver in a easy way">
+  <meta name="author" content="Group 50">
+  <!--<meta http-equiv="refresh" content="30">-->
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  {% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static 'css/navBar.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'css/newFooter.css' %}" />
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
-  <title>index</title>
-  <link rel="stylesheet" href="Group50/E-MediCenter/EMediCenter/static/css/fold.css">
+  <script src="../js/plugins.js"></script>
 </head>
-
 <body>
+
+<!-- navigation bar -->
 <header>
   <a href="#" class="logo">E-MedCenter</a>
   <div class="navbar">
     <ul>
       <li><a href="#">Home</a>
       </li>
+
       <li><a href="#">Book</a>
         <ul>
           <li><a href="">Caregiver</a>
           <li><a href="">Practitioner</a>
         </ul>
       </li>
+
       <li><a href="">Donation</a>
       </li>
+
       <li><a href="" >Service Information</a></li>
       <li><a href="">About Us</a></li>
       <li><a href="">Sign in/up</a></li>
-
     </ul>
   </div>
-
-
-  <!-- write your section here(under section) -->
-  <section>
-
-  </section>
-
 </header>
 
+<section class="background" id="background">
+  <div class="content" data-aos="fade-right"
+       data-aos-delay="300"
+       data-aos-duration="1000">
+    <h1>Intelligent diagnosis</h1>
+    <p>Try our industry-leading AI questioning system before booking an appointment with a GP.</p>
+    <button class="backgroundButton"><span>Try now</span></button>
+    <!-- <button class="button"><span>Try</span></button>-->
+  </div>
+</section>
+<section class="caregiver" id="caregiver" data-aos="fade-up-left"
+         data-aos-anchor-placement="center-bottom"
+         data-aos-delay="50"
+         data-aos-duration="1000">
+  <div class="showingPicture" >
+    <img src="https://picsum.photos/200/300" class="backgroundPicture">
+  </div>
+  <div class="contentRight">
+    <h1>Appointment with a Caregiver</h1>
+    <p>Choose your beloved caregiver based on time, cost and distance.</p>
+    <button class="backgroundButton"><span>Book now</span></button>
 
+  </div>
+</section>
+<section class="gp" id="gp"  data-aos="fade-up-right"
+         data-aos-anchor-placement="center-bottom"
+         data-aos-delay="50"
+         data-aos-duration="1000">
+  <div class="showingPicture2" >
+    <img src="https://picsum.photos/seed/picsum/200/300" class="backgroundPicture2">
+  </div>
+  <div class="contentLeft">
+    <h1>Appointment with a General Practitioner</h1>
+    <p>Choose your beloved General Practitioner based on time, cost and distance.</p>
+    <button class="backgroundButton"><span>Book now</span></button>
+
+  </div>
+</section>
+
+<section>
+  <div class="footer">
+    <ul class="footer-links">
+      <li><a href="#">Site Map</a></li>
+      <li><a href="#">Privacy Policy</a></li>
+      <li><a href="#">Terms of Use</a></li>
+      <li><a href="#">Support</a></li>
+    </ul>
+  </div>
+</section>
 
 
 <script>
@@ -51,6 +102,27 @@
     header.classList.toggle("sticky",window.scrollY>0);
   })
 </script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.157.0/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vanta/0.5.24/vanta.halo.min.js"></script>
+<script>
+  VANTA.HALO({
+    el: "#background",
+    mouseControls: true,
+    touchControls: true,
+    gyroControls: false,
+    minHeight: 200.00,
+    minWidth: 200.00,
+    xOffset: 0.26,
+    yOffset: -0.13})
+</script>
+
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+  AOS.init();
+</script>
+
 </body>
 
 </html>
