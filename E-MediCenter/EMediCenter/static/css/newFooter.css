@@ -1,0 +1,24 @@
+
+.footer {
+    background-color: white;
+    padding: 1vw;
+    text-align: center;
+    bottom: 0;
+    width: 100%;
+    border-top: 0.2vh solid #e2e2e2;
+
+}
+.footer-links {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+.footer-links li {
+    display: inline;
+    margin: 0 15px;
+}
+.footer-links a {
+    text-decoration: none;
+    color: #999;
+    font-size: 0.6vw;
+}
