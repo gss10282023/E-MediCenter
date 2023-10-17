@@ -1,0 +1,214 @@
+body {
+
+   min-height: 100vh;
+    background-color: white;
+
+}
+
+header {
+
+    background-color: rgb(120,120,120);
+}
+
+header.sticky {
+    padding: 6px 100px;
+    background-color: rgb(220,220,220);
+}
+
+.footer{
+    margin-top: 5vh;
+}
+.background{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    min-height: 100vh;
+    width: 100%;
+    justify-content:center;
+    align-items: center;
+    z-index: 0;
+    font-family: "Apple Braille";
+
+    background-color: white;
+
+}
+
+
+
+
+#signUp{
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 40vw;
+    height: 50vh;
+    margin-top: 20vh;
+
+}
+
+
+#signUp div h2{
+    text-align: center;
+    font-size: 2.2vw;
+}
+
+
+#signUp    .login-container {
+    min-width: 25vw;
+    min-height: 38vh;
+
+    margin-top: 2%;
+    padding: 2vw;
+    border-radius: 0.7vw;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    text-align: center;
+    background-color: white;
+}
+
+
+
+#signUp .form-group {
+    margin-bottom: 2vh;
+}
+
+#signUp .form-group label {
+    display: block;
+    text-align: left;
+    font-weight: bold;
+    font-size: 1vw;
+}
+
+#signUp .form-group input[type="text"],
+#signUp .form-group input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+
+
+
+#signUp .signup-link a {
+    color: #353535;
+    text-decoration: none;
+    font-weight: 800;
+    margin-left: 5px;
+}
+
+#signUp .signup-link a:hover {
+    text-decoration: underline;
+}
+
+#signUp .common-button {
+    width: 100%;
+    padding: 0.7vw;
+    background-color: #353535;
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+#signUp .common-button:hover {
+    background-color: #878a8d;
+}
+
+
+#signUp .form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="%232C2C2C" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 30px;
+    font-family: "Apple Braille";
+}
+
+
+/* ... */
+.address-group {
+    display: flex;
+    justify-content: space-between;
+}
+
+.address-field {
+    width: 48%; /* Adjust as needed */
+}
+/* ... */
+
+
+
+
+ .remember-me {
+    display: flex;
+    align-items: center;
+     margin-bottom: 0.1vh;
+
+}
+
+ .remember-me label {
+     margin-left: 0.5em;
+}
+
+.user-agreement {
+    display: flex;
+    align-items: center;
+    margin-top: 0.1vh;
+}
+
+.user-agreement label {
+    margin-left: 0.5em; /* Adjust as needed */
+}
+
+.user-agreement a {
+    color: #353535; /* Adjust as needed */
+    text-decoration: underline;
+}
+
+
+
+
+
+
+#signUp .form-group button.create-account-button {
+    background-color: white;
+    color: black;
+    border: 1px solid grey;
+    margin-top: 10%;
+}
+#signUp .form-group button.create-account-button:hover {
+    background-color: grey;
+    color: white;
+}
+
+#signUp .separator {
+    flex-grow: 1;
+    border-top: 1px solid rgb(205, 194, 194);
+}
+
+#signUp .content-container {
+    background-color: rgb(231, 222, 222); /* Change to your desired grey color */
+    padding: 20px 0; /* Add some padding for spacing */
+}
+
+
+.error-message {
+    color: red;
+    display: none;
+    font-size: 12px;
+}
+
+#generalError {
+    color: red;
+    font-weight: bold;
+}
+

@@ -52,7 +52,7 @@ header.sticky {
 
 #signUp    .login-container {
     width: 25vw;
-    height: 38vh;
+    min-height: 38vh;
 
     margin-top: 2%;
     padding: 2vw;
@@ -131,6 +131,24 @@ header.sticky {
 #signUp .common-button:hover {
     background-color: #878a8d;
 }
+
+
+#signUp .form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="%232C2C2C" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 30px;
+    font-family: "Apple Braille";
+}
+
+
 
 
 
