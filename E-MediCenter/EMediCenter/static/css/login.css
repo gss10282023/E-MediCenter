@@ -102,9 +102,8 @@ header.sticky {
 }
 
 #signUp .signup-link {
-    font-size: 0.0vw;
+    font-size: 0.8vw;
     text-align: center;
-    background-color: yellowgreen;
 }
 
 #signUp .signup-link a {
