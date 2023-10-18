@@ -4,6 +4,10 @@
 <head>
   <title>E-MedCenter</title>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <script src="https://unpkg.com/ionicons@4.5.10-0/dist/ionicons.js"></script>
   <meta name="keywords" content="Book Gp, Caregiver, Doctor">
   <meta name="description" content="Book Gp and Caregiver in a easy way">
   <meta name="author" content="Group 50">
@@ -14,7 +18,7 @@
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
   {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/support.css' %}" />
-    {% comment %} <link rel="stylesheet" type="text/css" href="{% static 'css/fold.css' %}" /> {% endcomment %}
+
     <style>
         .user-avatar {
             vertical-align: middle;
@@ -77,6 +81,175 @@
 
   </div>
   </section>
+
+<section>
+  <div class="center-content d-flex flex-column align-items-center justify-content-center" style="min-height: calc(100vh - 56px); margin-top: 50px;">  
+    <div class="text-center mb-4">
+        <h2 style="margin-top: 50%; margin-bottom: 2%; font-size:50px;">Our Team</h2>
+    </div>
+      
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 col-sm-6">
+                    <div class="our-team">
+                        <img src="{% static 'res/img-1.webp' %}" alt="" class="img">
+                        <div class="team-content">
+                            <h3 class="post-title">Dr. Emily Johnson</h3>
+                            <span class="post">Chief Medical Advisor</span>
+                            <p class="description">
+                                Dr. Emily Johnson is a distinguished medical professional with extensive experience in medical advisement and healthcare management.
+                            </p>
+                            <ul class="team_social">
+                                <li><a href="#"><i class="fab fa-linkedin"></i></a></li>
+                                <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                                <li><a href="#"><i class="fab fa-google-plus"></i></a></li>
+                                <li><a href="#"><i class="fab fa-pinterest"></i></a></li>
+                            </ul>
+                        </div>
+                        <div class="team-prof">
+                            <h3 class="post-title">Dr. Emily Johnson</h3>
+                            <span class="post">Chief Medical Advisor</span>
+                        </div>                            
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-sm-6">
+                    <div class="our-team" style="margin-left: 20%;">
+                        <img src="{% static 'res/img.jpeg' %}" alt="" class="img">
+                        <div class="team-content">
+                            <h3 class="post-title">Jane Doe</h3>
+                            <span class="post">Chief Nursing Officer</span>
+                            <p class="description">
+                                Jane Doe, our Chief Nursing Officer, brings a wealth of experience in providing high-quality patient care and nursing leadership. With a profound dedication to promoting health.
+                            </p>
+                            <ul class="team_social">
+                                <li><a href="#"><i class="fab fa-linkedin"></i></a></li>
+                                <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                                <li><a href="#"><i class="fab fa-facebook"></i></a></li>
+                                <li><a href="#"><i class="fab fa-instagram"></i></a></li>
+                            </ul>
+                        </div>
+                        <div class="team-prof">
+                            <h3 class="post-title">Jane Doe</h3>
+                            <span class="post">Chief Nursing Officer</span>
+                        </div>                            
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-sm-6">
+                    <div class="our-team" style="margin-left: 40%;">
+                        <img src="{% static 'res/img-1.avif' %}" alt="" class="img">
+                        <div class="team-content">
+                            <h3 class="post-title">Dr. Sarah Miller</h3>
+                            <span class="post">Clinical Director</span>
+                            <p class="description">
+                                Dr. Sarah Miller is a dynamic and innovative Clinical Director with a passion for delivering high-quality patient care. 
+                            </p>
+                            <ul class="team_social">
+                                <li><a href="#"><i class="fab fa-linkedin"></i></a></li>
+                                <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                                <li><a href="#"><i class="fab fa-instagram"></i></a></li>
+                                <li><a href="#"><i class="fab fa-facebook"></i></a></li>
+                            </ul>
+                        </div>
+                        <div class="team-prof">
+                            <h3 class="post-title">Dr. Sarah Miller</h3>
+                            <span class="post">Clinical Director</span>
+                        </div>                            
+                    </div>
+                </div>
+            </div>
+        </div>
+      
+    </section>
+
+    <hr>
+
+
+
+    <div class="text-center mb-4">
+        <h2 style="margin-top: 20%; margin-bottom: 2%; font-size:50px;">Our Partner</h2>
+    </div>
+
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 col-sm-6 mx-auto">
+                    <div class="our-team">
+                        <img src="{% static 'res/insu.png' %}" alt="" class="img">
+                        <div class="team-content">
+                            <h3 class="post-title">SecureFuture Insurance</h3>
+                            <span class="post">Your Shield to the Future</span>
+                            <p class="description">
+                                Your partner in premium protection solutions.
+                            </p>
+                            <ul class="team_social">
+                                <li><a href="#"><i class="fab fa-linkedin"></i></a></li>
+                                <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                                <li><a href="#"><i class="fab fa-google-plus"></i></a></li>
+                                <li><a href="#"><i class="fab fa-pinterest"></i></a></li>
+                            </ul>
+                        </div>
+                        <div class="team-prof">
+                            <h3 class="post-title">SecureFuture Insurance</h3>
+                            <span class="post">Tailored Insurance Solutions</span>
+                        </div>
+                                                 
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-sm-6">
+                    <div class="our-team" style="margin-left: 20%;">
+                        <img src="{% static 'res/ngo.jpeg' %}" alt="" class="img">
+                        <div class="team-content">
+                            <h3 class="post-title">Global Harmony</h3>
+                            <span class="post">Sustainable Development</span>
+                            <p class="description">
+                                Empowering communities through education, health, and sustainability projects worldwide.
+                            </p>
+                            <ul class="team_social">
+                                <li><a href="#"><i class="fab fa-facebook"></i></a></li>
+                                <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                                <li><a href="#"><i class="fab fa-instagram"></i></a></li>
+                                <li><a href="#"><i class="fab fa-linkedin"></i></a></li>
+                            </ul>
+                        </div>
+                        <div class="team-prof">
+                            <h3 class="post-title">Global Harmony</h3>
+                            <span class="post">Sustainable Development</span>
+                        </div>
+                        
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-sm-6">
+                    <div class="our-team" style="margin-left: 40%;">
+                        <img src="{% static 'res/med.jpeg' %}" alt="" class="img">
+                        <div class="team-content">
+                            <h3 class="post-title">HealWell Medical Center</h3>
+                            <span class="post">Healthcare Provider</span>
+                            <p class="description">
+                                Providing advanced medical care and wellness services to ensure community well-being.
+                            </p>
+                            <ul class="team_social">
+                                <li><a href="#"><i class="fab fa-facebook"></i></a></li>
+                                <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                                <li><a href="#"><i class="fab fa-instagram"></i></a></li>
+                                <li><a href="#"><i class="fab fa-linkedin"></i></a></li>
+                            </ul>
+                        </div>
+                        <div class="team-prof">
+                            <h3 class="post-title">HealWell Medical Center</h3>
+                            <span class="post">Healthcare Provider</span>
+                        </div>                            
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+</section>
 
 
 
