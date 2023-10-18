@@ -1,0 +1,358 @@
+@import url("http://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800,900&display=swap");
+
+* {
+
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+
+}
+
+body {
+
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+
+
+}
+
+header {
+  /* flex position */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1;
+  /* 动画过渡 */
+  transition: 0.6s;
+  padding: 40px 40px;
+  background-color: aqua;
+  font-family: 'Poppins';
+}
+
+
+header .logo {
+  font-size: 32px;
+  font-weight: 700;
+  color: #fff;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  transition: 0.6s;
+}
+
+header .logo:hover {
+  color: #000000;
+}
+
+header ul {
+  justify-content: center;
+  align-items: center;
+  list-style: none;
+}
+
+header ul li {
+  list-style: none;
+  float: left;
+}
+
+
+header ul li a:hover {
+  background-color: #ddd;
+  color: black;
+  animation: changeColor 2s infinite;
+  animation-delay: 3s;
+
+
+}
+
+
+header ul li a {
+  margin: 0 15px;
+  text-decoration: none;
+  color: #fff;
+  letter-spacing: 2px;
+  font-weight: 500;
+  transition: 0.6s;
+  line-height: 50px;
+  text-transform: uppercase;
+  display: block;
+  text-align: center;
+}
+
+
+header ul li ul li {
+  display: none;
+  width: 250px;
+  height: 50px;
+  float: initial;
+
+  font-size: 10px;
+  transition: 0.8s;
+  flex-wrap: nowrap;
+
+}
+
+
+.navbar ul li:hover ul li {
+  display: block;
+  border-top: 1px;
+  transition: 0.8s;
+  flex-wrap: nowrap;
+}
+
+
+header.sticky {
+  padding: 6px 100px;
+  background-color: #fff;
+}
+
+header.sticky .logo,
+header.sticky ul li a {
+  color: #000;
+}
+
+
+
+
+
+
+
+#support{
+  display: flex;
+  flex-direction: row-reverse;
+  flex-wrap: wrap;
+  min-height: 80vh;
+  width: 100%;
+  /* background-color: palevioletred; */
+  justify-content:flex-start;
+  align-items: center;
+  z-index: 0;
+  font-family: "Apple Braille";
+}
+.support .showingPicture{
+  width: 45vw;
+  max-height: 80vh;
+  text-align: center;
+  /* background-color: yellowgreen; */
+ margin-right: 5vw;
+ margin-top: 30vh;
+  padding: 0;
+
+}
+.backgroundPicture{
+  width: 100%;
+  height: 60%;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+.contentRight{
+  margin-right: 10vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  max-height: 60vh;
+  align-items: center;
+  margin-top: 10%;
+}
+.contentRight h1{
+  font-size: 3.3vw;
+  margin-bottom: 1.5vh;
+}
+.contentRight h2{
+  font-size: 1.8vw;
+  line-height: 1.8;
+  margin-bottom: 1.5vh;
+}
+.contentRight h4{
+  font-size: 1.6vw;
+  line-height: 1.8;
+  margin-bottom: 1.5vh;
+}
+.contentRight .image-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1.5vh; 
+}
+
+.contentRight .image-links a {
+  display: block; 
+  text-align: center;
+  margin-right: 10px; 
+}
+
+.contentRight .image-links img {
+  width: 40px; 
+  height: 40px; 
+}
+
+
+
+
+.footer {
+  background-color: white;
+  padding: 1vw;
+  text-align: center;
+  bottom: 0;
+  width: 100%;
+  border-top: 0.2vh solid #e2e2e2;
+
+}
+.footer-links {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+.footer-links li {
+  display: inline;
+  margin: 0 15px;
+}
+.footer-links a {
+  text-decoration: none;
+  color: #999;
+  font-size: 0.6vw;
+}
+
+.feedback-section {
+  background-color: #f9f9f9;
+  padding: 40px 0;
+  text-align: center;
+  margin-top: 5%;
+}
+
+.form-container {
+  max-width: 600px;
+  margin: 0 auto;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.title-description span {
+  display: block;
+  font-size: 17px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+h1 {
+  font-size: 27px;
+  color: #333;
+  margin-top: 4%;
+  margin-bottom: 2%;
+}
+
+.input-group {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.input-field {
+  flex-basis: calc(50% - 10px); 
+  margin-bottom: 5%;
+  text-align: center;
+}
+.input-field label {
+  display: block;
+  font-size: 20px;
+  margin-bottom: 1%;
+  color: #333;
+  text-align: center; 
+}
+
+input[type="text"],
+input[type="email"],
+textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+textarea:focus {
+  border-color: #007bff; /* Highlight when focused */
+}
+
+
+.checkbox-group {
+  text-align: center;
+  margin-top: 3%;
+}
+
+input[type="checkbox"] {
+  margin-right: 5px;
+}
+
+button {
+  background-color: #007bff;
+  color: #fff;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: 3%;
+}
+
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+button:hover {
+  background-color: #0056b3; /* Darker shade on hover */
+}
+
+/* CSS for the modal */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 60%;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  text-align: center;
+  position: relative;
+  max-width: 50%;
+}
+
+#termsModal .modal-content .terms-line {
+  text-align: center;
+}
+
+
+.close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 10px;
+  color: #888;
+  cursor: pointer;
+}
+
+
