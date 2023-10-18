@@ -134,7 +134,7 @@ header.sticky ul li a {
   justify-content:flex-start;
   align-items: center;
   z-index: 0;
-  font-family: "Apple Braille";
+  font-family: 'Poppins';
 }
 .support .showingPicture{
   width: 45vw;
@@ -161,16 +161,16 @@ header.sticky ul li a {
   margin-top: 10%;
 }
 .contentRight h1{
-  font-size: 3.3vw;
+  font-size: 3vw;
   margin-bottom: 1.5vh;
 }
 .contentRight h2{
-  font-size: 1.8vw;
+  font-size: 1.5vw;
   line-height: 1.8;
   margin-bottom: 1.5vh;
 }
 .contentRight h4{
-  font-size: 1.6vw;
+  font-size: 1.2vw;
   line-height: 1.8;
   margin-bottom: 1.5vh;
 }
@@ -227,7 +227,7 @@ header.sticky ul li a {
 }
 
 .form-container {
-  max-width: 600px;
+  max-width: 70%;
   margin: 0 auto;
   background-color: #fff;
   border-radius: 8px;
@@ -281,6 +281,22 @@ textarea {
 
 input[type="text"]:focus,
 input[type="email"]:focus,
+textarea:focus {
+  border-color: #007bff; /* Highlight when focused */
+}
+
+input[type="description"],
+textarea {
+  height: 150px; /* Adjust the height to your preference */
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+
+input[type="description"],
 textarea:focus {
   border-color: #007bff; /* Highlight when focused */
 }
@@ -459,3 +475,28 @@ button:hover {
 }
 
 
+.team-content{
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 45px 18px;
+  background: rgba(0,0,0,0.7);
+  transform: translateX(-100%);
+  transition: all 0.20s ease 0s;
+}
+.team-content{
+  transform: translateX(0);
+}
+.team-content {
+  font-size: 18px;
+  color: #fff;
+  text-transform: uppercase;
+}
+.team-content{
+  font-size: 14px;
+  color: #cb95e1;
+  display: block;
+  margin-bottom: 20px;
+}
