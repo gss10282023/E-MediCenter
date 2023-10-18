@@ -1,68 +1,19 @@
-@import url("http://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800,900&display=swap");
-
-* {
-    font-family: 'Poppins';
-    box-sizing: border-box;
-    padding: 0;
-    margin: 0;
-    list-style: none;
-    letter-spacing: 1px;
-}
-
 body {
-    padding-top: 100px;
-    min-height: 200vh;
-    background-color: yellowgreen;
+
+    min-height: 100vh;
+    background-color: white;
+
 }
 
-.back-arrow {
-    display: inline-block;
-    position: relative;
-    width: 30px;
-    height: 20px;
-    border: 2px solid #000;
-    cursor: pointer;
-    transition: all 0.3s ease;
+header {
+
+    background-color: rgb(120,120,120);
 }
 
-.back-arrow:before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 5px;
-    width: 10px;
-    height: 10px;
-    border-top: 2px solid #000;
-    border-left: 2px solid #000;
-    transform: translateY(-50%) rotate(-45deg);
+header.sticky {
+    padding: 6px 100px;
+    background-color: rgb(220,220,220);
 }
-
-.back-arrow:after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 12px;
-    width: 16px;
-    height: 2px;
-    background-color: #000;
-    transform: translateY(-50%);
-}
-
-.back-arrow:hover {
-    border-color: #007bff;
-    color: #007bff;
-}
-
-.back-arrow:hover:before {
-    border-top-color: #007bff;
-    border-left-color: #007bff;
-}
-
-.back-arrow:hover:after {
-    background-color: #007bff;
-}
-
-
 #booking-hall .hall-show .card {
     justify-content: space-between;
 }
@@ -71,7 +22,6 @@ body {
     display: flex;
     flex-direction: row;
 }
-
 .bookingpage .bookingpage-form {
     border: 1px solid #cccccc;
     border-radius: 15px !important;
@@ -97,11 +47,9 @@ button[type=submit]:disabled {
     background-color: #ced4da;
     cursor: not-allowed;
 }
-
 .slidecontainer {
     width: 100%; /* Width of the outside container */
 }
-
 /* The slider itself */
 .slider {
     -webkit-appearance: none;  /* Override default CSS styles */
@@ -114,7 +62,6 @@ button[type=submit]:disabled {
     -webkit-transition: .2s; /* 0.2 seconds transition on hover */
     transition: opacity .2s;
 }
-
 /* Mouse-over effects */
 .slider:hover {
     opacity: 1; /* Fully shown on mouse-over */
