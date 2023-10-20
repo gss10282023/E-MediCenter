@@ -15,7 +15,7 @@ class UserProfile(models.Model):
     avatar = models.ImageField(upload_to='avatars/', default='default.jpg')  # 用户头像字段
 
 class GP(models.Model):
-    GPID = models.BigIntegerField(primary_key=True)
+    GPID = models.AutoField(primary_key=True)
     Name = models.CharField(max_length=50, null=False)
     Gender = models.CharField(max_length=5, null=False)
     Age = models.PositiveSmallIntegerField(null=False)
@@ -32,7 +32,7 @@ class CaregiverOrder(models.Model):
     Cost = models.PositiveSmallIntegerField()
 
 class Caregiver(models.Model):
-    CaregiverID = models.BigIntegerField(primary_key=True)
+    CaregiverID = models.AutoField(primary_key=True)
     Name = models.CharField(max_length=50, null=False)
     Gender = models.CharField(max_length=5, null=False)
     Age = models.PositiveSmallIntegerField(null=False)
@@ -40,6 +40,8 @@ class Caregiver(models.Model):
     Experience = models.PositiveIntegerField(null=False)
     ServiceArea = models.CharField(max_length=10, null=False)
     Availability = models.CharField(max_length=30, null=False)
+    avatar = models.ImageField(upload_to='avatars/', default='default1.jpg')  # 看护者的头像字段
+
 
 class GPOrder(models.Model):
     GPOrderID = models.PositiveIntegerField(primary_key=True)

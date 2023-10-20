@@ -13,6 +13,28 @@ from django.core.exceptions import ObjectDoesNotExist  # Import ObjectDoesNotExi
 import re
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
+from django.urls import reverse
+import googlemaps
+from .models import Caregiver
+from django.core.paginator import Paginator
+import requests
+
+def is_valid_address(address, api_key):
+    base_url = "https://maps.googleapis.com/maps/api/geocode/json"
+    
+    # 查询参数
+    params = {
+        "address": address,
+        "key": AIzaSyBlGBJ1MbtPawltq76TsrzHzrFPFi_uMig
+    }
+    
+    response = requests.get(base_url, params=params)
+    data = response.json()
+    
+    # 检查返回的结果是否有地址
+    if data['status'] == "OK" and len(data['results']) > 0:
+        return True
+    return False
 
 def home_page(request):
     return render(request, 'index.html')
@@ -23,7 +45,47 @@ def service_information_page(request):
 def caregiver_dashboard(request):
     return render(request, 'CaregiverDashboard.html')
 
+
 def book_caregiver_page(request):
+    caregivers_matched = []
+    gmaps = googlemaps.Client(key='AIzaSyBlGBJ1MbtPawltq76TsrzHzrFPFi_uMig')  
+    page_number = request.GET.get('page', 1)
+    print(request)
+    if request.method == "POST":
+        
+        distance = request.POST.get('distance')
+        street = request.POST.get('street')
+        suburb = request.POST.get('suburb')
+        state = request.POST.get('state')
+        postcode = request.POST.get('postcode')
+        user_address = f"{street}, {suburb}, {state}, {postcode}"
+
+        caregivers = Caregiver.objects.all()
+        for caregiver in caregivers:
+            serve_area_address = caregiver.ServiceArea  # 假设ServeArea是一个地址字段
+            matrix = gmaps.distance_matrix(user_address, serve_area_address)
+            print(matrix)
+            if matrix.get("status") == "OK" and matrix.get("rows"):
+                row = matrix["rows"][0]
+                if row["elements"][0].get("status") == "OK":
+                    actual_distance = row["elements"][0]["distance"].get("value", 0)
+                    
+                    if actual_distance <= float(distance) * 1000:  # 转换为米
+                        caregivers_matched.append(caregiver)
+
+
+        paginator = Paginator(caregivers_matched, 4)  # 每页显示4个匹配的Caregiver
+        page_obj = paginator.get_page(page_number)
+
+        context = {
+            "page_obj": page_obj,
+            "base_url": reverse('BookCaregiverPage')
+        }
+        caregivers_matched_ids = [caregiver.CaregiverID for caregiver in caregivers_matched]
+        request.session['caregivers_matched_ids'] = caregivers_matched_ids
+
+        return render(request, 'select.html', context)
+
     return render(request, 'BookCaregiverPage.html')
 
 def about(request):
@@ -204,3 +266,18 @@ def user_profile(request):
         return redirect('admin_dashboard')
     else:
         return render(request, 'Customer.html')
+    
+def paginated_caregivers(request):
+    page_number = request.GET.get('page', 1)
+
+    caregivers_matched_ids = request.session.get('caregivers_matched_ids', [])
+    caregivers_matched = Caregiver.objects.filter(CaregiverID__in=caregivers_matched_ids)
+
+    paginator = Paginator(caregivers_matched, 4)  # 每页显示4个匹配的Caregiver
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        "page_obj": page_obj
+    }
+
+    return render(request, 'select.html', context)

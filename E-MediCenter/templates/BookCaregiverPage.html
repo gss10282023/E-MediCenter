@@ -90,7 +90,8 @@
         </div>        
         <section class="bookingpage d-flex justify-content-center">
             <div class="bookingpage-form bg-white p-4 rounded shadow" style="width: 60%;">
-                <form class="row gy-3 gx-3" action="" method="post">
+                <form class="row gy-3 gx-3" action="{% url 'BookCaregiverPage' %}" method="post">
+                    {% csrf_token %}
                     <div class="col-12">
                         <label for="myRange">Distance: <span id="distanceValue">5 KM</span></label>
                         <div class="slidecontainer">
@@ -110,27 +111,27 @@
                     </script>         
                     <div class="col-4">
                         <label for="StreetInput">Street</label>
-                        <input type="text" class="form-control" id="StreetInput">
+                        <input type="text" class="form-control" id="StreetInput" name = "street" required>
                     </div>
                     <div class="col-4">
                         <label for="SuburbInput">Suburb</label>
-                        <input type="text" class="form-control" id="SuburbInput">
+                        <input type="text" class="form-control" id="SuburbInput" name = "suburb" required>
                     </div>
                     <div class="col-4">
                         <label for="StateInput">State</label>
-                        <input type="text" class="form-control" id="StateInput">
+                        <input type="text" class="form-control" id="StateInput" name = "state" required>
                     </div>
                     <div class="col-4">
                         <label for="PostcodeInput">Postcode</label>
-                        <input type="text" class="form-control" id="PostcodeInput" required>
+                        <input type="text" class="form-control" id="PostcodeInput" name = "postcode" required>
                     </div>
                     <div class="col-4">
                         <label for="dateInput">Date</label>
-                        <input type="date" class="form-control" id="dateInput">
+                        <input type="date" class="form-control" id="dateInput" name = "date" required>
                     </div>
                     <div class="col-4">
                         <label for="CostInput">Cost</label>
-                        <input type="number" class="form-control" id="CostInput">
+                        <input type="number" class="form-control" id="CostInput" name="cost" required>
                     </div>
                     <div class="col-12 text-center">
                         <button type="submit" class="btn btn-danger">Matching</button>

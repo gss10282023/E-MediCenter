@@ -15,7 +15,8 @@ urlpatterns = [
     path("admin_dashboard/",views.admin_dashboard, name="admin"),
     path("user_dashboard/",views.customer_dashboard, name="customer"),
     path("doctor_dashboard/",views.doctor_dashboard, name="doctor"),
-    path("profile/",views.user_profile,name="profile")
+    path("profile/",views.user_profile,name="profile"),
+    path('paginated_caregivers/', views.paginated_caregivers, name='paginated_caregivers'),
 ]
 
 if settings.DEBUG:
