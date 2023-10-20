@@ -25,7 +25,7 @@ def is_valid_address(address, api_key):
     # 查询参数
     params = {
         "address": address,
-        "key": AIzaSyBlGBJ1MbtPawltq76TsrzHzrFPFi_uMig
+        "key": "AIzaSyBlGBJ1MbtPawltq76TsrzHzrFPFi_uMig"
     }
     
     response = requests.get(base_url, params=params)
@@ -35,6 +35,17 @@ def is_valid_address(address, api_key):
     if data['status'] == "OK" and len(data['results']) > 0:
         return True
     return False
+
+def get_place_details(place_id, api_key):
+    base_url = "https://maps.googleapis.com/maps/api/place/details/json"
+    params = {
+        "place_id": place_id,
+        "fields": "address_components",
+        "key": "AIzaSyBlGBJ1MbtPawltq76TsrzHzrFPFi_uMig"
+    }
+    
+    response = requests.get(base_url, params=params)
+    return response.json()
 
 def home_page(request):
     return render(request, 'index.html')
