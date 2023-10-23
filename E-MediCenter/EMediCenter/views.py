@@ -22,7 +22,6 @@ import requests
 def is_valid_address(address, api_key):
     base_url = "https://maps.googleapis.com/maps/api/geocode/json"
     
-    # 查询参数
     params = {
         "address": address,
         "key": "AIzaSyBlGBJ1MbtPawltq76TsrzHzrFPFi_uMig"
@@ -31,7 +30,6 @@ def is_valid_address(address, api_key):
     response = requests.get(base_url, params=params)
     data = response.json()
     
-    # 检查返回的结果是否有地址
     if data['status'] == "OK" and len(data['results']) > 0:
         return True
     return False
@@ -208,18 +206,11 @@ def SignUp(request):
         is_caregiver = request.POST.get('remember-me')  # checkbox  
 
         try:
-            # Check if the email already exists
             if User.objects.filter(email=email).exists():
                 raise ValidationError("Email already exists.")
             
-            # Check if the email is in a valid format
-            # 若您使用Django自带的validate_email，请确保它已被导入
-            # from django.core.validators import validate_email
             validate_email(email)
 
-            # Validate the password using the custom validation function
-            # 若您使用Django自带的validate_password，请确保它已被导入
-            # from django.contrib.auth.password_validation import validate_password
             validate_password(password)
 
             user = User.objects.create_user(username=email, email=email, password=password)
@@ -239,7 +230,6 @@ def SignUp(request):
                 is_caregiver=is_caregiver_bool,
             )
 
-            # 登录用户并重定向到相应的dashboard
             login(request, user)
             if is_caregiver_bool:
                 return HttpResponseRedirect('/caregiver_dashboard/')  
@@ -251,7 +241,6 @@ def SignUp(request):
     if request.method == 'GET':
         error_message = ""
     
-    # TODO: error_message的处理（如果需要）
     error_message = error_message[2:-2]
     return render(request, 'signup.html', {'error_message': error_message})
 

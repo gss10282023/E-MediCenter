@@ -24,12 +24,6 @@ class GP(models.Model):
     ServiceArea = models.CharField(max_length=10, null=False)
     Availability = models.CharField(max_length=30, null=False)
 
-class CaregiverOrder(models.Model):
-    CaregiverOrderID = models.PositiveIntegerField(primary_key=True)
-    Date = models.DateField(null=False)
-    UserID = models.ForeignKey(User, on_delete=models.CASCADE)
-    CaregiverID = models.PositiveIntegerField(null=False)
-    Cost = models.PositiveSmallIntegerField()
 
 class Caregiver(models.Model):
     CaregiverID = models.AutoField(primary_key=True)
@@ -42,6 +36,13 @@ class Caregiver(models.Model):
     Availability = models.CharField(max_length=30, null=False)
     avatar = models.ImageField(upload_to='avatars/', default='default1.jpg')  # 看护者的头像字段
 
+class CaregiverOrder(models.Model):
+    CaregiverOrderID = models.PositiveIntegerField(primary_key=True)
+    UserID = models.OneToOneField(User, on_delete=models.CASCADE)
+    CaregiverID = models.ForeignKey(Caregiver, on_delete=models.CASCADE) 
+    Cost = models.PositiveSmallIntegerField()
+    start_time = models.DateTimeField(null=True)  # 开始时间
+    end_time = models.DateTimeField(null=True)  # 结束时间
 
 class GPOrder(models.Model):
     GPOrderID = models.PositiveIntegerField(primary_key=True)
