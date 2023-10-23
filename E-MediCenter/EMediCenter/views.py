@@ -146,12 +146,11 @@ def is_valid_email(email):
 def login_view(request):
     error_message = ""
     if request.method == 'POST':
-        email = request.POST.get('email')
+        username = request.POST.get('Username')
         password = request.POST.get('password')
         
         try:
-            checkuser = User.objects.get(email=email)
-            user = authenticate(request, username=checkuser.username, password=password)
+            user = authenticate(request, username= username, password=password)
             
             if user:
                 if user.is_active:
@@ -203,7 +202,7 @@ def SignUp(request):
     if request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('password')
-        is_caregiver = request.POST.get('remember-me')  # checkbox  
+        is_caregiver = request.POST.get('custom-checkbox')  # checkbox  
 
         try:
             if User.objects.filter(email=email).exists():
