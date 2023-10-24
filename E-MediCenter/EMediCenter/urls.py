@@ -17,7 +17,10 @@ urlpatterns = [
     path("user_dashboard/",views.customer_dashboard, name="customer"),
     path("doctor_dashboard/",views.doctor_dashboard, name="doctor"),
     path("profile/",views.user_profile,name="profile"),
+    path("checkPassword/",views.validate_password,name="checkPassword"),
     path('paginated_caregivers/', views.paginated_caregivers, name='paginated_caregivers'),
+    path('check_email_and_username/', views.check_email_and_username, name='check_email_and_username'),
+    path("appointment/",views.appointment,name="appointment"),
 ]
 
 if settings.DEBUG:

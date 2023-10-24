@@ -8,6 +8,7 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/select.css' %}" />
+    <script type="module" src="https://unpkg.com/@lamplightdev/aeon"></script>
     <style>
         /* Pagination links */
         .pagination-container {
@@ -55,6 +56,21 @@
                                 Availability: {{ caregiver.Availability }}
                             </p>
                         </div>
+                        
+                        <form action="{% url 'appointment' %}" method="post">
+                            <label for="date">Start Time</label>
+                                <aeon-datepicker>
+                                    <input type="date" id="date1" name="date1"  />
+                                    <input type="time" id="time1" name="time1" />
+                                </aeon-datepicker>
+                            <label for="date">End Time</label>
+                                <aeon-datepicker>
+                                    <input type="date" id="date2" name="date2"/>
+                                    <input type="time" id="time2" name="time2"/>
+                                </aeon-datepicker>    
+                            <input type="hidden" name="caregiver_id" value="{{ caregiver.id }}">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>                        
                     </div>
                 </div>
                 {% if forloop.counter|divisibleby:4 and not forloop.last %}

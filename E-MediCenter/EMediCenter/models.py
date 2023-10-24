@@ -9,10 +9,11 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     is_doctor = models.BooleanField(default=False)
     is_caregiver = models.BooleanField(default=False)
-    height = models.PositiveIntegerField(null=True, blank=True)  # 单位可以是厘米
-    weight = models.PositiveIntegerField(null=True, blank=True)  # 单位可以是千克
+    height = models.PositiveIntegerField(null=True, blank=True)  
+    weight = models.PositiveIntegerField(null=True, blank=True)  
     gender = models.CharField(max_length=10, null=True, blank=True, choices=[('Male', 'M'), ('Female', 'F'), ('Other', 'O')])
-    avatar = models.ImageField(upload_to='avatars/', default='default.jpg')  # 用户头像字段
+    avatar = models.ImageField(upload_to='avatars/', default='default.jpg') 
+    address = models.CharField(max_length=255, null=True, blank=True)
 
 class GP(models.Model):
     GPID = models.AutoField(primary_key=True)

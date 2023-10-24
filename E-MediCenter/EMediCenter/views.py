@@ -10,14 +10,22 @@ from django.contrib.auth.models import User
 import re
 from .models import UserProfile
 from django.core.exceptions import ObjectDoesNotExist  # Import ObjectDoesNotExist
-import re
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from django.urls import reverse
 import googlemaps
-from .models import Caregiver
+from .models import Caregiver,CaregiverOrder
 from django.core.paginator import Paginator
 import requests
+
+def is_caregiver_available(caregiver_id, start_time, end_time):
+    overlapping_orders = CaregiverOrder.objects.filter(
+        CaregiverID=caregiver_id,
+        start_time__lt=end_time,
+        end_time__gt=start_time
+    ).count()
+
+    return overlapping_orders == 0
 
 def is_valid_address(address, api_key):
     base_url = "https://maps.googleapis.com/maps/api/geocode/json"
@@ -178,6 +186,45 @@ def login_view(request):
     return render(request, 'login.html', {'error_message': error_message})
 
 
+def is_password(password):
+    print(password)
+    if len(password) < 8:
+        return False
+
+    if not re.search(r'[a-z]', password):
+        return False
+
+    if not re.search(r'[A-Z]', password):
+        return False
+
+    if not re.search(r'[0-9]', password):
+        return False
+
+    return True
+
+
+def check_email_and_username(request):
+    
+    email = request.GET.get('email')
+    username = request.GET.get('username')
+    password = request.GET.get('password')
+    message = ""
+
+    if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+        message = "Invalid E-Mail"
+        return JsonResponse({"message": message})
+    elif User.objects.filter(username=username).exists():
+        message = "User name exits"
+        return JsonResponse({"message": message})
+    elif User.objects.filter(email=email).exists():
+        message = "E-Mail already exists"
+        return JsonResponse({"message": message})
+    elif not is_password(password):
+        message = "The password must meet the following criteria:\n\nBe at least 8 characters long.\nContain at least one lowercase letter, one uppercase letter and one number."
+    
+    return JsonResponse({"message": message})
+
+
 def validate_password(password):
     if len(password) < 8:
         raise ValidationError("Password must be at least 8 characters long.")
@@ -196,52 +243,67 @@ def is_valid_email(email):
     email_regex = r'^[\w\.-]+@[\w\.-]+\.\w+$'
     return re.match(email_regex, email)
 
+
 def SignUp(request):
     error_message = ""
-    
-    if request.method == 'POST':
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        is_caregiver = request.POST.get('custom-checkbox')  # checkbox  
 
+    if request.method == 'POST':
+        print(request.POST)
+        username = request.POST.get('Username')
+        email = request.POST.get('Email')
+        password = request.POST.get('pw')
+        street = request.POST.get('Street')
+        suburb = request.POST.get('Suburb')
+        state = request.POST.get('State')
+        postcode = request.POST.get('Postcode')
+        is_caregiver = request.POST.get('register-as-caregiver')  # checkbox
+        try:
+            validate_password(password)
+        except ValidationError as e:
+            error_message = str(e)
+            return render(request, 'login.html', {'error_message': error_message})
         try:
             if User.objects.filter(email=email).exists():
                 raise ValidationError("Email already exists.")
-            
-            validate_email(email)
 
+            validate_email(email)
             validate_password(password)
 
-            user = User.objects.create_user(username=email, email=email, password=password)
-            
-            # 创建UserProfile
-            if is_caregiver == "on":
-                is_caregiver_bool = True
-            else:
-                is_caregiver_bool = False
-            
+            user = User.objects.create_user(username=username, email=email, password=password)
+
             chosen_number = random.randint(1, 3)
             chosen_avatar = f"avatars/default{chosen_number}.jpeg"
-
+            address = f"{street}, {suburb}, {state}, {postcode}"
+            # Always store address in UserProfile
             UserProfile.objects.create(
-                user=user,
-                avatar=chosen_avatar,
-                is_caregiver=is_caregiver_bool,
+                user = user,
+                address = address,
+                avatar = chosen_avatar
             )
 
-            login(request, user)
-            if is_caregiver_bool:
-                return HttpResponseRedirect('/caregiver_dashboard/')  
+            if is_caregiver == "on":
+                # Convert address to a single string for Caregiver's ServiceArea
+                
+                Caregiver.objects.create(
+                    Name=username,
+                    ServiceArea=address,
+                    # Other fields can be populated as needed or set to some default values
+                )
+
+            a = login(request, user)
+            print(a)
+            if is_caregiver == "on":
+                return HttpResponseRedirect('/caregiver_dashboard/')
             else:
-                return HttpResponseRedirect('/user_dashboard/') 
+                return HttpResponseRedirect('/user_dashboard/')
         except ValidationError as e:
             error_message = str(e)
-            
+
     if request.method == 'GET':
         error_message = ""
-    
+
     error_message = error_message[2:-2]
-    return render(request, 'signup.html', {'error_message': error_message})
+    return render(request, 'login.html', {'error_message': error_message})
 
 
 def admin_dashboard(request):
@@ -280,3 +342,7 @@ def paginated_caregivers(request):
     }
 
     return render(request, 'select.html', context)
+
+def appointment(request):
+    if request.method == "GET":
+        print("yess")
