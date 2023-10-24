@@ -20,7 +20,9 @@ urlpatterns = [
     path("checkPassword/",views.validate_password,name="checkPassword"),
     path('paginated_caregivers/', views.paginated_caregivers, name='paginated_caregivers'),
     path('check_email_and_username/', views.check_email_and_username, name='check_email_and_username'),
-    path("appointment/",views.appointment,name="appointment"),
+    path('appointment/', views.appointment, name='appointment'),
+    path('get_unavailable_times/<int:caregiver_id>/', views.get_unavailable_times, name='get_unavailable_times'),
+    path('success/', views.success, name='success'),
 ]
 
 if settings.DEBUG:

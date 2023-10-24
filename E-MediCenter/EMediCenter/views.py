@@ -4,19 +4,20 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.forms import AuthenticationForm
-from django.http import JsonResponse
-from django.http import HttpResponseRedirect
+from django.http import JsonResponse, HttpResponse
 from django.contrib.auth.models import User
 import re
-from .models import UserProfile
 from django.core.exceptions import ObjectDoesNotExist  # Import ObjectDoesNotExist
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from django.urls import reverse
 import googlemaps
-from .models import Caregiver,CaregiverOrder
+from .models import Caregiver,CaregiverOrder,UserProfile
 from django.core.paginator import Paginator
 import requests
+import datetime
+from django.contrib import messages
+
 
 def is_caregiver_available(caregiver_id, start_time, end_time):
     overlapping_orders = CaregiverOrder.objects.filter(
@@ -75,11 +76,13 @@ def book_caregiver_page(request):
         suburb = request.POST.get('suburb')
         state = request.POST.get('state')
         postcode = request.POST.get('postcode')
+        cost = request.POST.get('cost')
+        date = request.POST.get('date')
         user_address = f"{street}, {suburb}, {state}, {postcode}"
 
         caregivers = Caregiver.objects.all()
         for caregiver in caregivers:
-            serve_area_address = caregiver.ServiceArea  # 假设ServeArea是一个地址字段
+            serve_area_address = caregiver.ServiceArea  
             matrix = gmaps.distance_matrix(user_address, serve_area_address)
             print(matrix)
             if matrix.get("status") == "OK" and matrix.get("rows"):
@@ -87,15 +90,16 @@ def book_caregiver_page(request):
                 if row["elements"][0].get("status") == "OK":
                     actual_distance = row["elements"][0]["distance"].get("value", 0)
                     
-                    if actual_distance <= float(distance) * 1000:  # 转换为米
+                    if actual_distance <= float(distance) * 1000 and caregiver.Cost<= int(cost):  
                         caregivers_matched.append(caregiver)
 
 
-        paginator = Paginator(caregivers_matched, 4)  # 每页显示4个匹配的Caregiver
+        paginator = Paginator(caregivers_matched, 4) 
         page_obj = paginator.get_page(page_number)
 
         context = {
             "page_obj": page_obj,
+            "date": date,
             "base_url": reverse('BookCaregiverPage')
         }
         caregivers_matched_ids = [caregiver.CaregiverID for caregiver in caregivers_matched]
@@ -114,41 +118,6 @@ def donation(request):
 def is_valid_email(email):
     email_regex = r"[^@]+@[^@]+\.[^@]+"
     return re.match(email_regex, email) is not None
-
-# def login_view(request):
-#     error_message = ""
-#     if request.method == 'POST':
-#         email = request.POST.get('email')
-#         password = request.POST.get('password')
-        
-#         if not is_valid_email(email):
-#             error_message = "Not a valid email address."
-#         else:
-#             checkuser = User.objects.get(email=email)
-#             user = authenticate(request, username=checkuser.username, password=password)
-            
-#             if user:
-                
-#                 if user.is_active:
-#                     login(request, user)
-#                     try:
-#                         profile = user.userprofile  # Assuming the related name is 'userprofile'
-#                         if user.is_staff:
-#                             return HttpResponseRedirect('/admin_dashboard/')  # 重定向到管理员的页面
-#                         elif profile.is_doctor:
-#                             return HttpResponseRedirect('/doctor_dashboard/')  # 重定向到医生的页面
-#                         elif profile.is_caregiver:
-#                             return HttpResponseRedirect('/caregiver_dashboard/')  
-#                         else:
-#                             return HttpResponseRedirect('/user_dashboard/')  
-#                     except:
-#                         error_message = "User profile not found."
-#                 else:
-#                     error_message = "Your account is inactive."
-#             else:
-#                 error_message = "Invalid login details." 
-#     return render(request, 'login.html', {'error_message': error_message})
-
 
 
 def login_view(request):
@@ -330,6 +299,7 @@ def user_profile(request):
     
 def paginated_caregivers(request):
     page_number = request.GET.get('page', 1)
+    date = request.GET.get("date")
 
     caregivers_matched_ids = request.session.get('caregivers_matched_ids', [])
     caregivers_matched = Caregiver.objects.filter(CaregiverID__in=caregivers_matched_ids)
@@ -338,11 +308,81 @@ def paginated_caregivers(request):
     page_obj = paginator.get_page(page_number)
 
     context = {
-        "page_obj": page_obj
+        "page_obj": page_obj,
+        "date":date
     }
 
     return render(request, 'select.html', context)
 
+def get_unavailable_times(request, caregiver_id):
+    """
+    Return a list of datetime ranges where the caregiver is not available.
+    """
+    orders = CaregiverOrder.objects.filter(CaregiverID=caregiver_id)
+
+    unavailable_times = []
+    for order in orders:
+        start = order.start_time
+        end = order.end_time
+        # Here you might want to convert these to your desired format
+        # or adjust the time zone, if necessary.
+        unavailable_times.append({"from": start.strftime('%Y-%m-%d %H:%M'), "to": end.strftime('%Y-%m-%d %H:%M')})
+
+    return JsonResponse({"unavailable_times": unavailable_times})
+
+
 def appointment(request):
-    if request.method == "GET":
-        print("yess")
+    if request.method == "POST":
+        print(request)
+        start_time = request.POST.get("start-time")
+        end_time = request.POST.get("end-time")
+        caregiver_id = request.POST.get("caregiver_id")
+        cost = request.POST.get("cost")
+        date = request.POST.get("selected_date")
+
+        # Combine date and time for start and end
+        start_time_str = f"{date} {start_time}"
+        end_time_str = f"{date} {end_time}"
+
+        # Parse combined date and time
+        start_time = datetime.datetime.strptime(start_time_str, '%Y-%m-%d %H:%M')
+        end_time = datetime.datetime.strptime(end_time_str, '%Y-%m-%d %H:%M')
+
+        # Check if the start_time is at least 1 hour before end_time
+        if end_time - start_time < datetime.timedelta(hours=1):
+            # Use messages to display an error
+            messages.error(request, "结束时间应该至少在开始时间之后1小时。")
+            return redirect('appointment')  # Assume you want to redirect back to the appointment page
+
+        # Check if caregiver is available
+        overlapping_orders = CaregiverOrder.objects.filter(
+            CaregiverID=caregiver_id,
+            start_time__lt=end_time,
+            end_time__gt=start_time
+        )
+
+        if overlapping_orders.exists():
+            # Use messages to display an error
+            messages.error(request, "所选时间段内看护者不可用。")
+            return redirect('appointment')  # Redirect back to the appointment page
+
+        # Save the order
+        order = CaregiverOrder(
+            UserID=request.user,  # Assuming the user is logged in
+            CaregiverID_id=caregiver_id, 
+            start_time=start_time,
+            end_time=end_time,
+            Cost=cost  
+        )
+        order.save()
+
+        messages.success(request, "预约成功！")
+        return redirect('success')  # Redirect to a success page
+    
+
+    return render(request, "select.html")  # Render your template if it's a GET request
+
+
+
+def success(request):
+    return render(request, "success.html")

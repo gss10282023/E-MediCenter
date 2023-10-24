@@ -1,118 +1,134 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Select Caregiver</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.9/dist/flatpickr.min.css">
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/select.css' %}" />
-    <script type="module" src="https://unpkg.com/@lamplightdev/aeon"></script>
-    <style>
-        /* Pagination links */
-        .pagination-container {
-            display: flex;
-            justify-content: center;
-            margin-top: 20px;
-        }
-
-        .pagination a {
-        color: black;
-        float: left;
-        padding: 8px 16px;
-        text-decoration: none;
-        transition: background-color .3s;
-        }
-
-        /* Style the active/current link */
-        .pagination a.active {
-        background-color: dodgerblue;
-        color: white;
-        }
-
-        /* Add a grey background color on mouse-over */
-        .pagination a:hover:not(.active) {background-color: #ddd;}
-    </style>
 </head>
-<body>
 
+<body>
 
     <div class="container mt-5">
         <a href="{% url 'BookCaregiverPage' %}" class="previous round">&#8249;</a>
         <div class="row">
             {% for caregiver in page_obj %}
-                <div class="col-md-6 mb-4">
-                    <div class="card">
-                        <img src="{{ caregiver.avatar.url }}" alt="Avatar" class="card-img-top" style="width:25%"> 
-                        <div class="card-body">
-                            <h5 class="card-title">{{ caregiver.Name }}</h5>
-                            <p class="card-text">
-                                Gender: {{ caregiver.Gender }}<br>
-                                Age: {{ caregiver.Age }}<br>
-                                Qualification: {{ caregiver.Qualification }}<br>
-                                Experience: {{ caregiver.Experience }}<br>
-                                ServiceArea: {{ caregiver.ServiceArea }}<br>
-                                Availability: {{ caregiver.Availability }}
-                            </p>
-                        </div>
-                        
-                        <form action="{% url 'appointment' %}" method="post">
-                            <label for="date">Start Time</label>
-                                <aeon-datepicker>
-                                    <input type="date" id="date1" name="date1"  />
-                                    <input type="time" id="time1" name="time1" />
-                                </aeon-datepicker>
-                            <label for="date">End Time</label>
-                                <aeon-datepicker>
-                                    <input type="date" id="date2" name="date2"/>
-                                    <input type="time" id="time2" name="time2"/>
-                                </aeon-datepicker>    
-                            <input type="hidden" name="caregiver_id" value="{{ caregiver.id }}">
-                            <button type="submit" class="btn btn-primary">Submit</button>
-                        </form>                        
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <img src="{{ caregiver.avatar.url }}" alt="Avatar" class="card-img-top" style="width:25%">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ caregiver.Name }}</h5>
+                        <p class="card-text">
+                            Gender: {{ caregiver.Gender }}<br>
+                            Age: {{ caregiver.Age }}<br>
+                            Qualification: {{ caregiver.Qualification }}<br>
+                            Experience: {{ caregiver.Experience }}<br>
+                            ServiceArea: {{ caregiver.ServiceArea }}<br>
+                            Availability: {{ caregiver.Availability }}
+                        </p>
                     </div>
+
+                    <form action="{% url 'appointment' %}" method="post">
+                        {% csrf_token %}
+                        <div class="time-selection">
+
+                            <label for="start-time">Start Time:</label>
+                            <input type="text" class="start-time" name="start-time" placeholder="Select start time">
+                            
+                            <label for="end-time">End Time:</label>
+                            <input type="text" class="end-time" name="end-time" placeholder="Select end time">
+                        </div>   
+                        <input type="hidden" name="selected_date" value="{{ date }}">  
+                        <input type="hidden" name="cost" value="{{ caregiver.Cost }}">  
+                        <input type="hidden" name="caregiver_id" value="{{ caregiver.CaregiverID }}">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
                 </div>
-                {% if forloop.counter|divisibleby:4 and not forloop.last %}
-                    </div>
-                    <div class="row">
+            </div>
+            {% if forloop.counter|divisibleby:4 and not forloop.last %}
+            </div>
+            <div class="row">
                 {% endif %}
-            {% empty %}
+                {% empty %}
                 <div class="col-12">
                     <div class="alert alert-warning">
                         <strong>Sorry!</strong> No Caregivers matched your criteria.
                     </div>
                 </div>
+                {% endfor %}
+            </div>
+    </div>
+
+    <div class="pagination-container">
+        <div class="pagination">
+            {% if page_obj.has_previous %}
+            <a href="{% url 'paginated_caregivers' %}?page=1">&laquo;</a>
+            {% else %}
+            <span>&laquo;</span>
+            {% endif %}
+
+            {% for i in page_obj.paginator.page_range %}
+            {% if i == page_obj.number %}
+            <a class="active" href="{% url 'paginated_caregivers' %}?page={{ i }}">{{ i }}</a>
+            {% else %}
+            <a href="{% url 'paginated_caregivers' %}?page={{ i }}">{{ i }}</a>
+            {% endif %}
             {% endfor %}
+
+            {% if page_obj.has_next %}
+            <a href="{% url 'paginated_caregivers' %}?page={{ page_obj.paginator.num_pages }}">&raquo;</a>
+            {% else %}
+            <span>&raquo;</span>
+            {% endif %}
         </div>
     </div>
-    
 
-<div class="pagination-container">
-    <div class="pagination">
-        {% if page_obj.has_previous %}
-            <a href="{% url 'paginated_caregivers' %}?page=1">&laquo;</a>
-        {% else %}
-            <span>&laquo;</span>
-        {% endif %}
-        
-        {% for i in page_obj.paginator.page_range %}
-            {% if i == page_obj.number %}
-                <a class="active" href="{% url 'paginated_caregivers' %}?page={{ i }}">{{ i }}</a>
-            {% else %}
-                <a href="{% url 'paginated_caregivers' %}?page={{ i }}">{{ i }}</a>
-            {% endif %}
-        {% endfor %}
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.9/dist/flatpickr.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let selectedDate = new Date("{{ date }}");
+            let now = new Date();
 
-        {% if page_obj.has_next %}
-            <a href="{% url 'paginated_caregivers' %}?page={{ page_obj.paginator.num_pages }}">&raquo;</a>
-        {% else %}
-            <span>&raquo;</span>
-        {% endif %}
-    </div>
-</div>
+            let isToday = selectedDate.toISOString().split("T")[0] === now.toISOString().split("T")[0];
+            let minTimeValue = isToday ? now.getHours() + ":" + (now.getMinutes() < 10 ? "0" : "") + now.getMinutes() : "08:00";
+            let maxTimeValue = "22:00";
 
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+            flatpickr(".start-time", {
+                enableTime: true,
+                noCalendar: true,
+                dateFormat: "H:i",
+                minTime: minTimeValue,
+                maxTime: maxTimeValue,
+                onChange: function(selectedTimes) {
+                    const selectedTime = selectedTimes[0];
+                    const minEndTime = selectedTime.setHours(selectedTime.getHours() + 1);
+                    const formattedMinEndTime = new Date(minEndTime).getHours() + ":" + (new Date(minEndTime).getMinutes() < 10 ? "0" : "") + new Date(minEndTime).getMinutes();
+
+                    document.querySelector(".end-time").flatpickr({
+                        enableTime: true,
+                        noCalendar: true,
+                        dateFormat: "H:i",
+                        minTime: formattedMinEndTime,
+                        maxTime: maxTimeValue
+                    });
+                }
+            });
+
+            flatpickr(".end-time", {
+                enableTime: true,
+                noCalendar: true,
+                dateFormat: "H:i",
+                minTime: minTimeValue,
+                maxTime: maxTimeValue
+            });
+        });
+    </script>
+
 </body>
+
 </html>
