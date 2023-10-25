@@ -1,86 +1,214 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Login</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Caregiver Dashboard</title>
+    <!-- MATERIAL CDN -->
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp"
+      rel="stylesheet"
+    />
+    <!-- STYLESHEET -->
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/dashboard_staff.css' %}" />
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.css">
-    <!-- jQuery -->
-    <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.js"></script>
-    <!-- DataTables JavaScript -->
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.js"></script>
-</head>
+  </head>
+  <body>
+    <div class="container">
+      <aside>
+        <div class="top">
+          <div class="logo">
+            <!--<img src="./images/logo.png" />-->
+            <h2 cla>E<span class="danger">MedCenter</span></h2>
+          </div>
+          <div class="close" id="close-btn">
+            <span class="material-icons-sharp">close</span>
+          </div>
+        </div>
 
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Administrator Home</title>
+        <div class="sidebar">
+          <a href="#">
+            <span class="material-icons-sharp">grid_view</span>
+            <h3>OverView</h3>
+          </a>
+          <a href="#" class="active">
+            <span class="material-icons-sharp">receipt_long</span>
+            <h3>Orders</h3>
+          </a>
+          <a href="#">
+            <span class="material-icons-sharp">person_outline</span>
+            <h3>Profile</h3>
+          </a>
 
 
-<body>
+          <a href="{% url 'logout' %}">
+            <span class="material-icons-sharp">logout</span>
+            <h3>Logout</h3>
+          </a>
+        </div>
+      </aside>
+      <!------------------ END OF ASIDE ------------------>
+      <main>
+        <h1>Dashoard</h1>
 
-<div id="sidebar">
-    <p class="sidebar-title">@E-Medcenter</p>
-    <a href="#" class="sidebar-link">Dashboard</a>
-    <a href="#" class="sidebar-link">Doctors</a>
-    <a href="#" class="sidebar-link">Feedback</a>
-    <a href="#" class="sidebar-link">Customers</a>
-    <div class="bottom">
-        <a href="#" class="sidebar-link">Logout</a>
+        <div class="date">
+          <input type="date" />
+        </div>
+
+
+        <!------------ END OF INSIGHTS -------------->
+
+        <div class="recent-orders">
+            <h2>Recent Caregiver Orders</h2>
+            <table id="caregiver-orders-table">
+                <!-- ... table headers ... -->
+                <thead>
+                    <tr>
+                        <th>Start Time</th>
+                        <th>End Time</th>
+                        <th>Cost</th>
+                        <th>Caregiver ID</th>
+                        <th>User ID</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- 数据将在这里通过AJAX填充 -->
+                </tbody>
+            </table>
+            <button onclick="showAllCaregiverOrders()">Show All</button>
+        </div>
+
+        <div class="recent-orders">
+            <h2>Recent GP Orders</h2>
+            <table id="GP-orders-table">
+                <!-- ... table headers ... -->
+                <thead>
+                    <tr>
+                        <th>Start Time</th>
+                        <th>End Time</th>
+                        <th>Cost</th>
+                        <th>GP ID</th>
+                        <th>User ID</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- 数据将在这里通过AJAX填充 -->
+                </tbody>
+            </table>
+            <button onclick="showAllGPOrders()">Show All</button>
+        </div>
+      </main>
+      <!----------------- END OF MAIN -------------------->
+
+      <div class="right">
+        <div class="top">
+          <button id="menu-btn">
+            <span class="material-icons-sharp">menu</span>
+          </button>
+          <div class="theme-toggler">
+            <span class="material-icons-sharp active">light_mode</span>
+            <span class="material-icons-sharp">dark_mode</span>
+          </div>
+          <div class="profile">
+            <div class="info">
+              <p>Hey, <b>Daniel</b></p>
+              <small class="text-muted">Admin</small>
+            </div>
+            <div class="profile-photo">
+                <img src="{% static 'res/profile-1.jpg' %}" >
+            </div>
+          </div>
+        </div>
+        <!-- END OF TOP -->
+        <div class="sales-analytics">
+          <div class="item add-product">
+            <div>
+              <span class="material-icons-sharp">add</span>
+              <h3>Add Product</h3>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-</div>
+    
+    <script src="{% static 'js/orders.js' %}"></script>
+    <script src="{% static 'js/index.js' %}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function showAllCaregiverOrders() {
+            $.ajax({
+                url: "/path_to_get_all_orders_view/",
+                type: "GET",
+                dataType: "json",
+                success: function(data) {
+                    var table = $("#caregiver-orders-table tbody");
+                    table.empty();
 
+                    $.each(data, function(index, order) {
+                        table.append('<tr><td>' + order.start_time + '</td><td>' + order.end_time + '</td><td>' + order.Cost + '</td><td>' + order.CaregiverID__CaregiverID + '</td><td>' + order.UserID__id + '</td></tr>');
+                    });
+                }
+            });
+        }
 
+        $(document).ready(function() {
+            // 当页面加载时，获取并显示最近的5个订单
+            showRecentOrders();
 
+            function showRecentOrders() {
+                $.ajax({
+                    url: "/path_to_get_recent_orders/",
+                    type: "GET",
+                    dataType: "json",
+                    success: function(data) {
+                        var table = $("#caregiver-orders-table tbody");
+                        table.empty();
 
-<div id="upper-main-content-login ">
+                        $.each(data, function(index, order) {
+                            table.append('<tr><td>' + order.start_time + '</td><td>' + order.end_time + '</td><td>' + order.Cost + '</td><td>' + order.CaregiverID__CaregiverID + '</td><td>' + order.UserID__id + '</td></tr>');
+                        });
+                    }
+                });
+            }
+        });
 
-</div>
+        function showAllGPOrders() {
+            $.ajax({
+                url: "/path_to_get_all_GP_orders_view/",
+                type: "GET",
+                dataType: "json",
+                success: function(data) {
+                    var table = $("#GP-orders-table tbody");
+                    table.empty();
 
+                    $.each(data, function(index, order) {
+                        table.append('<tr><td>' + order.start_time + '</td><td>' + order.end_time + '</td><td>' + order.Cost + '</td><td>' + order.CaregiverID__CaregiverID + '</td><td>' + order.UserID__id + '</td></tr>');
+                    });
+                }
+            });
+        }
 
-<div id="upper-main-content">
-    <div>  <!-- 添加一个新的 div，用于包装 h1 和 p -->
-        <h1>Welcome Back, Admin!</h1>
-        <p>This is your dashboard, where you can manage your system.</p>
-    </div>
-    <a href="#" class="upper-main-content-login">Admin</a>  <!-- 将链接移动到右边 -->
-</div>
+        $(document).ready(function() {
+            showRecentOrders();
 
-<div id="main-background">
+            function showRecentOrders() {
+                $.ajax({
+                    url: "/path_to_get_recent_GP_orders/",
+                    type: "GET",
+                    dataType: "json",
+                    success: function(data) {
+                        var table = $("#GP-orders-table tbody");
+                        table.empty();
 
-</div>
-<div id="table-container">
-    <table id="example" class="display">
-        <thead>
-        <tr>
-            <th>Name</th>
-            <th>Position</th>
-            <th>Office</th>
-            <th>Extn.</th>
-            <th>Start date</th>
-            <th>Salary</th>
-        </tr>
-        </thead>
-        <tbody>
-        <!-- Your table data goes here -->
-        <tr>
-            <td>Tiger Nixon</td>
-            <td>System Architect</td>
-            <td>Edinburgh</td>
-            <td>5421</td>
-            <td>2011/04/25</td>
-            <td>$320,800</td>
-        </tr>
-        <!-- ... other rows ... -->
-        </tbody>
-    </table>
-</div>
+                        $.each(data, function(index, order) {
+                            table.append('<tr><td>' + order.start_time + '</td><td>' + order.end_time + '</td><td>' + order.Cost + '</td><td>' + order.CaregiverID__CaregiverID + '</td><td>' + order.UserID__id + '</td></tr>');
+                        });
+                    }
+                });
+            }
+        });
 
-<script type="text/javascript">
-    $(document).ready( function () {
-        $('#example').DataTable();
-    });
-
-</script>
-
-
-</body>
+    </script>
+  </body>
+</html>

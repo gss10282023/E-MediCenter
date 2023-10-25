@@ -24,6 +24,8 @@ class GP(models.Model):
     Experience = models.PositiveIntegerField(null=False)
     ServiceArea = models.CharField(max_length=10, null=False)
     Availability = models.CharField(max_length=30, null=False)
+    Cost = models.PositiveSmallIntegerField()
+    avatar = models.ImageField(upload_to='avatars/', default='default1.jpg') 
 
 
 class Caregiver(models.Model):

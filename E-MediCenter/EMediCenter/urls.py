@@ -7,6 +7,7 @@ urlpatterns = [
     path("", views.home_page, name=""),
     path("HomePage/", views.home_page, name="HomePage"),
     path("book_caregiver/", views.book_caregiver_page, name="BookCaregiverPage"),
+    path("book_GP/", views.book_GP_page, name="BookGPPage"),
     path("caregiver_dashboard/", views.caregiver_dashboard, name="Caregiver"),
     path("service_information/", views.service_information_page, name="ServiceInformationPage"),
     path("About/",views.about,name = "AboutusPage"),
@@ -19,10 +20,17 @@ urlpatterns = [
     path("profile/",views.user_profile,name="profile"),
     path("checkPassword/",views.validate_password,name="checkPassword"),
     path('paginated_caregivers/', views.paginated_caregivers, name='paginated_caregivers'),
+    path('paginated_gps/', views.paginated_gps, name='paginated_gps'),
     path('check_email_and_username/', views.check_email_and_username, name='check_email_and_username'),
     path('appointment/', views.appointment, name='appointment'),
     path('get_unavailable_times/<int:caregiver_id>/', views.get_unavailable_times, name='get_unavailable_times'),
     path('success/', views.success, name='success'),
+    path('path_to_get_all_orders_view/', views.get_all_orders, name='get_all_orders'),
+    path('path_to_get_recent_orders/', views.get_recent_orders, name='get_recent_orders'),
+    path('/path_to_get_all_GP_orders_view/', views.get_all_GP_orders, name='get_all_GP_orders'),
+    path('path_to_get_recent_GP_orders/', views.get_recent_GP_orders, name='get_recent_GP_orders'),
+    path('logout/', views.logout_view, name='logout'),
+
 ]
 
 if settings.DEBUG:

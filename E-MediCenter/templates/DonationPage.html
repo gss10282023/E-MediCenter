@@ -21,20 +21,21 @@
 </head>
 
 <body>
+
     <header>
-        <a href="#" class="logo">E-MedCenter</a>
+        <a href="{% url 'HomePage' %}" class="logo">E-MedCenter</a>
         <div class="navbar">
             <ul>
-                <li><a href="#">Home</a>
+              <li><a href="{% url 'HomePage' %}">Home</a>
                 </li>
                 <li><a href="#">Book</a>
                     <ul>
-                        <li><a href="{% url 'BookCaregiverPage' %}">Caregiver</a></li>
-                        <li><a href="">Practitioner</a>
+                        <li><a href="{% url 'BookCaregiverPage' %}">Book Caregiver</a></li>
+                        <li><a href="{% url 'BookGPPage' %}">Book GP</a>
                     </ul>
                 </li>
                 <li><a href="{% url 'Donation' %}">Donation</a></li>
-                <li><a href="{% url 'ServiceInformationPage' %}">About Us</a></li>
+                <li><a href="{% url 'ServiceInformationPage' %}">About us</a></li>
                 <li><a href="{% url 'AboutusPage' %}">Support</a></li>
                 {% if user.is_authenticated %}
                 <!-- 如果用户已登录，显示头像和身份特定的链接 -->
@@ -50,7 +51,7 @@
                 {% endif %}
             </ul>
         </div>
-    </header>
+      </header>
 
 
     <section class="section-container-1">

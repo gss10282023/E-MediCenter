@@ -25,15 +25,15 @@
 
 <body>
     <header>
-        <a href="#" class="logo">E-MedCenter</a>
+        <a href="{% url 'HomePage' %}" class="logo">E-MedCenter</a>
         <div class="navbar">
             <ul>
-                <li><a href="#">Home</a>
+              <li><a href="{% url 'HomePage' %}">Home</a>
                 </li>
                 <li><a href="#">Book</a>
                     <ul>
-                        <li><a href="{% url 'BookCaregiverPage' %}">Caregiver</a></li>
-                        <li><a href="">Practitioner</a>
+                        <li><a href="{% url 'BookCaregiverPage' %}">Book Caregiver</a></li>
+                        <li><a href="{% url 'BookGPPage' %}">Book GP</a>
                     </ul>
                 </li>
                 <li><a href="{% url 'Donation' %}">Donation</a></li>
@@ -47,14 +47,13 @@
                     </a>
                 </li>
 
-
                 {% else %}
                 <!-- 如果用户未登录，显示'Login/Signup'链接 -->
                 <li><a href="{% url 'Login' %}">Login/Sign up</a></li>
                 {% endif %}
+            </ul>
         </div>
-    
-    </header>
+      </header>
 
     <div class="center-content d-flex flex-column align-items-center justify-content-center" style="min-height: calc(100vh - 56px); margin-top: 50px;">  
         <div class="text-center mb-4">

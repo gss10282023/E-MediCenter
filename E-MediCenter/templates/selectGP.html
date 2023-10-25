@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select GP</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.9/dist/flatpickr.min.css">
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/select.css' %}" />
+</head>
+
+<body>
+
+    <div class="container mt-5">
+        <a href="{% url 'BookGPPage' %}" class="previous round">&#8249;</a>
+        <div class="row">
+            {% for gp in page_obj %}
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <img src="{{ gp.avatar.url }}" alt="Avatar" class="card-img-top" style="width:25%">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ gp.Name }}</h5>
+                        <p class="card-text">
+                            Gender: {{ gp.Gender }}<br>
+                            Age: {{ gp.Age }}<br>
+                            Qualification: {{ gp.Qualification }}<br>
+                            Experience: {{ gp.Experience }}<br>
+                            ServiceArea: {{ gp.ServiceArea }}<br>
+                            Availability: {{ gp.Availability }}
+                        </p>
+                    </div>
+
+                    <form action="{% url 'appointment' %}" method="post">
+                        {% csrf_token %}
+                        <div class="time-selection">
+
+                            <label for="start-time">Start Time:</label>
+                            <input type="text" class="start-time" name="start-time" placeholder="Select start time">
+                            
+                            <label for="end-time">End Time:</label>
+                            <input type="text" class="end-time" name="end-time" placeholder="Select end time">
+                        </div>   
+                        <input type="hidden" name="selected_date" value="{{ date }}">  
+                        <input type="hidden" name="cost" value="{{ gp.Cost }}">  
+                        <input type="hidden" name="gp_id" value="{{ gp.GPID }}">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+            {% if forloop.counter|divisibleby:4 and not forloop.last %}
+            </div>
+            <div class="row">
+                {% endif %}
+                {% empty %}
+                <div class="col-12">
+                    <div class="alert alert-warning">
+                        <strong>Sorry!</strong> No GPs matched your criteria.
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+    </div>
+
+    <div class="pagination-container">
+        <div class="pagination">
+            {% if page_obj.has_previous %}
+            <a href="{% url 'paginated_gps' %}?page=1">&laquo;</a>
+            {% else %}
+            <span>&laquo;</span>
+            {% endif %}
+
+            {% for i in page_obj.paginator.page_range %}
+            {% if i == page_obj.number %}
+            <a class="active" href="{% url 'paginated_gps' %}?page={{ i }}">{{ i }}</a>
+            {% else %}
+            <a href="{% url 'paginated_gps' %}?page={{ i }}">{{ i }}</a>
+            {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+            <a href="{% url 'paginated_gps' %}?page={{ page_obj.paginator.num_pages }}">&raquo;</a>
+            {% else %}
+            <span>&raquo;</span>
+            {% endif %}
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.9/dist/flatpickr.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let selectedDate = new Date("{{ date }}");
+            let now = new Date();
+
+            let isToday = selectedDate.toISOString().split("T")[0] === now.toISOString().split("T")[0];
+            let minTimeValue = isToday ? now.getHours() + ":" + (now.getMinutes() < 10 ? "0" : "") + now.getMinutes() : "08:00";
+            let maxTimeValue = "22:00";
+
+            flatpickr(".start-time", {
+                enableTime: true,
+                noCalendar: true,
+                dateFormat: "H:i",
+                minTime: minTimeValue,
+                maxTime: maxTimeValue,
+                onChange: function(selectedTimes) {
+                    const selectedTime = selectedTimes[0];
+                    const minEndTime = selectedTime.setHours(selectedTime.getHours() + 1);
+                    const formattedMinEndTime = new Date(minEndTime).getHours() + ":" + (new Date(minEndTime).getMinutes() < 10 ? "0" : "") + new Date(minEndTime).getMinutes();
+
+                    document.querySelector(".end-time").flatpickr({
+                        enableTime: true,
+                        noCalendar: true,
+                        dateFormat: "H:i",
+                        minTime: formattedMinEndTime,
+                        maxTime: maxTimeValue
+                    });
+                }
+            });
+
+            flatpickr(".end-time", {
+                enableTime: true,
+                noCalendar: true,
+                dateFormat: "H:i",
+                minTime: minTimeValue,
+                maxTime: maxTimeValue
+            });
+        });
+    </script>
+
+</body>
+
+</html>

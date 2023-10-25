@@ -1,10 +1,10 @@
 import random
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.forms import AuthenticationForm
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse,HttpResponseRedirect
 from django.contrib.auth.models import User
 import re
 from django.core.exceptions import ObjectDoesNotExist  # Import ObjectDoesNotExist
@@ -12,7 +12,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from django.urls import reverse
 import googlemaps
-from .models import Caregiver,CaregiverOrder,UserProfile
+from .models import Caregiver,CaregiverOrder,UserProfile,GPOrder,GP
 from django.core.paginator import Paginator
 import requests
 import datetime
@@ -63,6 +63,50 @@ def service_information_page(request):
 def caregiver_dashboard(request):
     return render(request, 'CaregiverDashboard.html')
 
+def book_GP_page(request):
+    GPs_matched = []
+    gmaps = googlemaps.Client(key='AIzaSyBlGBJ1MbtPawltq76TsrzHzrFPFi_uMig')  
+    page_number = request.GET.get('page', 1)
+    print(request)
+    if request.method == "POST":
+        
+        distance = request.POST.get('distance')
+        street = request.POST.get('street')
+        suburb = request.POST.get('suburb')
+        state = request.POST.get('state')
+        postcode = request.POST.get('postcode')
+        cost = request.POST.get('cost')
+        date = request.POST.get('date')
+        user_address = f"{street}, {suburb}, {state}, {postcode}"
+
+        GPs = GP.objects.all()
+        for gp in GPs:
+            serve_area_address = gp.ServiceArea  
+            matrix = gmaps.distance_matrix(user_address, serve_area_address)
+            print(matrix)
+            if matrix.get("status") == "OK" and matrix.get("rows"):
+                row = matrix["rows"][0]
+                if row["elements"][0].get("status") == "OK":
+                    actual_distance = row["elements"][0]["distance"].get("value", 0)
+                    
+                    if actual_distance <= float(distance) * 1000 and gp.Cost<= int(cost):  
+                        GPs_matched.append(gp)
+
+
+        paginator = Paginator(GPs_matched, 4) 
+        page_obj = paginator.get_page(page_number)
+
+        context = {
+            "page_obj": page_obj,
+            "date": date,
+            "base_url": reverse('BookGPPage')
+        }
+        GPs_matched_ids = [gp.GPID for gp in GPs_matched]
+        request.session['GPs_matched_ids'] = GPs_matched_ids
+
+        return render(request, 'selectGP.html', context)
+
+    return render(request, 'BookGPPage.html')
 
 def book_caregiver_page(request):
     caregivers_matched = []
@@ -119,16 +163,15 @@ def is_valid_email(email):
     email_regex = r"[^@]+@[^@]+\.[^@]+"
     return re.match(email_regex, email) is not None
 
-
 def login_view(request):
     error_message = ""
     if request.method == 'POST':
         username = request.POST.get('Username')
         password = request.POST.get('password')
-        
+        print(request.POST)
         try:
             user = authenticate(request, username= username, password=password)
-            
+            print(user)
             if user:
                 if user.is_active:
                     login(request, user)
@@ -154,7 +197,6 @@ def login_view(request):
             error_message = "Invalid login details."  # Show this when the password is wrong
     return render(request, 'login.html', {'error_message': error_message})
 
-
 def is_password(password):
     print(password)
     if len(password) < 8:
@@ -170,7 +212,6 @@ def is_password(password):
         return False
 
     return True
-
 
 def check_email_and_username(request):
     
@@ -193,7 +234,6 @@ def check_email_and_username(request):
     
     return JsonResponse({"message": message})
 
-
 def validate_password(password):
     if len(password) < 8:
         raise ValidationError("Password must be at least 8 characters long.")
@@ -212,6 +252,9 @@ def is_valid_email(email):
     email_regex = r'^[\w\.-]+@[\w\.-]+\.\w+$'
     return re.match(email_regex, email)
 
+def logout_view(request):
+    logout(request)
+    return redirect('/')
 
 def SignUp(request):
     error_message = ""
@@ -274,8 +317,37 @@ def SignUp(request):
     error_message = error_message[2:-2]
     return render(request, 'login.html', {'error_message': error_message})
 
+def get_all_orders(request):
+    caregiver_orders = CaregiverOrder.objects.all().values(
+        'start_time', 'end_time', 'Cost', 'CaregiverID__CaregiverID', 'UserID__id'
+    )
+    data = list(caregiver_orders)
+    return JsonResponse(data, safe=False)
+
+def get_recent_GP_orders(request):
+    # 获取最新的5个订单
+    GP_orders = GPOrder.objects.all().order_by('-start_time')[:5].values(
+        'start_time', 'end_time', 'Cost', 'GPID__GPID', 'UserID__id'
+    )
+    data = list(GP_orders)
+    return JsonResponse(data, safe=False)
+
+def get_all_GP_orders(request):
+    GP_orders = GPOrder.objects.all().values(
+        'start_time', 'end_time', 'Cost', 'GPID__GpID', 'UserID__id'
+    )
+    data = list(GP_orders)
+    return JsonResponse(data, safe=False)
+
+def get_recent_orders(request):
+    caregiver_orders = CaregiverOrder.objects.all().order_by('-start_time')[:5].values(
+        'start_time', 'end_time', 'Cost', 'CaregiverID__CaregiverID', 'UserID__id'
+    )
+    data = list(caregiver_orders)
+    return JsonResponse(data, safe=False)
 
 def admin_dashboard(request):
+    
     return render(request,"Dashboard_Admin.html")
 
 def customer_dashboard(request):
@@ -314,6 +386,23 @@ def paginated_caregivers(request):
 
     return render(request, 'select.html', context)
 
+def paginated_gps(request):
+    page_number = request.GET.get('page', 1)
+    date = request.GET.get("date")
+
+    gps_matched_ids = request.session.get('gps_matched_ids', [])
+    gps_matched = GP.objects.filter(GPID__in=gps_matched_ids)
+
+    paginator = Paginator(gps_matched, 4)  # 每页显示4个匹配的
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        "page_obj": page_obj,
+        "date":date
+    }
+
+    return render(request, 'selectGP.html', context)
+
 def get_unavailable_times(request, caregiver_id):
     """
     Return a list of datetime ranges where the caregiver is not available.
@@ -329,7 +418,6 @@ def get_unavailable_times(request, caregiver_id):
         unavailable_times.append({"from": start.strftime('%Y-%m-%d %H:%M'), "to": end.strftime('%Y-%m-%d %H:%M')})
 
     return JsonResponse({"unavailable_times": unavailable_times})
-
 
 def appointment(request):
     if request.method == "POST":
@@ -381,8 +469,6 @@ def appointment(request):
     
 
     return render(request, "select.html")  # Render your template if it's a GET request
-
-
 
 def success(request):
     return render(request, "success.html")
