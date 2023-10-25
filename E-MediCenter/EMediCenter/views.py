@@ -365,9 +365,10 @@ def user_profile(request):
     elif request.user.userprofile.is_caregiver:
         return redirect('caregiver_dashboard')
     elif request.user.is_staff:
-        return redirect('admin_dashboard')
+        return redirect('admin')
     else:
         return render(request, 'Customer.html')
+
     
 def paginated_caregivers(request):
     page_number = request.GET.get('page', 1)
