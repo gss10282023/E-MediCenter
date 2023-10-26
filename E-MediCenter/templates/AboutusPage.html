@@ -14,10 +14,10 @@
   <!--<meta http-equiv="refresh" content="30">-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link rel="stylesheet" href="../css/index.css">
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
   {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/support.css' %}" />
+    {% comment %} <link rel="stylesheet" type="text/css" href="{% static 'css/navBar.css' %}" /> {% endcomment %}
 
     <style>
         .user-avatar {
@@ -28,34 +28,39 @@
         }
     </style>
 
-  <script src="../js/plugins.js"></script>
+  {% comment %} <script src="../js/plugins.js"></script> {% endcomment %}
 </head>
 
-<!-- navigation bar -->
 <header>
-  <a href="#" class="logo">E-MedCenter</a>
-  <div class="navbar">
-    <ul>
-      <li><a href="#">Home</a>
-      </li>
-
-      <li><a href="#">Book</a>
+    <a href="{% url 'HomePage' %}" class="logo">E-MedCenter</a>
+    <div class="navbar">
         <ul>
-          <li><a href="">Caregiver</a>
-          <li><a href="">Practitioner</a>
+          <li><a href="{% url 'HomePage' %}">Home</a>
+            </li>
+            <li><a href="#">Book</a>
+                <ul>
+                    <li><a href="{% url 'BookCaregiverPage' %}">Book Caregiver</a></li>
+                    <li><a href="{% url 'BookGPPage' %}">Book GP</a>
+                </ul>
+            </li>
+            <li><a href="{% url 'Donation' %}">Donation</a></li>
+            <li><a href="{% url 'ServiceInformationPage' %}">About us</a></li>
+            <li><a href="{% url 'AboutusPage' %}">Support</a></li>
+            {% if user.is_authenticated %}
+            <!-- 如果用户已登录，显示头像和身份特定的链接 -->
+            <li>
+                <a href="{% url 'profile' %}">
+                    <img src="{{ user.userprofile.avatar.url }}" alt="{{ user.username }}" class="user-avatar" >
+                </a>
+            </li>
+  
+            {% else %}
+            <!-- 如果用户未登录，显示'Login/Signup'链接 -->
+            <li><a href="{% url 'Login' %}">Login/Sign up</a></li>
+            {% endif %}
         </ul>
-      </li>
-
-      <li><a href="">Donation</a>
-      </li>
-
-      <li><a href="" >Service Information</a></li>
-      <li><a href="">About Us</a></li>
-      <li><a href="">Sign in/up</a></li>
-    </ul>
-  </div>
-</header>
-
+    </div>
+  </header>
 
 
 <body>
