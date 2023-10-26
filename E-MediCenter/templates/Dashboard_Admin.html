@@ -104,11 +104,11 @@
         </div>
         {% load static %}
         <div class="sidebar">
-          <a href="#">
+          <a href="{% url 'admin_profile'%}">
             <span class="material-icons-sharp">grid_view</span>
             <h3>OverView</h3>
           </a>
-          <a href="admin" class="active">
+          <a href="{% url 'admin' %}"  class="active">
             <span class="material-icons-sharp">receipt_long</span>
             <h3>Orders</h3>
           </a>

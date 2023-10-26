@@ -423,7 +423,7 @@ def user_profile(request):
     elif request.user.userprofile.is_caregiver:
         return redirect('/caregiver_dashboard/')
     elif request.user.is_staff:
-        return redirect('/admin/')
+        return redirect('/admin_dashboard/')
     else:
         return render(request, 'Customer.html')
 
@@ -530,3 +530,6 @@ def appointment(request):
 
 def success(request):
     return render(request, "success.html")
+
+def admin_profile(request):
+    return render(request,"Dashboard_Admin_profile.html")
