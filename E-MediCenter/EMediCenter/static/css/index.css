@@ -106,7 +106,7 @@ body {
     max-height: 72vh;
     text-align: center;
     background-color: white;
-    margin-right: 5vw;
+    margin-right: 15vw;
     padding: 0;
 
 }
@@ -116,7 +116,7 @@ body {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 .contentRight{
-    margin-right: 2vw;
+    margin-right: 10vw;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -130,6 +130,7 @@ body {
 }
 .contentRight p{
     font-size: 0.8vw;
+    margin-right: 7vw;
 }
 
 #gp{
@@ -149,7 +150,7 @@ body {
     max-height: 72vh;
     text-align: center;
     background-color: white;
-    margin-left: 5vw;
+    margin-left: 13vw;
     padding: 0;
 
 }
@@ -159,7 +160,7 @@ body {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 .contentLeft{
-    margin-left: 2vw;
+    margin-left: 13vw;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
