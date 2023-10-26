@@ -258,7 +258,7 @@
 
 
 
-<section class="feedback-section">
+<section class="feedback-section" id="feedbackForm">
     <div class="form-container">
 
        <h1>Share Your Advice</h1>
@@ -330,7 +330,9 @@
       </div>
       
 
-      <button type="submit" id="submitBtn" disabled class="button">Submit</button>
+      <form id="feedbackForm"><button type="submit" id="submitBtn" disabled class="button">Submit</button></form>
+      <div id="successMessage" style="display: none;">Submission Successful!</div>
+
 
     </div>
 </section>
@@ -386,6 +388,33 @@
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>
   AOS.init();
+  function toggleSubmit() {
+    const checkbox = document.getElementById('agree');
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.disabled = !checkbox.checked;
+  }
+  document.addEventListener('DOMContentLoaded', (event) => {
+    const feedbackForm = document.getElementById('feedbackForm');
+    const successMessage = document.getElementById('successMessage');
+  
+    feedbackForm.addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      successMessage.style.display = 'block';
+      
+      event.target.reset();
+      document.getElementById('submitBtn').disabled = true;
+    });
+  });
+  
+  function showTermsModal() {
+    document.getElementById('termsModal').style.display = 'block';
+  }
+  
+  function hideTermsModal() {
+    document.getElementById('termsModal').style.display = 'none';
+  }
+      
 </script>
 
 
