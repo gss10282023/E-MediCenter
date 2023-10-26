@@ -34,8 +34,8 @@
               </ul>
           </li>
           <li><a href="{% url 'Donation' %}">Donation</a></li>
-          <li><a href="{% url 'ServiceInformationPage' %}">About us</a></li>
-          <li><a href="{% url 'AboutusPage' %}">Support</a></li>
+          {% comment %} <li><a href="{% url 'ServiceInformationPage' %}">About us</a></li> {% endcomment %}
+          <li><a href="{% url 'AboutusPage' %}">About Us</a></li>
           {% if user.is_authenticated %}
           <!-- 如果用户已登录，显示头像和身份特定的链接 -->
           <li>
