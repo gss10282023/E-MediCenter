@@ -10,6 +10,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/navBar.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'css/newDonation.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'css/newFooter.css' %}" />
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <style>
         .user-avatar {
             vertical-align: middle;
@@ -20,40 +21,42 @@
     </style>
 </head>
 
+
+
+<header>
+    <a href="{% url 'HomePage' %}" class="logo">E-MedCenter</a>
+    <div class="navbar">
+        <ul>
+            <li><a href="{% url 'HomePage' %}">Home</a>
+            </li>
+            <li><a href="#">Book</a>
+                <ul>
+                    <li><a href="{% url 'BookCaregiverPage' %}">Book Caregiver</a></li>
+                    <li><a href="{% url 'BookGPPage' %}">Book GP</a>
+                </ul>
+            </li>
+            <li><a href="{% url 'Donation' %}">Donation</a></li>
+            {% comment %} <li><a href="{% url 'ServiceInformationPage' %}">About us</a></li> {% endcomment %}
+            <li><a href="{% url 'AboutusPage' %}">About Us</a></li>
+            {% if user.is_authenticated %}
+            <!-- 如果用户已登录，显示头像和身份特定的链接 -->
+            <li>
+                <a href="{% url 'profile' %}">
+                    <img src="{{ user.userprofile.avatar.url }}" alt="{{ user.username }}" class="user-avatar" >
+                </a>
+            </li>
+
+            {% else %}
+            <!-- 如果用户未登录，显示'Login/Signup'链接 -->
+            <li><a href="{% url 'Login' %}">Login/Sign up</a></li>
+            {% endif %}
+        </ul>
+    </div>
+</header>
+
 <body>
 
-    <header>
-        <a href="{% url 'HomePage' %}" class="logo">E-MedCenter</a>
-        <div class="navbar">
-            <ul>
-              <li><a href="{% url 'HomePage' %}">Home</a>
-                </li>
-                <li><a href="#">Book</a>
-                    <ul>
-                        <li><a href="{% url 'BookCaregiverPage' %}">Book Caregiver</a></li>
-                        <li><a href="{% url 'BookGPPage' %}">Book GP</a>
-                    </ul>
-                </li>
-                <li><a href="{% url 'Donation' %}">Donation</a></li>
-                {% comment %} <li><a href="{% url 'ServiceInformationPage' %}">About us</a></li> {% endcomment %}
-                <li><a href="{% url 'AboutusPage' %}">About Us</a></li>
-                {% if user.is_authenticated %}
-                <!-- 如果用户已登录，显示头像和身份特定的链接 -->
-                <li>
-                    <a href="{% url 'profile' %}">
-                        <img src="{{ user.userprofile.avatar.url }}" alt="{{ user.username }}" class="user-avatar" >
-                    </a>
-                </li>
-
-                {% else %}
-                <!-- 如果用户未登录，显示'Login/Signup'链接 -->
-                <li><a href="{% url 'Login' %}">Login/Sign up</a></li>
-                {% endif %}
-            </ul>
-        </div>
-      </header>
-
-
+    <section><h1 style="margin-top:10%; margin-left:22%;font-family: 'Poppins'">Give a Little, Change a Lot.</h1></section>
     <section class="section-container-1">
         <div data-aos="fade-right" data-aos-delay="300"  data-aos-duration="1500" data-aos-anchor-placement="down-center" class="container">
             <div class="left-side">
@@ -64,7 +67,8 @@
                 </a>
             </div>
             <div class="right-side">
-                <img src="images/sponser_logo1.png" alt="Your Image">
+                {% comment %} <img src="images/sponser_logo1.png" alt="Your Image"> {% endcomment %}
+                <img src="{% static 'res/sponser1.png' %}" alt="" class="img">
             </div>
         </div>
     </section>
@@ -74,7 +78,8 @@
     <section class="section-container-2">
         <div data-aos="fade-left" data-aos-delay="300"  data-aos-duration="1500" data-aos-anchor-placement="down-center" class="container">
             <div class="left-side">
-                <img src="images/sponser_logo2.png" alt="Your Image">
+                {% comment %} <img src="images/sponser_logo2.png" alt="Your Image"> {% endcomment %}
+                <img src="{% static 'res/sponser2.png' %}" alt="" class="img">
             </div>
             <div class="right-side">
                 <h3>Donation</h3>
@@ -97,10 +102,22 @@
                 </a>
             </div>
             <div class="right-side">
-                <img src="images/sponser_logo3.png" alt="Your Image">
+                {% comment %} <img src="images/sponser_logo3.png" alt="Your Image"> {% endcomment %}
+                <img src="{% static 'res/sponser3.png' %}" alt="" class="img">
             </div>
         </div>
     </section>
+
+    <section>
+        <div class="footer">
+          <ul class="footer-links">
+            <li><a href="#">Site Map</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Use</a></li>
+            <li><a href="#">Support</a></li>
+          </ul>
+        </div>
+      </section>
 
 
     <script>
@@ -118,6 +135,4 @@
 
 
 </body>
-
-
 </html>
