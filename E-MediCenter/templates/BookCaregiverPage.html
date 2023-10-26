@@ -107,7 +107,7 @@
                     </div>                    
                     <div class="col-4">
                         <label for="dateInput">Date</label>
-                        <input type="date" class="form-control" id="dateInput" name = "date" required>
+                        <input type="date" class="form-control" id="dateInput" name="date" required>
                     </div>
                     <div class="col-4">
                         <label for="CostInput">Cost</label>
@@ -203,6 +203,23 @@ function googleMapsCallback() {
         let header=document.querySelector("header");
         header.classList.toggle("sticky",window.scrollY>0);
     })
+
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth() + 1; 
+    var yyyy = today.getFullYear();
+
+    if (dd < 10) {
+        dd = '0' + dd;
+    }
+
+    if (mm < 10) {
+        mm = '0' + mm;
+    }
+
+    var minDate = yyyy + '-' + mm + '-' + dd;
+    document.getElementById('dateInput').min = minDate;
+
 </script>
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>

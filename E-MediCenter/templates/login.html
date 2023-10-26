@@ -153,9 +153,6 @@
                         <label class="custom-label" for="custom-checkbox" id="custom-label"> Book as a Caregiver</label>
                     </div>
                 </div>
-                {%if error_message%}
-                    <h1> error-message </h1>
-                {%endif%}
                 <input type="button"  class="btn" value="Next" id="next-button" onclick="clickme() "method = "post" action="{% url 'SignUp' %}"></input>
             </form>
         </div>
@@ -166,9 +163,9 @@
             <div class="content">
                 <h3>New here ?</h3>
                 <p>
-                    Lorem ipsum, dolor sit amet consectetur adipisicing elit. Debitis,
-                    ex ratione. Aliquid!
+                    Welcome to our healthcare platform! Whether you're a patient in search of quality care, a caregiver ready to assist, or a medical professional looking to join our community, we're excited to have you here. 
                 </p>
+
                 <button class="btn transparent" id="sign-up-btn">
                     Sign up
                 </button>
@@ -180,9 +177,9 @@
             <div class="content">
                 <h3>One of us ?</h3>
                 <p>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Nostrum
-                    laboriosam ad deleniti.
+                    Welcome back to our healthcare community! Whether you're a patient seeking medical care, a caregiver offering your services, or a medical professional looking to connect with patients, you're an essential part of our platform.
                 </p>
+
                 <button class="btn transparent" id="sign-in-btn">
                     Sign in
                 </button>
@@ -261,7 +258,6 @@
         var emailInput = $("#Email").val();
         var usernameInput = $("#Username2").val();
 
-        // 检查所有输入框是否已填写
         inputs.each(function() {
             if ($(this).val() == "") {
                 filled = false;
@@ -269,19 +265,16 @@
             }
         });
 
-        // 验证邮箱格式
         if (!validateEmail(emailInput)) {
             emailValid = false;
         }
 
-        // 检查两次密码是否匹配
         var passwordInput = $("#SignUpPassword1");
         var confirmPasswordInput = $("#SignUpPassword2");
         if (passwordInput.val() != confirmPasswordInput.val()) {
             passwordsMatch = false;
         }
 
-        // 如果基础验证都通过
         if (filled && emailValid && passwordsMatch) {
             fetch("/check_email_and_username/?email=" + emailInput + "&username=" + usernameInput + "&password=" + passwordInput.val())
             .then(response => response.json())
