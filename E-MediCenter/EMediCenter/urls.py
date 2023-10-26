@@ -30,9 +30,10 @@ urlpatterns = [
     path('/path_to_get_all_GP_orders_view/', views.get_all_GP_orders, name='get_all_GP_orders'),
     path('path_to_get_recent_GP_orders/', views.get_recent_GP_orders, name='get_recent_GP_orders'),
     path('logout/', views.logout_view, name='logout'),
-    path('/path_to_get_recent_GP/',views.get_five_GP,name='get_recent_GP'),
-    path('/path_to_get_all_GP_view/',views.get_all_dockers,name = '/path_to_get_all_GP_view/'),
+    path('path_to_get_recent_GP/',views.get_five_GP,name='get_recent_GP'),
+    path('path_to_get_all_GP_view/',views.get_all_dockers,name = '/path_to_get_all_GP_view/'),
     path('AddDockerPage',views.admin_add_doctor_dashboard,name='AddDockerPage'),
+    path("add-doctor",views.add_doctor,name="add-doctor"),
 
 ]
 

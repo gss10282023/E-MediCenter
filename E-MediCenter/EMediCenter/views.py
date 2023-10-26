@@ -213,6 +213,42 @@ def is_password(password):
 
     return True
 
+
+def add_doctor(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        gender = request.POST.get('gender')
+        cost = request.POST.get('cost')
+        email = request.POST.get('email')
+        street = request.POST.get('street')
+        suburb = request.POST.get('suburb')
+        state = request.POST.get('state')
+        postcode = request.POST.get('postcode')
+        
+        chosen_number = random.randint(1, 2)
+        chosen_avatar = f"avatars/admin{chosen_number}.jpeg"
+        address = f"{street}, {suburb}, {state}, {postcode}"
+
+        user = User.objects.create_user(username = name, email=email, password=email)
+
+        UserProfile.objects.create(
+            user = user,
+            address = address,
+            avatar = chosen_avatar,
+            is_doctor = 1
+        )
+
+        doctor = GP(
+            Name=name,
+            Gender=gender,
+            Cost=cost,
+            ServiceArea = address 
+        )
+        doctor.save()
+
+        return JsonResponse({"message": "Doctor added successfully!"})
+
+
 def check_email_and_username(request):
     
     email = request.GET.get('email')
@@ -268,7 +304,7 @@ def SignUp(request):
         suburb = request.POST.get('Suburb')
         state = request.POST.get('State')
         postcode = request.POST.get('Postcode')
-        is_caregiver = request.POST.get('register-as-caregiver')  # checkbox
+        is_caregiver = request.POST.get('register-as-caregiver') 
         try:
             validate_password(password)
         except ValidationError as e:
@@ -290,7 +326,8 @@ def SignUp(request):
             UserProfile.objects.create(
                 user = user,
                 address = address,
-                avatar = chosen_avatar
+                avatar = chosen_avatar,
+                is_caregiver = 1
             )
 
             if is_caregiver == "on":
@@ -299,10 +336,8 @@ def SignUp(request):
                 Caregiver.objects.create(
                     Name=username,
                     ServiceArea=address,
-
-                    # Other fields can be populated as needed or set to some default values
+                    cost = 20,
                 )
-                print("njasdhvbouidfvnwevouiwevwen")
             login(request, user)
             if is_caregiver == "on":
                 return HttpResponseRedirect('/caregiver_dashboard/')
@@ -336,14 +371,13 @@ def get_all_dockers(request):
         return JsonResponse({'error': str(e)}, status=500)
 
 def get_five_GP(request):
-    try:
-        docker_data = GP.objects.all().order_by('GPID')[:5].values(
+    docker_data = GP.objects.all().order_by('GPID')[:5].values(
             'GPID', 'Name', 'Gender', 'Age', 'Qualification','Experience', 'ServiceArea', 'Availability', 'Cost', 'avatar'
         )
-        data = list(docker_data)
-        return JsonResponse(data, safe=False)
-    except Exception as e:
-        return JsonResponse({'error': str(e)}, status=500)
+    data = list(docker_data)
+    print("yes")
+    return JsonResponse(data, safe=False)
+
 
 def admin_add_doctor_dashboard(request):
     

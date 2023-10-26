@@ -206,41 +206,56 @@
     <div class="overlay" id="overlay" style="display: none;">
         <div class="input-card" id="input-card" >
             <span class="close-icon" id="close-icon">X</span>
-            <form id="add-doctor-form">
-                <div class="input-field">
-                    <label class="input-label">Name:</label>
-                    <input class="input-box" type="text" name="name" required>
-                </div>
-                <div class="input-field">
-                    <label class="input-label">Gender:</label>
-                    <select class="input-box" name="gender">
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
-                        <option value="other">Other</option>
-                    </select>
-                </div>
-                <div class="input-field">
-                    <label class="input-label">Cost:</label>
-                    <input class="input-box" type="text" name="Cost" required>
-                </div>
-                <div class="input-field">
-                    <label class="input-label">Street:</label>
-                    <input class="input-box" type="text" name="street" required>
-                </div>
-                <div class="input-field">
-                    <label class="input-label">Suburb:</label>
-                    <input class="input-box" type="text" name="suburb" required>
-                </div>
-                <div class="input-field">
-                    <label class="input-label">State:</label>
-                    <input class="input-box" type="text" name="state" required>
-                </div>
-                <div class="input-field">
-                    <label class="input-label">Postcode:</label>
-                    <input class="input-box" type="text" name="postcode" required>
-                </div>
-                <input type="submit" value="Submit">
-            </form>
+            <form id="add-doctor-form" action="/add-doctor" method="post">
+              {% csrf_token %}
+              <div class="input-field">
+                  <label class="input-label">Name:</label>
+                  <input class="input-box" type="text" name="name" required>
+              </div>
+              <div class="input-field">
+                  <label class="input-label">Email:</label>
+                  <input class="input-box" type="text" name="email" required>
+              </div>
+              <div class="input-field">
+                  <label class="input-label">Gender:</label>
+                  <select class="input-box" name="gender">
+                      <option value="male">Male</option>
+                      <option value="female">Female</option>
+                      <option value="other">Other</option>
+                  </select>
+              </div>
+              <div class="input-field">
+                  <label class="input-label">Cost:</label>
+                  <input class="input-box" type="text" name="cost" required>
+              </div>
+              <div class="input-field">
+                  <label class="input-label">Street:</label>
+                  <input type="text" class="input-box" id="StreetInput" name="street" required>
+              </div>
+              <div class="input-field">
+                  <label class="input-label">Suburb:</label>
+                  <input type="text" class="input-box" id="SuburbInput" name="suburb" required>
+              </div>
+              <div class="input-field">
+                  <label class="input-label">State:</label>
+                  <select class="input-box" id="StateSelect" name="state" required>
+                      <option value="NSW">New South Wales</option>
+                      <option value="VIC">Victoria</option>
+                      <option value="QLD">Queensland</option>
+                      <option value="SA">South Australia</option>
+                      <option value="WA">Western Australia</option>
+                      <option value="TAS">Tasmania</option>
+                      <option value="ACT">Australian Capital Territory</option>
+                      <option value="NT">Northern Territory</option>
+                  </select>
+              </div>
+              <div class="input-field">
+                  <label class="input-label">Postcode:</label>
+                  <input type="text" pattern="\d{4}" maxlength="4" class="input-box" id="PostcodeInput" name="postcode" required>
+              </div>
+              <input type="submit" value="Submit">
+          </form>
+          
         </div>
     </div>
     
@@ -265,6 +280,113 @@
             // Implement form processing logic here
         });
     </script>
+
+    <script>
+      function getCookie(name) {
+          let cookieValue = null;
+          if (document.cookie && document.cookie !== '') {
+              const cookies = document.cookie.split(';');
+              for (let i = 0; i < cookies.length; i++) {
+                  const cookie = cookies[i].trim();
+                  if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                      cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                      break;
+                  }
+              }
+          }
+          return cookieValue;
+      }
+
+      const csrftoken = getCookie('csrftoken');
+      $(document).ready(function(){
+          $("#add-doctor-form").submit(function(event){
+              event.preventDefault(); // 防止默认的表单提交
+
+              $.ajax({
+                  type: "POST",
+                  url: "/add-doctor",
+                  data: $(this).serialize(),  // 序列化表单数据
+                  dataType: "json",
+                  success: function(response){
+                      
+                      if(response.message === "Doctor added successfully!"){
+                          alert("Doctor added successfully!");
+                      }
+                  },
+                  error: function(error){
+                      alert("Error when add Doctor!");
+                  }
+              });
+          });
+      });
+    </script>
+
+
+    <script>
+      function googleMapsCallback() {
+          var streetInput = document.getElementById('StreetInput');
+          var suburbInput = document.getElementById('SuburbInput');
+          var postcodeInput = document.getElementById('PostcodeInput');
+      
+          function handlePlaceSelection(inputElement, place) {
+              var addressComponents = place.address_components;
+      
+              // Reset values to make sure any previous input is cleared
+              streetInput.value = '';
+              suburbInput.value = '';
+              postcodeInput.value = '';
+      
+              // Extract street, city, and postal code
+              for (var i = 0; i < addressComponents.length; i++) {
+                  var addressType = addressComponents[i].types[0];
+                  var val = addressComponents[i].long_name;
+                  switch(addressType) {
+                      case 'street_number':
+                          streetInput.value = val;
+                          break;
+                      case 'route':
+                          if (streetInput.value) {
+                              streetInput.value += ' ';
+                          }
+                          streetInput.value += val;
+                          break;
+                      case 'locality':
+                          suburbInput.value = val;
+                          break;
+                      case 'postal_code':
+                          postcodeInput.value = val;
+                          break;
+                  }
+              }
+          }
+      
+          var options = {
+              types: ['address'],
+              componentRestrictions: {country: 'au'}
+          };
+      
+          // Autocomplete for street
+          var autocompleteStreet = new google.maps.places.Autocomplete(streetInput, options);
+          autocompleteStreet.addListener('place_changed', function() {
+              handlePlaceSelection(streetInput, autocompleteStreet.getPlace());
+          });
+      
+          // Autocomplete for suburb
+          var autocompleteSuburb = new google.maps.places.Autocomplete(suburbInput, options);
+          autocompleteSuburb.addListener('place_changed', function() {
+              handlePlaceSelection(suburbInput, autocompleteSuburb.getPlace());
+          });
+      
+          // Autocomplete for postcode
+          var autocompletePostcode = new google.maps.places.Autocomplete(postcodeInput, {types: ['(regions)'], componentRestrictions: {country: 'au'}});
+          autocompletePostcode.addListener('place_changed', function() {
+              handlePlaceSelection(postcodeInput, autocompletePostcode.getPlace());
+          });
+      }
+      
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBlGBJ1MbtPawltq76TsrzHzrFPFi_uMig&libraries=places&callback=googleMapsCallback"></script>
+      
 
     <script>
         function showAllCaregiverOrders() {

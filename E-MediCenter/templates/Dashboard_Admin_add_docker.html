@@ -141,14 +141,14 @@
                         <th>Gender</th>
                         <th>ServiceArea</th>
                         <th>Availability</th>
-                        <th>Cost</th>>
+                        <th>Cost</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- 数据将在这里通过AJAX填充 -->
+                    
                 </tbody>
             </table>
-            <a onclick="showAllGPs()">Show All</a>
+            <a onclick="showAllGP()">Show All</a>
         </div>
       </main>
       <!----------------- END OF MAIN -------------------->
@@ -187,41 +187,56 @@
     <div class="overlay" id="overlay" style="display: none;">
         <div class="input-card" id="input-card" >
             <span class="close-icon" id="close-icon">X</span>
-            <form id="add-doctor-form">
-                <div class="input-field">
-                    <label class="input-label">Name:</label>
-                    <input class="input-box" type="text" name="name" required>
-                </div>
-                <div class="input-field">
-                    <label class="input-label">Gender:</label>
-                    <select class="input-box" name="gender">
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
-                        <option value="other">Other</option>
-                    </select>
-                </div>
-                <div class="input-field">
-                    <label class="input-label">Cost:</label>
-                    <input class="input-box" type="text" name="Cost" required>
-                </div>
-                <div class="input-field">
-                    <label class="input-label">Street:</label>
-                    <input class="input-box" type="text" name="street" required>
-                </div>
-                <div class="input-field">
-                    <label class="input-label">Suburb:</label>
-                    <input class="input-box" type="text" name="suburb" required>
-                </div>
-                <div class="input-field">
-                    <label class="input-label">State:</label>
-                    <input class="input-box" type="text" name="state" required>
-                </div>
-                <div class="input-field">
-                    <label class="input-label">Postcode:</label>
-                    <input class="input-box" type="text" name="postcode" required>
-                </div>
-                <input type="submit" value="Submit">
-            </form>
+            <form id="add-doctor-form" action="/add-doctor" method="post">
+              {% csrf_token %}
+              <div class="input-field">
+                  <label class="input-label">Name:</label>
+                  <input class="input-box" type="text" name="name" required>
+              </div>
+              <div class="input-field">
+                  <label class="input-label">Email:</label>
+                  <input class="input-box" type="text" name="email" required>
+              </div>
+              <div class="input-field">
+                  <label class="input-label">Gender:</label>
+                  <select class="input-box" name="gender">
+                      <option value="male">Male</option>
+                      <option value="female">Female</option>
+                      <option value="other">Other</option>
+                  </select>
+              </div>
+              <div class="input-field">
+                  <label class="input-label">Cost:</label>
+                  <input class="input-box" type="text" name="cost" required>
+              </div>
+              <div class="input-field">
+                  <label class="input-label">Street:</label>
+                  <input type="text" class="input-box" id="StreetInput" name="street" required>
+              </div>
+              <div class="input-field">
+                  <label class="input-label">Suburb:</label>
+                  <input type="text" class="input-box" id="SuburbInput" name="suburb" required>
+              </div>
+              <div class="input-field">
+                  <label class="input-label">State:</label>
+                  <select class="input-box" id="StateSelect" name="state" required>
+                      <option value="NSW">New South Wales</option>
+                      <option value="VIC">Victoria</option>
+                      <option value="QLD">Queensland</option>
+                      <option value="SA">South Australia</option>
+                      <option value="WA">Western Australia</option>
+                      <option value="TAS">Tasmania</option>
+                      <option value="ACT">Australian Capital Territory</option>
+                      <option value="NT">Northern Territory</option>
+                  </select>
+              </div>
+              <div class="input-field">
+                  <label class="input-label">Postcode:</label>
+                  <input type="text" pattern="\d{4}" maxlength="4" class="input-box" id="PostcodeInput" name="postcode" required>
+              </div>
+              <input type="submit" value="Submit">
+          </form>
+          
         </div>
     </div>
     
@@ -246,44 +261,151 @@
             // Implement form processing logic here
         });
     </script>
+
     <script>
+      function getCookie(name) {
+          let cookieValue = null;
+          if (document.cookie && document.cookie !== '') {
+              const cookies = document.cookie.split(';');
+              for (let i = 0; i < cookies.length; i++) {
+                  const cookie = cookies[i].trim();
+                  if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                      cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                      break;
+                  }
+              }
+          }
+          return cookieValue;
+      }
 
-        function showAllGP() {
-            $.ajax({
-                url: "/path_to_get_all_GP_view/",
-                type: "GET",
-                dataType: "json",
-                success: function(data) {
-                    var table = $("#GP-table tbody");
-                    table.empty();
+      const csrftoken = getCookie('csrftoken');
+      $(document).ready(function(){
+      $("#add-doctor-form").submit(function(event){
+              event.preventDefault(); 
 
-                    $.each(data, function(index, gp) {
-                        table.append('<tr><td>' + gp.GPID + '</td><td>' + gp.Name + '</td><td>' + gp.Gender + '</td><td>' + gp.Age + '</td><td>' + gp.Qualification + '</td></tr>' + gp.Experience + '</td></tr>'+ gp.ServiceArea + '</td></tr>'+gp.Cost + '</td></tr>');
-                    });
-                }
-            });
-        }
+              $.ajax({
+                  type: "POST",
+                  url: "/add-doctor",
+                  data: $(this).serialize(),  
+                  dataType: "json",
+                  success: function(response){
+                      
+                      if(response.message === "Doctor added successfully!"){
+                          alert("Doctor added successfully!");
 
-        $(document).ready(function() {
-            showRecentOrders();
+                          showAllGP();
+                      }
+                  },
+                  error: function(error){
+                      alert("Error when adding Doctor!");
+                  }
+              });
+          });
+      });
 
-            function showRecentOrders() {
-                $.ajax({
-                    url: "/path_to_get_recent_GP/",
-                    type: "GET",
-                    dataType: "json",
-                    success: function(data) {
-                        var table = $("#GP-orders-table tbody");
-                        table.empty();
+      function showAllGP() {
+          $.ajax({
+              url: "/path_to_get_all_GP_view/",
+              type: "GET",
+              dataType: "json",
+              success: function(data) {
+                  var table = $("#GP-table tbody");
+                  table.empty();
 
-                        $.each(data, function(index, order) {
-                          table.append('<tr><td>' + gp.GPID + '</td><td>' + gp.Name + '</td><td>' + gp.Gender + '</td><td>' + gp.Age + '</td><td>' + gp.Qualification + '</td></tr>' + gp.Experience + '</td></tr>'+ gp.ServiceArea + '</td></tr>'+gp.Cost + '</td></tr>');
+                  $.each(data, function(index, gp) {
+                      table.append('<tr><td>' + gp.GPID + '</td><td>' + gp.Name + '</td><td>' + gp.Gender + '</td><td>' + gp.Age + '</td><td>' + gp.Qualification + '</td><td>' + gp.Experience + '</td><td>'+ gp.ServiceArea + '</td><td>'+gp.Cost + '</td></tr>');
+                  });
+              }
+          });
+      }
+
+      $(document).ready(function() {
+          showRecentGP();
+
+          function showRecentGP() {
+              $.ajax({
+                  url: "/path_to_get_recent_GP/",
+                  type: "GET",
+                  dataType: "json",
+                  success: function(data) {
+                      var table = $("#GP-table tbody");
+                      table.empty();
+
+                      $.each(data, function(index, gp) {
+                          table.append('<tr><td>' + gp.GPID + '</td><td>' + gp.Name + '</td><td>' + gp.Gender + '</td><td>' + gp.Age + '</td><td>' + gp.Qualification + '</td><td>' + gp.Experience + '</td><td>'+ gp.ServiceArea + '</td><td>'+gp.Cost + '</td></tr>');
                       });
-                    }
-                });
-            }
-        });
+                  }
+              });
+          }
+      });
 
     </script>
+
+
+    <script>
+      function googleMapsCallback() {
+          var streetInput = document.getElementById('StreetInput');
+          var suburbInput = document.getElementById('SuburbInput');
+          var postcodeInput = document.getElementById('PostcodeInput');
+      
+          function handlePlaceSelection(inputElement, place) {
+              var addressComponents = place.address_components;
+      
+              // Reset values to make sure any previous input is cleared
+              streetInput.value = '';
+              suburbInput.value = '';
+              postcodeInput.value = '';
+      
+              // Extract street, city, and postal code
+              for (var i = 0; i < addressComponents.length; i++) {
+                  var addressType = addressComponents[i].types[0];
+                  var val = addressComponents[i].long_name;
+                  switch(addressType) {
+                      case 'street_number':
+                          streetInput.value = val;
+                          break;
+                      case 'route':
+                          if (streetInput.value) {
+                              streetInput.value += ' ';
+                          }
+                          streetInput.value += val;
+                          break;
+                      case 'locality':
+                          suburbInput.value = val;
+                          break;
+                      case 'postal_code':
+                          postcodeInput.value = val;
+                          break;
+                  }
+              }
+          }
+      
+          var options = {
+              types: ['address'],
+              componentRestrictions: {country: 'au'}
+          };
+      
+          // Autocomplete for street
+          var autocompleteStreet = new google.maps.places.Autocomplete(streetInput, options);
+          autocompleteStreet.addListener('place_changed', function() {
+              handlePlaceSelection(streetInput, autocompleteStreet.getPlace());
+          });
+      
+          // Autocomplete for suburb
+          var autocompleteSuburb = new google.maps.places.Autocomplete(suburbInput, options);
+          autocompleteSuburb.addListener('place_changed', function() {
+              handlePlaceSelection(suburbInput, autocompleteSuburb.getPlace());
+          });
+      
+          // Autocomplete for postcode
+          var autocompletePostcode = new google.maps.places.Autocomplete(postcodeInput, {types: ['(regions)'], componentRestrictions: {country: 'au'}});
+          autocompletePostcode.addListener('place_changed', function() {
+              handlePlaceSelection(postcodeInput, autocompletePostcode.getPlace());
+          });
+      }
+      
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBlGBJ1MbtPawltq76TsrzHzrFPFi_uMig&libraries=places&callback=googleMapsCallback"></script>
+      
   </body>
 </html>
