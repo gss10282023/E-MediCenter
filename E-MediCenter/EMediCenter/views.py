@@ -325,8 +325,31 @@ def get_all_orders(request):
     data = list(caregiver_orders)
     return JsonResponse(data, safe=False)
 
+def get_all_dockers(request):
+    try:
+        docker_data = GP.objects.all().values(
+            'GPID', 'Name', 'Gender', 'Age', 'Qualification','Experience', 'ServiceArea', 'Availability', 'Cost', 'avatar'
+        )
+        data = list(docker_data)
+        return JsonResponse(data, safe=False)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+def get_five_GP(request):
+    try:
+        docker_data = GP.objects.all().order_by('GPID')[:5].values(
+            'GPID', 'Name', 'Gender', 'Age', 'Qualification','Experience', 'ServiceArea', 'Availability', 'Cost', 'avatar'
+        )
+        data = list(docker_data)
+        return JsonResponse(data, safe=False)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+def admin_add_doctor_dashboard(request):
+    
+    return render(request,"Dashboard_Admin_add_docker.html")
+
 def get_recent_GP_orders(request):
-    # 获取最新的5个订单
     GP_orders = GPOrder.objects.all().order_by('-start_time')[:5].values(
         'start_time', 'end_time', 'Cost', 'GPID__GPID', 'UserID__id'
     )
@@ -370,7 +393,6 @@ def user_profile(request):
     else:
         return render(request, 'Customer.html')
 
-    
 def paginated_caregivers(request):
     page_number = request.GET.get('page', 1)
     date = request.GET.get("date")

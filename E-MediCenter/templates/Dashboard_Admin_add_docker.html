@@ -2,11 +2,8 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Caregiver Dashboard</title>
     <!-- MATERIAL CDN -->
-
     <link
       href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp"
       rel="stylesheet"
@@ -27,17 +24,17 @@
             <span class="material-icons-sharp">close</span>
           </div>
         </div>
-        {% load static %}
+
         <div class="sidebar">
           <a href="#">
             <span class="material-icons-sharp">grid_view</span>
             <h3>OverView</h3>
           </a>
-          <a href="admin" class="active">
+          <a href="{% url 'admin' %}" >
             <span class="material-icons-sharp">receipt_long</span>
             <h3>Orders</h3>
           </a>
-          <a href="{% url 'AddDockerPage' %}" >
+          <a href="{% url 'AddDockerPage' %}"class="active">
             <span class="material-icons-sharp">person_outline</span>
             <h3>Add Docker</h3>
           </a>
@@ -61,43 +58,26 @@
         <!------------ END OF INSIGHTS -------------->
 
         <div class="recent-orders">
-            <h2>Recent Caregiver Orders</h2>
-            <table id="caregiver-orders-table">
+            <h2>Our GP</h2>
+            <table id="GP-table">
                 <!-- ... table headers ... -->
                 <thead>
                     <tr>
-                        <th>Start Time</th>
-                        <th>End Time</th>
-                        <th>Cost</th>
-                        <th>Caregiver ID</th>
-                        <th>User ID</th>
+                        <th>GPID</th>
+                        <th>Name</th>
+                        <th>Gender</th>
+                        <th>Qualification</th>
+                        <th>Experience</th>
+                        <th>ServiceArea</th>
+                        <th>Availability</th>
+                        <th>Cost</th>>
                     </tr>
                 </thead>
                 <tbody>
                     <!-- 数据将在这里通过AJAX填充 -->
                 </tbody>
             </table>
-            <a onclick="showAllCaregiverOrders()">Show All</a>
-        </div>
-
-        <div class="recent-orders">
-            <h2>Recent GP Orders</h2>
-            <table id="GP-orders-table">
-                <!-- ... table headers ... -->
-                <thead>
-                    <tr>
-                        <th>Start Time</th>
-                        <th>End Time</th>
-                        <th>Cost</th>
-                        <th>GP ID</th>
-                        <th>User ID</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- 数据将在这里通过AJAX填充 -->
-                </tbody>
-            </table>
-            <a onclick="showAllGPOrders()">Show All</a>
+            <a onclick="showAllGPs()">Show All</a>
         </div>
       </main>
       <!----------------- END OF MAIN -------------------->
@@ -126,7 +106,7 @@
           <div class="item add-product">
             <div>
               <span class="material-icons-sharp">add</span>
-              <h3>Add Product</h3>
+              <h3>Add Doctor</h3>
             </div>
           </div>
         </div>
@@ -137,54 +117,18 @@
     <script src="{% static 'js/index.js' %}"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        function showAllCaregiverOrders() {
+
+        function showAllGP() {
             $.ajax({
-                url: "/path_to_get_all_orders_view/",
+                url: "/path_to_get_all_GP_view/",
                 type: "GET",
                 dataType: "json",
                 success: function(data) {
-                    var table = $("#caregiver-orders-table tbody");
+                    var table = $("#GP-table tbody");
                     table.empty();
 
-                    $.each(data, function(index, order) {
-                        table.append('<tr><td>' + order.start_time + '</td><td>' + order.end_time + '</td><td>' + order.Cost + '</td><td>' + order.CaregiverID__CaregiverID + '</td><td>' + order.UserID__id + '</td></tr>');
-                    });
-                }
-            });
-        }
-
-        $(document).ready(function() {
-            // 当页面加载时，获取并显示最近的5个订单
-            showRecentOrders();
-
-            function showRecentOrders() {
-                $.ajax({
-                    url: "/path_to_get_recent_orders/",
-                    type: "GET",
-                    dataType: "json",
-                    success: function(data) {
-                        var table = $("#caregiver-orders-table tbody");
-                        table.empty();
-
-                        $.each(data, function(index, order) {
-                            table.append('<tr><td>' + order.start_time + '</td><td>' + order.end_time + '</td><td>' + order.Cost + '</td><td>' + order.CaregiverID__CaregiverID + '</td><td>' + order.UserID__id + '</td></tr>');
-                        });
-                    }
-                });
-            }
-        });
-
-        function showAllGPOrders() {
-            $.ajax({
-                url: "/path_to_get_all_GP_orders_view/",
-                type: "GET",
-                dataType: "json",
-                success: function(data) {
-                    var table = $("#GP-orders-table tbody");
-                    table.empty();
-
-                    $.each(data, function(index, order) {
-                        table.append('<tr><td>' + order.start_time + '</td><td>' + order.end_time + '</td><td>' + order.Cost + '</td><td>' + order.CaregiverID__CaregiverID + '</td><td>' + order.UserID__id + '</td></tr>');
+                    $.each(data, function(index, gp) {
+                        table.append('<tr><td>' + gp.GPID + '</td><td>' + gp.Name + '</td><td>' + gp.Gender + '</td><td>' + gp.Age + '</td><td>' + gp.Qualification + '</td></tr>' + gp.Experience + '</td></tr>'+ gp.ServiceArea + '</td></tr>'+gp.Cost + '</td></tr>');
                     });
                 }
             });
@@ -195,7 +139,7 @@
 
             function showRecentOrders() {
                 $.ajax({
-                    url: "/path_to_get_recent_GP_orders/",
+                    url: "/path_to_get_recent_GP/",
                     type: "GET",
                     dataType: "json",
                     success: function(data) {
@@ -203,8 +147,8 @@
                         table.empty();
 
                         $.each(data, function(index, order) {
-                            table.append('<tr><td>' + order.start_time + '</td><td>' + order.end_time + '</td><td>' + order.Cost + '</td><td>' + order.CaregiverID__CaregiverID + '</td><td>' + order.UserID__id + '</td></tr>');
-                        });
+                          table.append('<tr><td>' + gp.GPID + '</td><td>' + gp.Name + '</td><td>' + gp.Gender + '</td><td>' + gp.Age + '</td><td>' + gp.Qualification + '</td></tr>' + gp.Experience + '</td></tr>'+ gp.ServiceArea + '</td></tr>'+gp.Cost + '</td></tr>');
+                      });
                     }
                 });
             }
