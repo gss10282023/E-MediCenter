@@ -534,6 +534,13 @@ main .recent-orders a {
 .right .sales-analytics .add-product div h3 {
   font-weight: 600;
 }
+.right .sales-analytics .add-product div button {
+  font-weight: 600;
+  color: white;
+  border: none; /* 去掉默认的边框 */
+  background: none; /* 去掉默认的背景 */
+  cursor: pointer;
+}
 
 /* ================= MEDIA QUERIES ================ */
 @media screen and (max-width: 1200px) {

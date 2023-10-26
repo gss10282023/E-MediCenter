@@ -11,6 +11,81 @@
     <!-- STYLESHEET -->
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/dashboard_staff.css' %}" />
+      <style>
+          /* Your existing CSS goes here */
+
+          /* Overlay */
+          .overlay {
+              position: fixed;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              background: rgba(0,0,0,0.5);
+              z-index: 10;
+          }
+
+          /* Input card */
+          .input-card {
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%);
+              background: white;
+              padding: 20px;
+              min-width: 20vw;
+              z-index: 11;
+              border: 1px solid #ccc;  /* Added border */
+          }
+
+          /* Input field */
+          .input-field {
+              margin-bottom: 10px;
+          }
+
+          .input-label {
+              display: inline-block;
+              width: 100px;
+          }
+
+          .input-box {
+
+              border: 1px solid #ccc;  /* Added border */
+              background: var(--color-white);
+              color: var(--color-dark);
+              border-radius: var(--border-radius-1);
+              padding: 12px;
+              box-shadow: var(--box-shadow);
+              transition: all 300ms ease;
+              width: 100%;
+          }
+
+          /* Submit Button */
+          input[type="submit"] {
+              background: var(--color-primary);
+              color: var(--color-white);
+              border-radius: var(--border-radius-1);
+              padding: 12px 24px;
+              cursor: pointer;
+              transition: all 300ms ease;
+          }
+          input[type="submit"] :hover{
+              background: var(--color-primary-variant);
+          }
+
+          /* Disabled content */
+          .disabled-content {
+              filter: blur(2px);
+              pointer-events: none;
+          }
+
+          .close-icon {
+              position: absolute;
+              top: 10px;
+              right: 10px;
+              cursor: pointer;
+          }
+      </style>
   </head>
   <body>
     <div class="container">
@@ -18,7 +93,7 @@
         <div class="top">
           <div class="logo">
             <!--<img src="./images/logo.png" />-->
-            <h2 cla>E<span class="danger">MedCenter</span></h2>
+            <h2 >E<span class="danger">MedCenter</span></h2>
           </div>
           <div class="close" id="close-btn">
             <span class="material-icons-sharp">close</span>
@@ -36,7 +111,7 @@
           </a>
           <a href="{% url 'AddDockerPage' %}"class="active">
             <span class="material-icons-sharp">person_outline</span>
-            <h3>Add Docker</h3>
+            <h3>Dockter</h3>
           </a>
 
 
@@ -50,9 +125,7 @@
       <main>
         <h1>Dashoard</h1>
 
-        <div class="date">
-          <input type="date" />
-        </div>
+
 
 
         <!------------ END OF INSIGHTS -------------->
@@ -66,8 +139,6 @@
                         <th>GPID</th>
                         <th>Name</th>
                         <th>Gender</th>
-                        <th>Qualification</th>
-                        <th>Experience</th>
                         <th>ServiceArea</th>
                         <th>Availability</th>
                         <th>Cost</th>>
@@ -102,20 +173,79 @@
           </div>
         </div>
         <!-- END OF TOP -->
-        <div class="sales-analytics">
-          <div class="item add-product">
-            <div>
-              <span class="material-icons-sharp">add</span>
-              <h3>Add Doctor</h3>
-            </div>
+          <div class="sales-analytics">
+              <div   class="item add-product">
+                  <div id="main-content">
+                      <span class="material-icons-sharp">add</span>
+                      <button id="add-doctor-btn">Add Doctor</button>
+                  </div>
+              </div>
           </div>
-        </div>
       </div>
+    </div>
+
+    <div class="overlay" id="overlay" style="display: none;">
+        <div class="input-card" id="input-card" >
+            <span class="close-icon" id="close-icon">X</span>
+            <form id="add-doctor-form">
+                <div class="input-field">
+                    <label class="input-label">Name:</label>
+                    <input class="input-box" type="text" name="name" required>
+                </div>
+                <div class="input-field">
+                    <label class="input-label">Gender:</label>
+                    <select class="input-box" name="gender">
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="input-field">
+                    <label class="input-label">Cost:</label>
+                    <input class="input-box" type="text" name="Cost" required>
+                </div>
+                <div class="input-field">
+                    <label class="input-label">Street:</label>
+                    <input class="input-box" type="text" name="street" required>
+                </div>
+                <div class="input-field">
+                    <label class="input-label">Suburb:</label>
+                    <input class="input-box" type="text" name="suburb" required>
+                </div>
+                <div class="input-field">
+                    <label class="input-label">State:</label>
+                    <input class="input-box" type="text" name="state" required>
+                </div>
+                <div class="input-field">
+                    <label class="input-label">Postcode:</label>
+                    <input class="input-box" type="text" name="postcode" required>
+                </div>
+                <input type="submit" value="Submit">
+            </form>
+        </div>
     </div>
     
     <script src="{% static 'js/orders.js' %}"></script>
     <script src="{% static 'js/index.js' %}"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        document.getElementById("add-doctor-btn").addEventListener("click", function() {
+            document.getElementById("overlay").style.display = "block";
+            document.getElementById("main-content").classList.add("disabled-content");
+        });
+        document.getElementById("close-icon").addEventListener("click", function() {
+            document.getElementById("overlay").style.display = "none";
+            document.getElementById("main-content").classList.remove("disabled-content");
+
+            document.getElementById("add-doctor-form").addEventListener("submit", function(event) {
+                event.preventDefault();
+                document.getElementById("overlay").style.display = "none";
+                document.getElementById("main-content").classList.remove("disabled-content");
+
+            });
+            // Implement form processing logic here
+        });
+    </script>
     <script>
 
         function showAllGP() {
