@@ -336,7 +336,7 @@ def SignUp(request):
                 Caregiver.objects.create(
                     Name=username,
                     ServiceArea=address,
-                    cost = 20,
+                    Cost = 20,
                 )
             login(request, user)
             if is_caregiver == "on":
@@ -416,14 +416,14 @@ def doctor_dashboard(request):
 
 def user_profile(request):
     if not request.user.is_authenticated:
-        return redirect('Login')
+        return redirect('/Login/')
 
     if request.user.userprofile.is_doctor:
-        return redirect('doctor_dashboard')
+        return redirect('/doctor_dashboard/')
     elif request.user.userprofile.is_caregiver:
-        return redirect('caregiver_dashboard')
+        return redirect('/caregiver_dashboard/')
     elif request.user.is_staff:
-        return redirect('admin')
+        return redirect('/admin/')
     else:
         return render(request, 'Customer.html')
 
