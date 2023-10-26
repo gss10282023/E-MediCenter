@@ -261,7 +261,7 @@ def SignUp(request):
 
     if request.method == 'POST':
         print(request.POST)
-        username = request.POST.get('Username')
+        username = request.POST.get('Username2')
         email = request.POST.get('Email')
         password = request.POST.get('pw')
         street = request.POST.get('Street')
@@ -281,7 +281,7 @@ def SignUp(request):
             validate_email(email)
             validate_password(password)
 
-            user = User.objects.create_user(username=username, email=email, password=password)
+            user = User.objects.create_user(username = username, email=email, password=password)
 
             chosen_number = random.randint(1, 3)
             chosen_avatar = f"avatars/default{chosen_number}.jpeg"
@@ -299,11 +299,11 @@ def SignUp(request):
                 Caregiver.objects.create(
                     Name=username,
                     ServiceArea=address,
+
                     # Other fields can be populated as needed or set to some default values
                 )
-
-            a = login(request, user)
-            print(a)
+                print("njasdhvbouidfvnwevouiwevwen")
+            login(request, user)
             if is_caregiver == "on":
                 return HttpResponseRedirect('/caregiver_dashboard/')
             else:
@@ -315,6 +315,7 @@ def SignUp(request):
         error_message = ""
 
     error_message = error_message[2:-2]
+    print(error_message)
     return render(request, 'login.html', {'error_message': error_message})
 
 def get_all_orders(request):

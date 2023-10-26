@@ -12,7 +12,7 @@ class UserProfile(models.Model):
     height = models.PositiveIntegerField(null=True, blank=True)  
     weight = models.PositiveIntegerField(null=True, blank=True)  
     gender = models.CharField(max_length=10, null=True, blank=True, choices=[('Male', 'M'), ('Female', 'F'), ('Other', 'O')])
-    avatar = models.ImageField(upload_to='avatars/', default='default.jpg') 
+    avatar = models.ImageField(upload_to='avatars/', default='admin1.png') 
     address = models.CharField(max_length=255, null=True, blank=True)
 
 class GP(models.Model):
@@ -30,14 +30,14 @@ class GP(models.Model):
 
 class Caregiver(models.Model):
     CaregiverID = models.AutoField(primary_key=True)
-    Name = models.CharField(max_length=50, null=False)
-    Gender = models.CharField(max_length=5, null=False)
-    Age = models.PositiveSmallIntegerField(null=False)
+    Name = models.CharField(max_length=50, null=True)
+    Gender = models.CharField(max_length=5, null=True)
+    Age = models.PositiveSmallIntegerField(null=True)
     Qualification = models.CharField(max_length=100)
-    Experience = models.PositiveIntegerField(null=False)
+    Experience = models.PositiveIntegerField(null=True)
     ServiceArea = models.CharField(max_length=10, null=False)
-    Availability = models.CharField(max_length=30, null=False)
-    Cost = models.PositiveSmallIntegerField()
+    Availability = models.CharField(max_length=30, null=True)
+    Cost = models.PositiveSmallIntegerField(null=True)
     avatar = models.ImageField(upload_to='avatars/', default='default1.jpg')  # 看护者的头像字段
 
 class CaregiverOrder(models.Model):
