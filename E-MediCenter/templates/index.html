@@ -72,7 +72,7 @@
   <div class="contentRight">
     <h1>Appointment with a Caregiver</h1>
     <p>Choose your beloved caregiver based on time, cost and distance.</p>
-    <button class="backgroundButton"><span>Book now</span></button>
+    <button class="backgroundButton" onclick="navigateToPage('{% url 'BookCaregiverPage' %}')">Book now</button>
 
   </div>
 </section>
@@ -86,7 +86,8 @@
   <div class="contentLeft">
     <h1>Appointment with a General Practitioner</h1>
     <p>Choose your beloved General Practitioner based on time, cost and distance.</p>
-    <button class="backgroundButton"><span>Book now</span></button>
+    {% comment %} <button class="backgroundButton"><span>Book now</span></button> {% endcomment %}
+    <button class="backgroundButton" onclick="navigateToPage('{% url 'BookGPPage' %}')">Book now</button>
 
   </div>
 </section>
@@ -108,6 +109,10 @@
     let header=document.querySelector("header");
     header.classList.toggle("sticky",window.scrollY>0);
   })
+  function navigateToPage(url) {
+    window.location.href = url;
+  }
+
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.157.0/three.min.js"></script>
