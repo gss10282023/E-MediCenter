@@ -35,7 +35,8 @@ urlpatterns = [
     path('AddDockerPage',views.admin_add_doctor_dashboard,name='AddDockerPage'),
     path("add-doctor",views.add_doctor,name="add-doctor"),
     path("admin_profile",views.admin_profile,name="admin_profile"),
-
+    path("Edit_Admin/",views.Edit_Admin,name="Edit_Admin"),
+    path('admin-profile/', views.Get_Admin, name='Get_Admin'),
 ]
 
 if settings.DEBUG:

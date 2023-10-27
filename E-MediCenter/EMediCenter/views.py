@@ -533,3 +533,48 @@ def success(request):
 
 def admin_profile(request):
     return render(request,"Dashboard_Admin_profile.html")
+
+def Edit_Admin(request):
+    if request.method == 'POST':
+        first_name = request.POST['fname']
+        last_name = request.POST['lname']
+        email = request.POST['email']
+        street = request.POST['street']
+        suburb = request.POST['suburb']
+        state = request.POST['state']
+        postcode = request.POST['postcode']
+    
+        user = request.user
+        user.first_name = first_name
+        user.last_name = last_name
+        user.email = email
+        user.save()
+
+        profile = user.userprofile
+        profile.address = f"{street}, {suburb}, {state}, {postcode}"  
+        profile.save()
+
+        messages.success(request, 'Your profile has been updated successfully!')
+        return render(request,"Dashboard_Admin_profile.html")
+
+def Get_Admin(request):
+    if requests.models ==  'GET':
+        first_name = request.user.first_name
+        last_name = request.user.last_name
+        email = request.user.email
+        user_profile = UserProfile.objects.get(user=request.user)
+        address = user_profile.address
+        if address:
+            parts = address.split(", ")
+            if len(parts) == 4:
+                street, suburb, state, postcode = parts
+        context = {
+            'first_name': first_name,
+            'last_name':last_name,
+            'email':email,
+            'street': street,
+            'suburb': suburb,
+            'state': state,
+            'postcode': postcode,
+        }
+        return render(request, 'Dashboard_Admin_profile.html', context)
