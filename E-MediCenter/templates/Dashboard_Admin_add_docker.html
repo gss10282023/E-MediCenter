@@ -142,7 +142,6 @@
                         <th>Name</th>
                         <th>Gender</th>
                         <th>ServiceArea</th>
-                        <th>Availability</th>
                         <th>Cost</th>
                     </tr>
                 </thead>
@@ -334,7 +333,7 @@
                       table.empty();
 
                       $.each(data, function(index, gp) {
-                          table.append('<tr><td>' + gp.GPID + '</td><td>' + gp.Name + '</td><td>' + gp.Gender + '</td><td>' + gp.Age + '</td><td>' + gp.Qualification + '</td><td>' + gp.Experience + '</td><td>'+ gp.ServiceArea + '</td><td>'+gp.Cost + '</td></tr>');
+                          table.append('<tr><td>' + gp.GPID + '</td><td>' + gp.Name + '</td><td>' + gp.Gender + '</td><td>' + gp.ServiceArea + '</td><td>'+gp.Cost + '</td></tr>');
                       });
                   }
               });

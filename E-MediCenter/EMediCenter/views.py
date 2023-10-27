@@ -70,7 +70,9 @@ def book_GP_page(request):
     GPs_matched = []
     gmaps = googlemaps.Client(key='AIzaSyBlGBJ1MbtPawltq76TsrzHzrFPFi_uMig')  
     page_number = request.GET.get('page', 1)
-    print(request)
+    if not request.user.is_authenticated:
+        print("should log in ")
+        return render(request, 'login.html')
     if request.method == "POST":
         
         distance = request.POST.get('distance')
@@ -112,10 +114,13 @@ def book_GP_page(request):
     return render(request, 'BookGPPage.html')
 
 def book_caregiver_page(request):
+    print(request.user.is_authenticated)
     caregivers_matched = []
     gmaps = googlemaps.Client(key='AIzaSyBlGBJ1MbtPawltq76TsrzHzrFPFi_uMig')  
     page_number = request.GET.get('page', 1)
-    print(request)
+    if not request.user.is_authenticated:
+        print("should log in ")
+        return render(request, 'login.html')
     if request.method == "POST":
         
         distance = request.POST.get('distance')
@@ -270,7 +275,7 @@ def add_doctor(request):
         postcode = request.POST.get('postcode')
         
         chosen_number = random.randint(1, 2)
-        chosen_avatar = f"avatars/admin{chosen_number}.jpeg"
+        chosen_avatar = f"avatars/admin{chosen_number}.png"
         address = f"{street}, {suburb}, {state}, {postcode}"
 
         user = User.objects.create_user(username = name, email=email, password=email)
@@ -485,7 +490,7 @@ def paginated_caregivers(request):
     caregivers_matched_ids = request.session.get('caregivers_matched_ids', [])
     caregivers_matched = Caregiver.objects.filter(CaregiverID__in=caregivers_matched_ids)
 
-    paginator = Paginator(caregivers_matched, 4)  # 每页显示4个匹配的Caregiver
+    paginator = Paginator(caregivers_matched, 4)  
     page_obj = paginator.get_page(page_number)
 
     context = {
@@ -502,7 +507,7 @@ def paginated_gps(request):
     gps_matched_ids = request.session.get('gps_matched_ids', [])
     gps_matched = GP.objects.filter(GPID__in=gps_matched_ids)
 
-    paginator = Paginator(gps_matched, 4)  # 每页显示4个匹配的
+    paginator = Paginator(gps_matched, 4)  
     page_obj = paginator.get_page(page_number)
 
     context = {
@@ -560,7 +565,7 @@ def appointment(request):
 
         if overlapping_orders.exists():
             # Use messages to display an error
-            messages.error(request, "所选时间段内看护者不可用。")
+            messages.error(request, "Not an available user")
             return redirect('appointment')  # Redirect back to the appointment page
 
         # Save the order
@@ -573,7 +578,7 @@ def appointment(request):
         )
         order.save()
 
-        messages.success(request, "预约成功！")
+        messages.success(request, "Success")
         return redirect('success')  # Redirect to a success page
     
 
@@ -649,9 +654,6 @@ def Get_Admin(request):
             'postcode': postcode,
         }
         return render(request, 'Dashboard_Admin_profile.html', context)
-
-
-
 
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
@@ -733,16 +735,24 @@ def Edit_Caregiver(request):
 
 
 def Get_Caregiver(request):
-    if requests.models ==  'GET':
+    if request.method == 'GET':
         first_name = request.user.first_name
         last_name = request.user.last_name
         email = request.user.email
-        user_profile = UserProfile.objects.get(user=request.user)
-        address = user_profile.address
-        if address:
-            parts = address.split(", ")
-            if len(parts) == 4:
-                street, suburb, state, postcode = parts
+
+        street, suburb, state, postcode = "", "", "", ""
+
+        try:
+            user_profile = UserProfile.objects.get(user=request.user)
+            address = user_profile.address
+            if address:
+                parts = address.split(", ")
+                if len(parts) == 4:
+                    street, suburb, state, postcode = parts
+        except UserProfile.DoesNotExist:
+            # You can either pass some default value or return a HttpResponse
+            return HttpResponse("Profile not found.")
+        
         context = {
             'first_name': first_name,
             'last_name':last_name,
@@ -829,8 +839,6 @@ def get_doctor_orders(request):
     })
 
     return JsonResponse(orders_data, safe=False)
-
-
 
 def Edit_customer(request):
     if not request.user.is_authenticated:
@@ -945,6 +953,7 @@ def Edit_doctor(request):
         return render(request, 'doctor_profile.html', context)
 
 def Get_doctor(request):
+    print(requests.models)
     if requests.models ==  'GET':
         first_name = request.user.first_name
         last_name = request.user.last_name
