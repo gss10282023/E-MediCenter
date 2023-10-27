@@ -18,6 +18,8 @@ import requests
 import datetime
 from django.contrib import messages
 from django.views.decorators.http import require_http_methods
+from .models import CaregiverOrder, Caregiver, GPOrder
+
 
 
 def is_caregiver_available(caregiver_id, start_time, end_time):
@@ -538,6 +540,9 @@ def admin_profile(request):
 def caregiver_profile(request):
     return render(request,"caregiver_profile.html")
 
+def customer_profile(request):
+    return render(request,"customer_profile.html")
+    
 def Edit_Admin(request):
     if request.method == 'POST':
         first_name = request.POST['fname']
@@ -582,6 +587,12 @@ def Get_Admin(request):
             'postcode': postcode,
         }
         return render(request, 'Dashboard_Admin_profile.html', context)
+
+
+
+
+from django.http import JsonResponse
+from django.views.decorators.http import require_http_methods
 
 @require_http_methods(["GET"])
 def get_caregiver_orders(request):
@@ -683,3 +694,48 @@ def Get_Caregiver(request):
     
 def caregiver_orders(request):
     render(request,'customer_order.html')
+
+
+@require_http_methods(["GET"])
+def get_user_orders(request):
+    user_id = request.user.id
+
+    # Fetch the orders associated with this user
+    user_orders = CaregiverOrder.objects.filter(UserID=user_id)
+    print(user_orders)
+
+    orders_data = []
+    for order in user_orders:
+        caregiver = order.CaregiverID
+        orders_data.append({
+            'start_time': order.start_time.strftime('%Y-%m-%d %H:%M:%S'),
+            'end_time': order.end_time.strftime('%Y-%m-%d %H:%M:%S'),
+            'cost': order.Cost,
+            'caregiver_id': caregiver.CaregiverID,
+            'user_id': user_id,
+        })
+
+    return JsonResponse(orders_data, safe=False)
+
+@require_http_methods(["GET"])
+def get_gp_orders(request):
+    user_id = request.user.id
+
+    # Fetch the orders associated with this user
+    user_orders = GPOrder.objects.filter(UserID=user_id)
+    print(user_orders)
+
+    orders_data = []
+    for order in user_orders:
+        caregiver = order.CaregiverID
+        orders_data.append({
+            'start_time': order.start_time.strftime('%Y-%m-%d %H:%M:%S'),
+            'end_time': order.end_time.strftime('%Y-%m-%d %H:%M:%S'),
+            'cost': order.Cost,
+            'caregiver_id': caregiver.CaregiverID,
+            'user_id': user_id,
+        })
+
+    return JsonResponse(orders_data, safe=False)
+
+

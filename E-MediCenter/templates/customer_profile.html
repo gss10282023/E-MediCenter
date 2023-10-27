@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Caregiver Dashboard</title>
+    <!-- MATERIAL CDN -->
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp"
+      rel="stylesheet"
+    />
+    <!-- STYLESHEET -->
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/dashboard_staff.css' %}" />
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+      <style>
+          /* Your existing CSS goes here */
+
+          /* Overlay */
+          .overlay {
+              position: fixed;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              background: rgba(0,0,0,0.5);
+              z-index: 10;
+          }
+
+          /* Input card */
+          .input-card {
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%);
+              background: white;
+              padding: 20px;
+              min-width: 20vw;
+              z-index: 11;
+              border: 1px solid #ccc;  /* Added border */
+          }
+
+          /* Input field */
+          .input-field {
+              margin-bottom: 10px;
+          }
+
+          .input-label {
+              display: inline-block;
+              width: 100px;
+          }
+
+          .input-box {
+
+              border: 1px solid #ccc;  /* Added border */
+              background: var(--color-white);
+              color: var(--color-dark);
+              border-radius: var(--border-radius-1);
+              padding: 12px;
+              box-shadow: var(--box-shadow);
+              transition: all 300ms ease;
+              width: 100%;
+          }
+
+          /* Submit Button */
+          input[type="submit"] {
+              background: var(--color-primary);
+              color: var(--color-white);
+              border-radius: var(--border-radius-1);
+              padding: 12px 24px;
+              cursor: pointer;
+              transition: all 300ms ease;
+          }
+          input[type="submit"] :hover{
+              background: var(--color-primary-variant);
+          }
+
+          /* Disabled content */
+          .disabled-content {
+              filter: blur(2px);
+              pointer-events: none;
+          }
+
+          .close-icon {
+              position: absolute;
+              top: 10px;
+              right: 10px;
+              cursor: pointer;
+          }
+      </style>
+  </head>
+  <body>
+    <div class="container">
+      <aside>
+        <div class="top">
+          <div class="logo">
+            <!--<img src="./images/logo.png" />-->
+            <h2 >E<span class="danger">MedCenter</span></h2>
+          </div>
+          <div class="close" id="close-btn">
+            <span class="material-icons-sharp">close</span>
+          </div>
+        </div>
+
+        <div class="sidebar">
+          <a href="{% url 'customer_profile'%}" class="active">
+            <span class="material-icons-sharp">grid_view</span>
+            <h3>OverView</h3>
+          </a>
+          <a href="{% url 'customer' %}" >
+            <span class="material-icons-sharp">receipt_long</span>
+            <h3>Orders</h3>
+          </a>
+          <a href="{% url 'AddDockerPage' %}">
+            <span class="material-icons-sharp">person_outline</span>
+            <h3>Dockter</h3>
+          </a>
+
+
+          <a href="{% url 'logout' %}">
+            <span class="material-icons-sharp">logout</span>
+            <h3>Logout</h3>
+          </a>
+        </div>
+      </aside>
+      <!------------------ END OF ASIDE ------------------>
+      <div class="container bootstrap snippets bootdeys">
+      <div class="row">
+        <div class="col-xs-12 col-sm-9">
+          <form class="form-horizontal">
+              <div class="panel panel-default">
+                <div class="panel-body text-center">
+                 <img src="https://bootdey.com/img/Content/avatar/avatar6.png" class="img-circle profile-avatar" alt="User avatar">
+                </div>
+              </div>
+            <div class="panel panel-default">
+              <div class="panel-heading">
+              <h4 class="panel-title">User info</h4>
+              </div>
+              <div class="panel-body">
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">Location</label>
+                  <div class="col-sm-10">
+                    <select class="form-control">
+                      <option selected="">Select country</option>
+                      <option>Belgium</option>
+                      <option>Canada</option>
+                      <option>Denmark</option>
+                      <option>Estonia</option>
+                      <option>France</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">Company name</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">Position</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control">
+                  </div>
+                </div>
+              </div>
+            </div>
+      
+            <div class="panel panel-default">
+              <div class="panel-heading">
+              <h4 class="panel-title">Contact info</h4>
+              </div>
+              <div class="panel-body">
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">Work number</label>
+                  <div class="col-sm-10">
+                    <input type="tel" class="form-control">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">Mobile number</label>
+                  <div class="col-sm-10">
+                    <input type="tel" class="form-control">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">E-mail address</label>
+                  <div class="col-sm-10">
+                    <input type="email" class="form-control">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">Work address</label>
+                  <div class="col-sm-10">
+                    <textarea rows="3" class="form-control"></textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
+      
+            <div class="panel panel-default">
+              <div class="panel-heading">
+              <h4 class="panel-title">Security</h4>
+              </div>
+              <div class="panel-body">
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">Current password</label>
+                  <div class="col-sm-10">
+                    <input type="password" class="form-control">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">New password</label>
+                  <div class="col-sm-10">
+                    <input type="password" class="form-control">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-sm-10 col-sm-offset-2">
+                    <div class="checkbox">
+                      <input type="checkbox" id="checkbox_1">
+                      <label for="checkbox_1">Make this account public</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-sm-10 col-sm-offset-2">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button type="reset" class="btn btn-default">Cancel</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      </div>
+
+      <div class="right">
+        <div class="top">
+          <button id="menu-btn">
+            <span class="material-icons-sharp">menu</span>
+          </button>
+          <div class="theme-toggler">
+            <span class="material-icons-sharp active">light_mode</span>
+            <span class="material-icons-sharp">dark_mode</span>
+          </div>
+          <div class="profile">
+            <div class="info">
+              <p>Hey, <b>Daniel</b></p>
+              <small class="text-muted">Admin</small>
+            </div>
+            <div class="profile-photo">
+                <img src="{% static 'res/profile-1.jpg' %}" >
+            </div>
+          </div>
+        </div>
+        <!-- END OF TOP -->
+          <div class="sales-analytics">
+              <div   class="item add-product">
+                  <div id="main-content">
+                      <span class="material-icons-sharp">add</span>
+                      <button id="add-doctor-btn"> Doctor</button>
+                  </div>
+              </div>
+          </div>
+      </div>
+    </div>
+
+    
+    </div>
+    
+    <script src="{% static 'js/orders.js' %}"></script>
+    <script src="{% static 'js/index.js' %}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        document.getElementById("add-doctor-btn").addEventListener("click", function() {
+            document.getElementById("overlay").style.display = "block";
+            document.getElementById("main-content").classList.add("disabled-content");
+        });
+        document.getElementById("close-icon").addEventListener("click", function() {
+            document.getElementById("overlay").style.display = "none";
+            document.getElementById("main-content").classList.remove("disabled-content");
+
+            document.getElementById("add-doctor-form").addEventListener("submit", function(event) {
+                event.preventDefault();
+                document.getElementById("overlay").style.display = "none";
+                document.getElementById("main-content").classList.remove("disabled-content");
+
+            });
+            // Implement form processing logic here
+        });
+    </script>
+  </body>
+</html>

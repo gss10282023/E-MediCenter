@@ -34,13 +34,17 @@ urlpatterns = [
     path('path_to_get_all_GP_view/',views.get_all_dockers,name = '/path_to_get_all_GP_view/'),
     path('AddDockerPage',views.admin_add_doctor_dashboard,name='AddDockerPage'),
     path("add-doctor",views.add_doctor,name="add-doctor"),
+    path("admin_profile",views.admin_profile,name="admin_profile"),
     path("caregiver_profile",views.caregiver_profile,name="caregiver_profile"),
+    path("customer_profile",views.customer_profile,name="customer_profile"),
+    
     path("Edit_Admin/",views.Edit_Admin,name="Edit_Admin"),
     path('admin-profile/', views.Get_Admin, name='Get_Admin'),
     path('caregiber_profile/', views.Edit_Caregiver,name='Edit_caregiver'),
     path('caregiber_profile/', views.Get_Caregiver,name='Get_caregiver'),
     path('get_caregiver_orders/', views.get_caregiver_orders, name='get_caregiver_orders'),
     path('get_caregiver_orders/', views.caregiver_orders, name='get_caregiver_orders'),
+
 ]
 
 if settings.DEBUG:
