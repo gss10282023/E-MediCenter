@@ -102,20 +102,14 @@
         </div>
 
         <div class="sidebar">
-          <a href="{% url 'admin_profile'%}" class="active">
+          <a href="{% url 'caregiver_profile'%}" class="active">
             <span class="material-icons-sharp">grid_view</span>
             <h3>OverView</h3>
           </a>
-          <a href="{% url 'admin' %}" >
+          <a href="{% url 'get_caregiver_orders' %}" >
             <span class="material-icons-sharp">receipt_long</span>
             <h3>Orders</h3>
           </a>
-          <a href="{% url 'AddDockerPage' %}">
-            <span class="material-icons-sharp">person_outline</span>
-            <h3>Dockter</h3>
-          </a>
-
-
           <a href="{% url 'logout' %}">
             <span class="material-icons-sharp">logout</span>
             <h3>Logout</h3>
@@ -173,7 +167,7 @@
         <div class="profile" id="editProfileSection" style="display:none;">
           <div class="content">
             <h1>Edit Profile</h1>
-            <form action="{% url 'Edit_Admin' %}" method="post">
+            <form action="{% url 'Edit_caregiver' %}" method="post">
               {% csrf_token %}
               <fieldset>
                 <div class="grid-35">
