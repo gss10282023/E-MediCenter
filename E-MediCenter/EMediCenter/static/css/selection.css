@@ -10,6 +10,10 @@
 body {
     background-color: #f7f7f9;
     color: #333;
+
+
+    min-height: 120vh;
+
 }
 
 /* Container */
@@ -146,6 +150,9 @@ body {
     background-color: rgba(0, 122, 255, 0.1); /* 悬停时的背景色，带透明度 */
 }
 
-.container mt-5{
-    margin-top: 40vh;
+#background{
+    width: 100vw;
+    min-height: 120vh;
+    background-color: #f7f7f9;
+    margin-top: 15vh;
 }

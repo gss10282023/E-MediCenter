@@ -142,24 +142,6 @@
                     </div>
                 </fieldset>
     
-                <fieldset>
-                    <div class="col-4">
-                        <label for="StreetInput">Street</label>
-                        <div class="form-control">{{ street }}</div>
-                    </div>
-                    <div class="col-4">
-                        <label for="SuburbInput">Suburb</label>
-                        <div class="form-control">{{ suburb }}</div>
-                    </div>
-                    <div class="col-4">
-                        <label for="StateSelect">State</label>
-                        <div class="form-control">{{ state }}</div>
-                    </div>
-                    <div class="col-4">
-                        <label for="PostcodeInput">Postcode</label>
-                        <div class="form-control">{{ postcode }}</div>
-                    </div>
-                </fieldset>
               <fieldset>
                   <button id="editProfileButton" onclick="showEditProfile()">Edit Profile</button>
               </fieldset>
@@ -235,9 +217,9 @@
                 </div>
               </fieldset>
               <fieldset>
-                <button  input type="button" class="Btn"  id="editProfileButton" onclick="showEditProfile()">Edit Profile</button>
+                <input type="button" class="Btn" value="Cancel" id="cancelEditButton" />
+                <input type="submit" class="Btn" value="Save Changes" />
               </fieldset>
-      
             </form>
           </div>
         </div>

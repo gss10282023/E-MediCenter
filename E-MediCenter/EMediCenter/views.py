@@ -353,7 +353,10 @@ def SignUp(request):
         suburb = request.POST.get('Suburb')
         state = request.POST.get('State')
         postcode = request.POST.get('Postcode')
-        is_caregiver = request.POST.get('register-as-caregiver') 
+        is_caregiver_text = request.POST.get('register-as-caregiver')
+        is_caregiver = False
+        if(is_caregiver_text == "on"):
+            is_caregiver = True
         try:
             validate_password(password)
         except ValidationError as e:
@@ -376,12 +379,13 @@ def SignUp(request):
                 user = user,
                 address = address,
                 avatar = chosen_avatar,
-                is_caregiver = 1
+                is_caregiver = is_caregiver
             )
 
             if is_caregiver == "on":
                 # Convert address to a single string for Caregiver's ServiceArea
                 
+
                 Caregiver.objects.create(
                     Name=username,
                     ServiceArea=address,
@@ -481,7 +485,7 @@ def user_profile(request):
     elif request.user.is_staff:
         return redirect('/admin_dashboard/')
     else:
-        return render(request, 'Customer.html')
+        return render(request, 'customer_profile.html')
 
 def paginated_caregivers(request):
     page_number = request.GET.get('page', 1)
@@ -707,17 +711,18 @@ def Edit_Caregiver(request):
         user.first_name = first_name
         user.last_name = last_name
         user.email = email
-        user.save()
+
 
         profile = user.userprofile
         profile.address = f"{street}, {suburb}, {state}, {postcode}"  
-        profile.save()
 
         # Update Caregiver's Cost
         try:
             caregiver = Caregiver.objects.get(Name=user.username)  # Fetching Caregiver by username
             if cost:
                 caregiver.Cost = int(cost)  # Convert string to integer
+                user.save()
+                profile.save()
                 caregiver.save()
         except Caregiver.DoesNotExist:
             pass  # Handle the exception, maybe log an error or send a message to the user
@@ -762,7 +767,7 @@ def Get_Caregiver(request):
             'state': state,
             'postcode': postcode,
         }
-        return render(request, 'caregiver_profile.html', context)
+        return JsonResponse(context)
     
 # def caregiver_orders(request):
 #     render(request,'customer_order.html')
@@ -892,6 +897,7 @@ def Get_customer(request):
         email = request.user.email
         user_profile = UserProfile.objects.get(user=request.user)
         address = user_profile.address
+        print("find")
         if address:
             parts = address.split(", ")
             if len(parts) == 4:
@@ -926,19 +932,20 @@ def Edit_doctor(request):
         user.first_name = first_name
         user.last_name = last_name
         user.email = email
-        user.save()
 
         profile = user.userprofile
         profile.address = f"{street}, {suburb}, {state}, {postcode}"  
-        profile.save()
 
         # Update doctor's Cost
         try:
             doctor = doctor.objects.get(Name=user.username)  # Fetching doctor by username
             if cost:
                 doctor.Cost = int(cost)  # Convert string to integer
+                user.save()
+                profile.save()
                 doctor.save()
         except doctor.DoesNotExist:
+            print("not find")
             pass  # Handle the exception, maybe log an error or send a message to the user
 
         messages.success(request, 'Your profile has been updated successfully!')

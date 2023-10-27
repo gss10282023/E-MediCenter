@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 
 <head>
     <meta charset="UTF-8">
@@ -13,15 +13,52 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/select.css' %}"/>
     <link rel="stylesheet" type="text/css" href="{% static 'css/newFooter.css' %}"/>
     <link rel="stylesheet" type="text/css" href="{% static 'css/selection.css' %}"/>
+    <style>
+        .user-avatar {
+            vertical-align: middle;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+        }
+    </style>
 </head>
 </head>
 
 <body>
-<!-- review section  -->
+<header>
+    <a href=" 'HomePage' %}" class="logo">E-MedCenter</a >
+    <div class="navbar">
+        <ul>
+            <li><a href="{% url 'HomePage' %}">Home</a >
+            </li>
+            <li><a href="#">Book</a >
+                <ul>
+                    <li><a href="{% url 'BookCaregiverPage' %}">Book Caregiver</a ></li>
+                    <li><a href="{% url 'BookGPPage' %}">Book GP</a >
+                </ul>
+            </li>
+            <li><a href="{% url 'Donation' %}">Donation</a ></li>
+            {% comment %} <li><a href="{% url 'ServiceInformationPage' %}">About us</a ></li> {% endcomment %}
+            <li><a href="{% url 'AboutusPage' %}">About Us</a ></li>
+            {% if user.is_authenticated %}
+            <!-- 如果用户已登录，显示头像和身份特定的链接 -->
+            <li>
+                <a href="{% url 'profile' %}">
+                    <img src="{{ user.userprofile.avatar.url }}" alt="{{ user.username }}" class="user-avatar" >
+                </a >
+            </li>
 
+            {% else %}
+            <!-- 如果用户未登录，显示'Login/Signup'链接 -->
+            <li><a href="{% url 'Login' %}">Login/Sign up</a ></li>
+            {% endif %}
+        </ul>
+    </div>
+</header>
 
+<section class="background" id="background">
 <div class="container mt-5">
-    <a href="{% url 'BookCaregiverPage' %}" class="previous round">&#8249;</a>
+    <a href="{% url 'BookCaregiverPage' %}" class="previous round">&#8249;</a >
     <div class="row">
         {% for caregiver in page_obj %}
         <div class="col-md-6 mb-4">
@@ -44,10 +81,10 @@
                     <div class="time-selection">
 
                         <label for="start-time">Start Time:</label>
-                        <input type="text" class="start-time" name="start-time" placeholder="Select start time">
+                        <input type="text" class="start-time" name="start-time" placeholder="Select start time" required>
 
                         <label for="end-time">End Time:</label>
-                        <input type="text" class="end-time" name="end-time" placeholder="Select end time">
+                        <input type="text" class="end-time" name="end-time" placeholder="Select end time" required >
                     </div>
                     <input type="hidden" name="selected_date" value="{{ date }}">
                     <input type="hidden" name="cost" value="{{ caregiver.Cost }}">
@@ -93,6 +130,19 @@
         {% endif %}
     </div>
 </div>
+</section>
+
+
+<section>
+    <div class="footer">
+        <ul class="footer-links">
+            <li><a href="#">Site Map</a ></li>
+            <li><a href="#">Privacy Policy</a ></li>
+            <li><a href="#">Terms of Use</a ></li>
+            <li><a href="#">Support</a ></li>
+        </ul>
+    </div>
+</section>
 
 <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.9/dist/flatpickr.min.js"></script>
 <script>
@@ -132,7 +182,29 @@
             minTime: minTimeValue,
             maxTime: maxTimeValue
         });
-    });
+        const forms = document.querySelectorAll('form');  // 获取所有的表单
+        for (let form of forms) {
+            form.addEventListener('submit', function(event) {
+                const startTime = form.querySelector('.start-time').value;
+                const endTime = form.querySelector('.end-time').value;
+                if (!startTime || !endTime) {
+                    event.preventDefault();  // 阻止表单提交
+                    alert('Must select time first');
+                }
+            });
+        }
+        });
+</script>
+
+<script>
+    window.addEventListener("scroll",()=>{
+        let header=document.querySelector("header");
+        header.classList.toggle("sticky",window.scrollY>0);
+    })
+    function navigateToPage(url) {
+        window.location.href = url;
+    }
+
 </script>
 
 </body>

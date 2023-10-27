@@ -142,25 +142,6 @@
                     </div>
                 </fieldset>
     
-                <fieldset>
-                    <div class="col-4">
-                        <label for="StreetInput">Street</label>
-                        <div class="form-control">{{ street }}</div>
-                    </div>
-                    <div class="col-4">
-                        <label for="SuburbInput">Suburb</label>
-                        <div class="form-control">{{ suburb }}</div>
-                    </div>
-                    <div class="col-4">
-                        <label for="StateSelect">State</label>
-                        <div class="form-control">{{ state }}</div>
-                    </div>
-                    <div class="col-4">
-                        <label for="PostcodeInput">Postcode</label>
-                        <div class="form-control">{{ postcode }}</div>
-                    </div>
-                </fieldset>
-              <fieldset>
                   <button id="editProfileButton" onclick="showEditProfile()">Edit Profile</button>
               </fieldset>
           </div>
@@ -306,6 +287,67 @@
             });
             // Implement form processing logic here
         });
+        document.addEventListener('DOMContentLoaded', function() {
+
+        function updatePageWithData(data) {
+            // Updating First Name
+            let firstNameDiv = document.querySelector(".form-control.fname");
+            if (firstNameDiv) {
+                firstNameDiv.textContent = data.first_name;
+            }
+
+            // Updating Last Name
+            let lastNameDiv = document.querySelector(".form-control.lname");
+            if (lastNameDiv) {
+                lastNameDiv.textContent = data.last_name;
+            }
+
+            // Updating Street
+            let streetDiv = document.querySelector(".form-control.street");
+            if (streetDiv) {
+                streetDiv.textContent = data.street;
+            }
+
+            // Updating Suburb
+            let suburbDiv = document.querySelector(".form-control.suburb");
+            if (suburbDiv) {
+                suburbDiv.textContent = data.suburb;
+            }
+
+            // Updating State
+            let stateDiv = document.querySelector(".form-control.state");
+            if (stateDiv) {
+                stateDiv.textContent = data.state;
+            }
+
+            // Updating Postcode
+            let postcodeDiv = document.querySelector(".form-control.postcode");
+            if (postcodeDiv) {
+                postcodeDiv.textContent = data.postcode;
+            }
+        }
+
+        function fetchCaregiverData() {
+            // Replace '/path/to/get_caregiver_data/' with the correct path to your Django view
+            fetch('{% url 'Get_caregiver' %}')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                updatePageWithData(data);
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error.message);
+            });
+        }
+
+        // Fetch data on page load
+        fetchCaregiverData();
+        });
+
     </script>
     <script>
       /*var Person = function(name,age,email){
