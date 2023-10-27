@@ -124,7 +124,7 @@
       </aside>
       <!------------------ END OF ASIDE ------------------>
       <div class="wrapper">
-        <div class="profile" id="profileSection">
+        <div class="profile" id="viewProfileSection">
             <div class="content">
                 <h1>Profile</h1>
     
@@ -164,13 +164,13 @@
                         <div class="form-control">{{ postcode }}</div>
                     </div>
                 </fieldset>
-    
-            </div>
+              <fieldset>
+                  <button id="editProfileButton" onclick="showEditProfile()">Edit Profile</button>
+              </fieldset>
+          </div>
         </div>
-    </div>
-    
         
-        <div class="profile" id="profileSection" style="display:none;">
+        <div class="profile" id="editProfileSection" style="display:none;">
           <div class="content">
             <h1>Edit Profile</h1>
             <form action="{% url 'Edit_Admin' %}" method="post">
@@ -239,7 +239,7 @@
                 </div>
               </fieldset>
               <fieldset>
-                <input type="button" class="Btn cancel" value="Cancel" />
+                <input type="button" class="Btn cancel" value="Cancel" id="cancelEditButton" />
                 <input type="submit" class="Btn" value="Save Changes" />
               </fieldset>
       
@@ -281,10 +281,18 @@
     <script src="{% static 'js/index.js' %}"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-
         function showEditProfile() {
-            document.getElementById('profileSection').style.display = 'block';
+            document.getElementById('viewProfileSection').style.display = 'none';
+            document.getElementById('editProfileSection').style.display = 'block';
         }
+
+        function cancelEditProfile() {
+            document.getElementById('editProfileSection').style.display = 'none';
+            document.getElementById('viewProfileSection').style.display = 'block';
+        }
+
+        document.getElementById('cancelEditButton').addEventListener('click', cancelEditProfile);
+
 
         document.getElementById("add-doctor-btn").addEventListener("click", function() {
             document.getElementById("overlay").style.display = "block";
