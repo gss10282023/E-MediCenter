@@ -166,39 +166,80 @@ def is_valid_email(email):
     email_regex = r"[^@]+@[^@]+\.[^@]+"
     return re.match(email_regex, email) is not None
 
+# def login_view(request):
+#     error_message = ""
+#     if request.method == 'POST':
+#         username = request.POST.get('Username')
+#         password = request.POST.get('password')
+#         print(request.POST)
+#         try:
+#             user = authenticate(request, username= username, password=password)
+#             print(user)
+#             if user:
+#                 if user.is_active:
+#                     login(request, user)
+#                     try:
+#                         profile = user.userprofile  # Assuming the related name is 'userprofile'
+#                         if user.is_staff:
+#                             return HttpResponseRedirect('/admin_dashboard/')  # Redirect to the admin's page
+#                         elif profile.is_doctor:
+#                             return HttpResponseRedirect('/doctor_dashboard/')  # Redirect to the doctor's page
+#                         elif profile.is_caregiver:
+#                             return HttpResponseRedirect('/caregiver_dashboard/')  
+#                         else:
+#                             return HttpResponseRedirect('/user_dashboard/')  
+#                     except ObjectDoesNotExist:
+#                         error_message = "User profile not found."
+#                 else:
+#                     error_message = "Your account is inactive."
+#             else:
+#                 error_message = "Invalid login details."
+#         except User.DoesNotExist:
+#             error_message = "Not a valid email address."
+#         except ObjectDoesNotExist:
+#             error_message = "Invalid login details."  # Show this when the password is wrong
+#     return render(request, 'login.html', {'error_message': error_message})
+from django.views.decorators.cache import never_cache
+
+@never_cache
 def login_view(request):
     error_message = ""
+    if 'error_message' in request.session:
+        del request.session['error_message']
     if request.method == 'POST':
         username = request.POST.get('Username')
         password = request.POST.get('password')
-        print(request.POST)
+        # Check if the user exists first
         try:
-            user = authenticate(request, username= username, password=password)
-            print(user)
-            if user:
-                if user.is_active:
-                    login(request, user)
-                    try:
-                        profile = user.userprofile  # Assuming the related name is 'userprofile'
-                        if user.is_staff:
-                            return HttpResponseRedirect('/admin_dashboard/')  # Redirect to the admin's page
-                        elif profile.is_doctor:
-                            return HttpResponseRedirect('/doctor_dashboard/')  # Redirect to the doctor's page
-                        elif profile.is_caregiver:
-                            return HttpResponseRedirect('/caregiver_dashboard/')  
-                        else:
-                            return HttpResponseRedirect('/user_dashboard/')  
-                    except ObjectDoesNotExist:
-                        error_message = "User profile not found."
-                else:
-                    error_message = "Your account is inactive."
-            else:
-                error_message = "Invalid login details."
+            user_instance = User.objects.get(username=username)
         except User.DoesNotExist:
-            error_message = "Not a valid email address."
-        except ObjectDoesNotExist:
-            error_message = "Invalid login details."  # Show this when the password is wrong
+            error_message = "User doesn't exist."
+            return render(request, 'login.html', {'error_message': error_message})
+
+        # If the user exists, then check the password
+        user = authenticate(request, username=username, password=password)
+        if user:
+            if user.is_active:
+                login(request, user)
+                try:
+                    profile = user.userprofile  # Assuming the related name is 'userprofile'
+                    if user.is_staff:
+                        return HttpResponseRedirect('/admin_dashboard/')  # Redirect to the admin's page
+                    elif profile.is_doctor:
+                        return HttpResponseRedirect('/doctor_dashboard/')  # Redirect to the doctor's page
+                    elif profile.is_caregiver:
+                        return HttpResponseRedirect('/caregiver_dashboard/')  
+                    else:
+                        return HttpResponseRedirect('/user_dashboard/')  
+                except ObjectDoesNotExist:
+                    error_message = "User profile not found."
+            else:
+                error_message = "Your account is inactive."
+        else:
+            error_message = "Incorrect password."
+
     return render(request, 'login.html', {'error_message': error_message})
+
 
 def is_password(password):
     print(password)

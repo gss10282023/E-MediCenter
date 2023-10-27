@@ -88,6 +88,9 @@
             <form action="{% url 'Login' %}" method="post" class="signInForm">
                 {% csrf_token %}
                 <h2 class="title">Sign in</h2>
+                {% if error_message %}
+                    <div class="alert alert-danger">{{ error_message }}</div>
+                {% endif %}
                 <div class="input-field">
                     <i class="fas fa-user"></i>
                     <input type="text" id="Username" name="Username" placeholder="Username" required >
@@ -187,6 +190,7 @@
 
             <img src="{% static 'res/register.svg' %}" class="image" alt="" />
         </div>
+
     </div>
 </div>
 
@@ -295,11 +299,11 @@
         } else {
             // 如果基础验证没有通过，显示相应的提示信息
             if (!filled) {
-                alert("请填写所有字段");
+                alert("please fill all fields");
             } else if (!emailValid) {
-                alert("请输入有效的邮箱地址");
+                alert("please give a valid email address");
             } else if (!passwordsMatch) {
-                alert("密码不匹配");
+                alert("password mismatch");
             }
         }
     }
