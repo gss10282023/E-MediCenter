@@ -17,6 +17,7 @@ from django.core.paginator import Paginator
 import requests
 import datetime
 from django.contrib import messages
+from django.views.decorators.http import require_http_methods
 
 
 def is_caregiver_available(caregiver_id, start_time, end_time):
@@ -61,7 +62,7 @@ def service_information_page(request):
     return render(request, 'ServiceInformation.html')
 
 def caregiver_dashboard(request):
-    return render(request, 'CaregiverDashboard.html')
+    return render(request, 'caregiver_order.html')
 
 def book_GP_page(request):
     GPs_matched = []
@@ -534,6 +535,9 @@ def success(request):
 def admin_profile(request):
     return render(request,"Dashboard_Admin_profile.html")
 
+def caregiver_profile(request):
+    return render(request,"caregiver_profile.html")
+
 def Edit_Admin(request):
     if request.method == 'POST':
         first_name = request.POST['fname']
@@ -578,3 +582,104 @@ def Get_Admin(request):
             'postcode': postcode,
         }
         return render(request, 'Dashboard_Admin_profile.html', context)
+
+@require_http_methods(["GET"])
+def get_caregiver_orders(request):
+    user_id = request.user.id
+    # print(f"User ID: {user_id}")
+
+    # Fetch the caregiver object associated with the user_id
+    try:
+        caregiver = Caregiver.objects.get(CaregiverID=user_id)
+    except Caregiver.DoesNotExist:
+        print("No Caregiver found for ID:", user_id)
+        return JsonResponse([], safe=False)
+
+    caregiver_orders = CaregiverOrder.objects.filter(CaregiverID=caregiver)
+    all_orders = CaregiverOrder.objects.all()
+    print(f"All Orders: {all_orders}")
+    print(caregiver_orders)
+
+    orders_data = []
+    for order in caregiver_orders:
+        user = order.UserID
+        orders_data.append({
+            'start_time': order.start_time.strftime('%Y-%m-%d %H:%M:%S'),
+            'end_time': order.end_time.strftime('%Y-%m-%d %H:%M:%S'),
+            'cost': order.Cost,
+            'caregiver_id': caregiver.CaregiverID,
+            'user_id': user.id if user else '',
+        })
+
+    return JsonResponse(orders_data, safe=False)
+
+def Edit_Caregiver(request):
+    if not request.user.is_authenticated:
+        messages.error(request, 'Please log in to edit your profile.')
+        return redirect('login_page_or_homepage_url')  # Redirect to login or homepage
+
+    if request.method == 'POST':
+        first_name = request.POST.get('fname')
+        last_name = request.POST.get('lname')
+        email = request.POST.get('email')
+        street = request.POST.get('street')
+        suburb = request.POST.get('suburb')
+        state = request.POST.get('state')
+        postcode = request.POST.get('postcode')
+        cost = request.POST.get('cost')
+
+        user = request.user
+        user.first_name = first_name
+        user.last_name = last_name
+        user.email = email
+        user.save()
+
+        profile = user.userprofile
+        profile.address = f"{street}, {suburb}, {state}, {postcode}"  
+        profile.save()
+
+        # Update Caregiver's Cost
+        try:
+            caregiver = Caregiver.objects.get(Name=user.username)  # Fetching Caregiver by username
+            if cost:
+                caregiver.Cost = int(cost)  # Convert string to integer
+                caregiver.save()
+        except Caregiver.DoesNotExist:
+            pass  # Handle the exception, maybe log an error or send a message to the user
+
+        messages.success(request, 'Your profile has been updated successfully!')
+        return render(request, "caregiver_profile.html")
+
+    # If it's a GET request, you can render the edit form here (if you have one)
+    else:
+        context = {
+            'user': request.user,
+            # Add other context variables if needed
+        }
+        return render(request, 'caregiver_profile.html', context)
+
+
+def Get_Caregiver(request):
+    if requests.models ==  'GET':
+        first_name = request.user.first_name
+        last_name = request.user.last_name
+        email = request.user.email
+        user_profile = UserProfile.objects.get(user=request.user)
+        address = user_profile.address
+        if address:
+            parts = address.split(", ")
+            if len(parts) == 4:
+                street, suburb, state, postcode = parts
+        context = {
+            'first_name': first_name,
+            'last_name':last_name,
+            'email':email,
+            'street': street,
+            'suburb': suburb,
+            'state': state,
+            'postcode': postcode,
+        }
+        return render(request, 'caregiver_profile.html', context)
+    
+def caregiver_orders(request):
+    render(request,'customer_order.html')
