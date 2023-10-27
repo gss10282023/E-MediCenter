@@ -45,6 +45,14 @@ urlpatterns = [
     path('get_caregiver_orders/', views.get_caregiver_orders, name='get_caregiver_orders'),
     path('get_caregiver_orders/', views.caregiver_orders, name='get_caregiver_orders'),
 
+    path('caregiber_profile/', views.Edit_doctor,name='Edit_doctor'),
+    path('caregiber_profile/', views.Get_doctor,name='Get_doctor'),
+    path("doctor_profile",views.doctor_profile,name="doctor_profile"),
+    path('caregiber_profile/', views.Edit_customer,name='Edit_customer'),
+    path('caregiber_profile/', views.Get_customer,name='Get_customer'),
+    path("customer_profile",views.customer_profile,name="customer_profile"),
+    path('get_customer_orders/', views.get_customer_orders, name='get_customer_orders'),
+
 ]
 
 if settings.DEBUG:

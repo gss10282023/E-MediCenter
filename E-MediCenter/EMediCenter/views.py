@@ -64,7 +64,7 @@ def service_information_page(request):
     return render(request, 'ServiceInformation.html')
 
 def caregiver_dashboard(request):
-    return render(request, 'caregiver_order.html')
+    return render(request, 'caregiver_profile.html')
 
 def book_GP_page(request):
     GPs_matched = []
@@ -412,10 +412,10 @@ def admin_dashboard(request):
     return render(request,"Dashboard_Admin.html")
 
 def customer_dashboard(request):
-    return render(request,"Customer.html")
+    return render(request,"customer_profile.html")
 
 def doctor_dashboard(request):
-    return render(request,"doctor_dashboard.html")
+    return render(request,"doctor_profile.html")
 
 def user_profile(request):
     if not request.user.is_authenticated:
@@ -542,7 +542,11 @@ def caregiver_profile(request):
 
 def customer_profile(request):
     return render(request,"customer_profile.html")
-    
+
+
+def doctor_profile(request):
+    return render(request,"doctor_profile.html")
+
 def Edit_Admin(request):
     if request.method == 'POST':
         first_name = request.POST['fname']
@@ -565,6 +569,9 @@ def Edit_Admin(request):
 
         messages.success(request, 'Your profile has been updated successfully!')
         return render(request,"Dashboard_Admin_profile.html")
+
+def get_customer_orders(request):
+    return render(request,"customer_order.html")
 
 def Get_Admin(request):
     if requests.models ==  'GET':
@@ -696,6 +703,7 @@ def caregiver_orders(request):
     render(request,'customer_order.html')
 
 
+
 @require_http_methods(["GET"])
 def get_user_orders(request):
     user_id = request.user.id
@@ -738,4 +746,139 @@ def get_gp_orders(request):
 
     return JsonResponse(orders_data, safe=False)
 
+
+
+def Edit_customer(request):
+    if not request.user.is_authenticated:
+        messages.error(request, 'Please log in to edit your profile.')
+        return redirect('login_page_or_homepage_url')  # Redirect to login or homepage
+
+    if request.method == 'POST':
+        first_name = request.POST.get('fname')
+        last_name = request.POST.get('lname')
+        email = request.POST.get('email')
+        street = request.POST.get('street')
+        suburb = request.POST.get('suburb')
+        state = request.POST.get('state')
+        postcode = request.POST.get('postcode')
+        cost = request.POST.get('cost')
+
+        user = request.user
+        user.first_name = first_name
+        user.last_name = last_name
+        user.email = email
+        user.save()
+
+        profile = user.userprofile
+        profile.address = f"{street}, {suburb}, {state}, {postcode}"  
+        profile.save()
+
+        # Update customer's Cost
+        try:
+            customer = customer.objects.get(Name=user.username)  # Fetching customer by username
+            if cost:
+                customer.Cost = int(cost)  # Convert string to integer
+                customer.save()
+        except customer.DoesNotExist:
+            pass  # Handle the exception, maybe log an error or send a message to the user
+
+        messages.success(request, 'Your profile has been updated successfully!')
+        return render(request, "customer_profile.html")
+
+    # If it's a GET request, you can render the edit form here (if you have one)
+    else:
+        context = {
+            'user': request.user,
+            # Add other context variables if needed
+        }
+        return render(request, 'customer_profile.html', context)
+
+def Get_customer(request):
+    if requests.models ==  'GET':
+        first_name = request.user.first_name
+        last_name = request.user.last_name
+        email = request.user.email
+        user_profile = UserProfile.objects.get(user=request.user)
+        address = user_profile.address
+        if address:
+            parts = address.split(", ")
+            if len(parts) == 4:
+                street, suburb, state, postcode = parts
+        context = {
+            'first_name': first_name,
+            'last_name':last_name,
+            'email':email,
+            'street': street,
+            'suburb': suburb,
+            'state': state,
+            'postcode': postcode,
+        }
+        return render(request, 'customer_profile.html', context)
+    
+def Edit_doctor(request):
+    if not request.user.is_authenticated:
+        messages.error(request, 'Please log in to edit your profile.')
+        return redirect('login_page_or_homepage_url')  # Redirect to login or homepage
+
+    if request.method == 'POST':
+        first_name = request.POST.get('fname')
+        last_name = request.POST.get('lname')
+        email = request.POST.get('email')
+        street = request.POST.get('street')
+        suburb = request.POST.get('suburb')
+        state = request.POST.get('state')
+        postcode = request.POST.get('postcode')
+        cost = request.POST.get('cost')
+
+        user = request.user
+        user.first_name = first_name
+        user.last_name = last_name
+        user.email = email
+        user.save()
+
+        profile = user.userprofile
+        profile.address = f"{street}, {suburb}, {state}, {postcode}"  
+        profile.save()
+
+        # Update doctor's Cost
+        try:
+            doctor = doctor.objects.get(Name=user.username)  # Fetching doctor by username
+            if cost:
+                doctor.Cost = int(cost)  # Convert string to integer
+                doctor.save()
+        except doctor.DoesNotExist:
+            pass  # Handle the exception, maybe log an error or send a message to the user
+
+        messages.success(request, 'Your profile has been updated successfully!')
+        return render(request, "doctor_profile.html")
+
+    # If it's a GET request, you can render the edit form here (if you have one)
+    else:
+        context = {
+            'user': request.user,
+            # Add other context variables if needed
+        }
+        return render(request, 'doctor_profile.html', context)
+
+def Get_doctor(request):
+    if requests.models ==  'GET':
+        first_name = request.user.first_name
+        last_name = request.user.last_name
+        email = request.user.email
+        user_profile = UserProfile.objects.get(user=request.user)
+        address = user_profile.address
+        if address:
+            parts = address.split(", ")
+            if len(parts) == 4:
+                street, suburb, state, postcode = parts
+        context = {
+            'first_name': first_name,
+            'last_name':last_name,
+            'email':email,
+            'street': street,
+            'suburb': suburb,
+            'state': state,
+            'postcode': postcode,
+        }
+        return render(request, 'doctor_profile.html', context)
 
