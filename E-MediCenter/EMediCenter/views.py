@@ -414,6 +414,9 @@ def admin_dashboard(request):
 def customer_dashboard(request):
     return render(request,"customer_profile.html")
 
+def customer_order(request):
+    return render(request,"customer_order.html")
+
 def doctor_dashboard(request):
     return render(request,"doctor_profile.html")
 
@@ -539,6 +542,9 @@ def admin_profile(request):
 
 def caregiver_profile(request):
     return render(request,"caregiver_profile.html")
+
+def caregiver_order(request):
+    return render(request,"caregiver_order.html")
 
 def customer_profile(request):
     return render(request,"customer_profile.html")

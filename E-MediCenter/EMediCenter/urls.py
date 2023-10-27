@@ -43,7 +43,7 @@ urlpatterns = [
     path('caregiber_profile/', views.Edit_Caregiver,name='Edit_caregiver'),
     path('caregiber_profile/', views.Get_Caregiver,name='Get_caregiver'),
     path('get_caregiver_orders/', views.get_caregiver_orders, name='get_caregiver_orders'),
-    path('get_caregiver_orders/', views.caregiver_orders, name='get_caregiver_orders'),
+    path('caregiver_order/', views.caregiver_order, name='caregiver_order'),
 
     path('caregiber_profile/', views.Edit_doctor,name='Edit_doctor'),
     path('caregiber_profile/', views.Get_doctor,name='Get_doctor'),
@@ -51,6 +51,7 @@ urlpatterns = [
     path('caregiber_profile/', views.Edit_customer,name='Edit_customer'),
     path('caregiber_profile/', views.Get_customer,name='Get_customer'),
     path("customer_profile",views.customer_profile,name="customer_profile"),
+    path("customer_order",views.customer_order,name="customer_order"),
     path('get_customer_orders/', views.get_customer_orders, name='get_customer_orders'),
 
 ]
