@@ -420,6 +420,10 @@ def customer_order(request):
 def doctor_dashboard(request):
     return render(request,"doctor_profile.html")
 
+def doctor_order(request):
+    return render(request,"doctor_order.html")
+
+
 def user_profile(request):
     if not request.user.is_authenticated:
         return redirect('/Login/')
@@ -753,6 +757,35 @@ def get_gp_orders(request):
             'caregiver_id': caregiver.CaregiverID,
             'user_id': user_id,
         })
+
+    return JsonResponse(orders_data, safe=False)
+
+@require_http_methods(["GET"])
+def get_doctor_orders(request):
+    user_id = request.user.id
+    # print(f"User ID: {user_id}")
+
+    # Fetch the caregiver object associated with the user_id
+    try:
+        doctor = GP.objects.get(GPID=user_id)
+    except GP.DoesNotExist:
+        print("No doctor found for ID:", user_id)
+        return JsonResponse([], safe=False)
+
+    gp_orders = GPOrder.objects.filter(GPID=doctor)
+    all_orders = GPOrder.objects.all()
+    print(f"All Orders: {all_orders}")
+    # print(caregiver_orders)
+
+    orders_data = []
+    for order in gp_orders:
+        user = order.UserID
+        orders_data.append({
+            'date': order.Date.strftime('%Y-%m-%d'),  # Formatting the date
+            'cost': order.Cost,
+            'gp_id': doctor.GPID,
+            'user_id': user.id if user else '',
+    })
 
     return JsonResponse(orders_data, safe=False)
 

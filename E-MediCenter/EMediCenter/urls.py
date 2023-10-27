@@ -52,6 +52,10 @@ urlpatterns = [
     path('caregiber_profile/', views.Get_customer,name='Get_customer'),
     path("customer_profile",views.customer_profile,name="customer_profile"),
     path("customer_order",views.customer_order,name="customer_order"),
+    
+    path("doctor_order",views.doctor_order,name="doctor_order"),
+    path("get_doctor_orders/",views.get_doctor_orders,name="get_doctor_orders"),
+    
     # path('get_customer_orders/', views.get_customer_orders, name='get_customer_orders'),
     path("get_user_orders/",views.get_user_orders,name="get_user_orders"),
     path("get_gp_orders/",views.get_gp_orders,name="get_gp_orders"),
