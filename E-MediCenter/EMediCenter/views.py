@@ -549,6 +549,10 @@ def caregiver_order(request):
 def customer_profile(request):
     return render(request,"customer_profile.html")
 
+def customer_order(request):
+    return render(request,"customer_order.html")
+
+
 
 def doctor_profile(request):
     return render(request,"doctor_profile.html")
@@ -705,8 +709,8 @@ def Get_Caregiver(request):
         }
         return render(request, 'caregiver_profile.html', context)
     
-def caregiver_orders(request):
-    render(request,'customer_order.html')
+# def caregiver_orders(request):
+#     render(request,'customer_order.html')
 
 
 
