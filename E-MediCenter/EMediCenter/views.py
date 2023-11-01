@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.forms import AuthenticationForm
-from django.http import JsonResponse, HttpResponse,HttpResponseRedirect
+from django.http import JsonResponse, HttpResponse,HttpResponseRedirect,HttpResponseBadRequest
 from django.contrib.auth.models import User
 import re
 from django.core.exceptions import ObjectDoesNotExist  # Import ObjectDoesNotExist
@@ -462,7 +462,6 @@ def get_recent_orders(request):
     return JsonResponse(data, safe=False)
 
 def admin_dashboard(request):
-    
     return render(request,"Dashboard_Admin.html")
 
 def customer_dashboard(request):
@@ -481,7 +480,6 @@ def doctor_order(request):
 def user_profile(request):
     if not request.user.is_authenticated:
         return redirect('/Login/')
-
     if request.user.userprofile.is_doctor:
         return redirect('/doctor_dashboard/')
     elif request.user.userprofile.is_caregiver:
@@ -696,85 +694,6 @@ def get_caregiver_orders(request):
 
     return JsonResponse(orders_data, safe=False)
 
-def Edit_Caregiver(request):
-    if not request.user.is_authenticated:
-        messages.error(request, 'Please log in to edit your profile.')
-        return redirect('login_page_or_homepage_url')  # Redirect to login or homepage
-
-    if request.method == 'POST':
-        first_name = request.POST.get('fname')
-        last_name = request.POST.get('lname')
-        email = request.POST.get('email')
-        street = request.POST.get('street')
-        suburb = request.POST.get('suburb')
-        state = request.POST.get('state')
-        postcode = request.POST.get('postcode')
-        cost = request.POST.get('cost')
-
-        user = request.user
-        user.first_name = first_name
-        user.last_name = last_name
-        user.email = email
-
-
-        profile = user.userprofile
-        profile.address = f"{street}, {suburb}, {state}, {postcode}"  
-
-        # Update Caregiver's Cost
-        try:
-            caregiver = Caregiver.objects.get(Name=user.username)  # Fetching Caregiver by username
-            if cost:
-                caregiver.Cost = int(cost)  # Convert string to integer
-                user.save()
-                profile.save()
-                caregiver.save()
-        except Caregiver.DoesNotExist:
-            pass  # Handle the exception, maybe log an error or send a message to the user
-
-        messages.success(request, 'Your profile has been updated successfully!')
-        return render(request, "caregiver_profile.html")
-
-    # If it's a GET request, you can render the edit form here (if you have one)
-    else:
-        context = {
-            'user': request.user,
-            # Add other context variables if needed
-        }
-        return render(request, 'caregiver_profile.html', context)
-
-
-def Get_Caregiver(request):
-    if request.method == 'GET':
-        first_name = request.user.first_name
-        last_name = request.user.last_name
-        email = request.user.email
-
-        street, suburb, state, postcode = "", "", "", ""
-
-        try:
-            user_profile = UserProfile.objects.get(user=request.user)
-            address = user_profile.address
-            if address:
-                parts = address.split(", ")
-                if len(parts) == 4:
-                    street, suburb, state, postcode = parts
-        except UserProfile.DoesNotExist:
-            # You can either pass some default value or return a HttpResponse
-            return HttpResponse("Profile not found.")
-        
-        context = {
-            'first_name': first_name,
-            'last_name':last_name,
-            'email':email,
-            'street': street,
-            'suburb': suburb,
-            'state': state,
-            'postcode': postcode,
-        }
-        return JsonResponse(context)
-    
-# def caregiver_orders(request):
-#     render(request,'customer_order.html')
 
 
 
@@ -850,9 +769,6 @@ def get_doctor_orders(request):
     return JsonResponse(orders_data, safe=False)
 
 def Edit_customer(request):
-    if not request.user.is_authenticated:
-        messages.error(request, 'Please log in to edit your profile.')
-        return redirect('login_page_or_homepage_url')  # Redirect to login or homepage
 
     if request.method == 'POST':
         first_name = request.POST.get('fname')
@@ -874,15 +790,6 @@ def Edit_customer(request):
         profile.address = f"{street}, {suburb}, {state}, {postcode}"  
         profile.save()
 
-        # Update customer's Cost
-        try:
-            customer = customer.objects.get(Name=user.username)  # Fetching customer by username
-            if cost:
-                customer.Cost = int(cost)  # Convert string to integer
-                customer.save()
-        except customer.DoesNotExist:
-            pass  # Handle the exception, maybe log an error or send a message to the user
-
         messages.success(request, 'Your profile has been updated successfully!')
         return render(request, "customer_profile.html")
 
@@ -895,32 +802,40 @@ def Edit_customer(request):
         return render(request, 'customer_profile.html', context)
 
 def Get_customer(request):
-    if requests.models ==  'GET':
+    print("Get_customer view called!")
+    if request.method == 'GET':
         first_name = request.user.first_name
         last_name = request.user.last_name
         email = request.user.email
-        user_profile = UserProfile.objects.get(user=request.user)
-        address = user_profile.address
-        print("find")
+        
+        try:
+            user_profile = UserProfile.objects.get(user=request.user)
+            address = user_profile.address
+        except UserProfile.DoesNotExist:
+            return HttpResponseBadRequest("UserProfile does not exist for the user.")
+        
+        street, suburb, state, postcode = ("", "", "", "")
         if address:
             parts = address.split(", ")
             if len(parts) == 4:
                 street, suburb, state, postcode = parts
+
         context = {
             'first_name': first_name,
-            'last_name':last_name,
-            'email':email,
+            'last_name': last_name,
+            'email': email,
             'street': street,
             'suburb': suburb,
             'state': state,
             'postcode': postcode,
         }
+        print(context)
         return render(request, 'customer_profile.html', context)
+    else:
+        return HttpResponseBadRequest("Invalid request method.")
+
     
 def Edit_doctor(request):
-    if not request.user.is_authenticated:
-        messages.error(request, 'Please log in to edit your profile.')
-        return redirect('login_page_or_homepage_url')  # Redirect to login or homepage
 
     if request.method == 'POST':
         first_name = request.POST.get('fname')
@@ -936,19 +851,19 @@ def Edit_doctor(request):
         user.first_name = first_name
         user.last_name = last_name
         user.email = email
+        user.save()  # Move user.save() here
 
         profile = user.userprofile
         profile.address = f"{street}, {suburb}, {state}, {postcode}"  
+        profile.save()  # Move profile.save() here
 
         # Update doctor's Cost
         try:
-            doctor = doctor.objects.get(Name=user.username)  # Fetching doctor by username
+            doctor = GP.objects.get(Name=user.username)  # Fetching doctor by username
             if cost:
                 doctor.Cost = int(cost)  # Convert string to integer
-                user.save()
-                profile.save()
                 doctor.save()
-        except doctor.DoesNotExist:
+        except GP.DoesNotExist:  # Adjust this to GP.DoesNotExist
             print("not find")
             pass  # Handle the exception, maybe log an error or send a message to the user
 
@@ -963,26 +878,113 @@ def Edit_doctor(request):
         }
         return render(request, 'doctor_profile.html', context)
 
+
 def Get_doctor(request):
-    print(requests.models)
-    if requests.models ==  'GET':
+    print("Get_doctor view called!")
+    if request.method == 'GET':
         first_name = request.user.first_name
         last_name = request.user.last_name
         email = request.user.email
-        user_profile = UserProfile.objects.get(user=request.user)
-        address = user_profile.address
+        
+        try:
+            user_profile = UserProfile.objects.get(user=request.user)
+            address = user_profile.address
+        except UserProfile.DoesNotExist:
+            return HttpResponseBadRequest("UserProfile does not exist for the user.")
+        
+        street, suburb, state, postcode = ("", "", "", "")
         if address:
             parts = address.split(", ")
             if len(parts) == 4:
                 street, suburb, state, postcode = parts
+
         context = {
             'first_name': first_name,
-            'last_name':last_name,
-            'email':email,
+            'last_name': last_name,
+            'email': email,
             'street': street,
             'suburb': suburb,
             'state': state,
             'postcode': postcode,
         }
+        print(context)
         return render(request, 'doctor_profile.html', context)
+    else:
+        return HttpResponseBadRequest("Invalid request method.")
 
+def Edit_Caregiver(request):
+
+    if request.method == 'POST':
+        first_name = request.POST.get('fname')
+        last_name = request.POST.get('lname')
+        email = request.POST.get('email')
+        street = request.POST.get('street')
+        suburb = request.POST.get('suburb')
+        state = request.POST.get('state')
+        postcode = request.POST.get('postcode')
+        cost = request.POST.get('cost')
+
+        user = request.user
+        user.first_name = first_name
+        user.last_name = last_name
+        user.email = email
+        user.save()  # Move user.save() here
+
+        profile = user.userprofile
+        profile.address = f"{street}, {suburb}, {state}, {postcode}"  
+        profile.save()  # Move profile.save() here
+
+        # Update Caregiver's Cost
+        try:
+            caregiver = Caregiver.objects.get(Name=user.username)  # Fetching Caregiver by username
+            if cost:
+                caregiver.Cost = int(cost)  # Convert string to integer
+                caregiver.save()
+        except Caregiver.DoesNotExist:  # Adjust this to Caregiver.DoesNotExist
+            print("not find")
+            pass  # Handle the exception, maybe log an error or send a message to the user
+
+        messages.success(request, 'Your profile has been updated successfully!')
+        return render(request, "caregiver_profile.html")
+
+    # If it's a GET request, you can render the edit form here (if you have one)
+    else:
+        context = {
+            'user': request.user,
+            # Add other context variables if needed
+        }
+        return render(request, 'caregiver_profile.html', context)
+
+
+def Get_Caregiver(request):
+    print("Get_Caregiver view called!")
+    if request.method == 'GET':
+        first_name = request.user.first_name
+        last_name = request.user.last_name
+        email = request.user.email
+        
+        try:
+            user_profile = UserProfile.objects.get(user=request.user)
+            address = user_profile.address
+        except UserProfile.DoesNotExist:
+            return HttpResponseBadRequest("UserProfile does not exist for the user.")
+        
+        street, suburb, state, postcode = ("", "", "", "")
+        if address:
+            parts = address.split(", ")
+            if len(parts) == 4:
+                street, suburb, state, postcode = parts
+
+        context = {
+            'first_name': first_name,
+            'last_name': last_name,
+            'email': email,
+            'street': street,
+            'suburb': suburb,
+            'state': state,
+            'postcode': postcode,
+        }
+        print(context)
+        return render(request, 'caregiver_profile.html', context)
+    else:
+        return HttpResponseBadRequest("Invalid request method.")
