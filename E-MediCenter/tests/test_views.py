@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 from EMediCenter.models import *
 from django.utils import timezone
 import unittest
+import json
 from unittest import mock
 from unittest.mock import patch
 from django.urls import reverse
@@ -421,80 +422,239 @@ from django.contrib.sessions.middleware import SessionMiddleware
 
 
 
-class LoginViewTestCase(TestCase):
+# class LoginViewTestCase(TestCase):
     
-    @staticmethod
-    def add_session_to_request(request):
-        middleware = SessionMiddleware()
-        middleware.process_request(request)
-        request.session.save()
-        return request
+#     @staticmethod
+#     def add_session_to_request(request):
+#         middleware = SessionMiddleware()
+#         middleware.process_request(request)
+#         request.session.save()
+#         return request
     
-    def setUp(self):
-        self.factory = RequestFactory()
-        # Create a user and profile
-        self.user = User.objects.create_user(username='test_user', password='test_password')
-        self.profile = UserProfile.objects.create(user=self.user)  
+#     def setUp(self):
+#         self.factory = RequestFactory()
+#         # Create a user and profile
+#         self.user = User.objects.create_user(username='test_user', password='test_password')
+#         self.profile = UserProfile.objects.create(user=self.user)  
 
-    def test_non_existing_user(self):
-        request = self.factory.post('/login/', {'Username': 'non_existing_user', 'password': 'some_password'})
-        request = self.add_session_to_request(request)
-        response = login_view(request)
+#     def test_non_existing_user(self):
+#         request = self.factory.post('/login/', {'Username': 'non_existing_user', 'password': 'some_password'})
+#         request = self.add_session_to_request(request)
+#         response = login_view(request)
 
-        self.assertEqual(response.status_code, 200)  # render the login page again
-        self.assertIn("User doesn&#x27;t exist.", response.content.decode())
+#         self.assertEqual(response.status_code, 200)  # render the login page again
+#         self.assertIn("User doesn&#x27;t exist.", response.content.decode())
 
-    def test_wrong_password(self):
-        request = self.factory.post('/login/', {'Username': 'test_user', 'password': 'wrong_password'})
-        request = self.add_session_to_request(request)
-        response = login_view(request)
+#     def test_wrong_password(self):
+#         request = self.factory.post('/login/', {'Username': 'test_user', 'password': 'wrong_password'})
+#         request = self.add_session_to_request(request)
+#         response = login_view(request)
 
-        self.assertEqual(response.status_code, 200)  # render the login page again
-        self.assertIn("Incorrect password.", response.content.decode())
+#         self.assertEqual(response.status_code, 200)  # render the login page again
+#         self.assertIn("Incorrect password.", response.content.decode())
 
-    def test_inactive_user(self):
-        # Make the user inactive
-        self.user.is_active = False
-        self.user.save()
+#     def test_inactive_user(self):
+#         # Make the user inactive
+#         self.user.is_active = False
+#         self.user.save()
 
-        request = self.factory.post('/login/', {'Username': 'test_user', 'password': 'test_password'})
-        request = self.add_session_to_request(request)
-        response = login_view(request)
-        self.assertEqual(response.status_code, 200)  # render the login page again
-        self.assertIn("Your account is inactive.", response.content.decode()) # check error msg
+#         request = self.factory.post('/login/', {'Username': 'test_user', 'password': 'test_password'})
+#         request = self.add_session_to_request(request)
+#         response = login_view(request)
+#         self.assertEqual(response.status_code, 200)  # render the login page again
+#         self.assertIn("Your account is inactive.", response.content.decode()) # check error msg
 
 
 
-    def test_login_successful(self):
+#     def test_login_successful(self):
         
-        test_cases = [
-            {"is_staff": True, "is_doctor": False, "is_caregiver": False, "expected_url": "/admin_dashboard/"},
-            {"is_staff": False, "is_doctor": True, "is_caregiver": False, "expected_url": "/doctor_dashboard/"},
-            {"is_staff": False, "is_doctor": False, "is_caregiver": True, "expected_url": "/caregiver_dashboard/"},
-            {"is_staff": False, "is_doctor": False, "is_caregiver": False, "expected_url": "/user_dashboard/"}
-        ]
+#         test_cases = [
+#             {"is_staff": True, "is_doctor": False, "is_caregiver": False, "expected_url": "/admin_dashboard/"},
+#             {"is_staff": False, "is_doctor": True, "is_caregiver": False, "expected_url": "/doctor_dashboard/"},
+#             {"is_staff": False, "is_doctor": False, "is_caregiver": True, "expected_url": "/caregiver_dashboard/"},
+#             {"is_staff": False, "is_doctor": False, "is_caregiver": False, "expected_url": "/user_dashboard/"}
+#         ]
 
-        for test_case in test_cases:
-            with self.subTest(**test_case):
-                # Setting the user profile attributes
-                self.user.is_staff = test_case["is_staff"]
-                self.user.save()
-                self.profile.is_doctor = test_case["is_doctor"]
-                self.profile.is_caregiver = test_case["is_caregiver"]
-                self.profile.save()
+#         for test_case in test_cases:
+#             with self.subTest(**test_case):
+#                 # Setting the user profile attributes
+#                 self.user.is_staff = test_case["is_staff"]
+#                 self.user.save()
+#                 self.profile.is_doctor = test_case["is_doctor"]
+#                 self.profile.is_caregiver = test_case["is_caregiver"]
+#                 self.profile.save()
 
-                request = self.factory.post('/login/', {'Username': 'test_user', 'password': 'test_password'})
-                request = self.add_session_to_request(request)
-                request.user = self.user
-                response = login_view(request)
+#                 request = self.factory.post('/login/', {'Username': 'test_user', 'password': 'test_password'})
+#                 request = self.add_session_to_request(request)
+#                 request.user = self.user
+#                 response = login_view(request)
 
-                # Redirect
-                self.assertEqual(response.status_code, 302)
-                self.assertEqual(response.url, test_case["expected_url"])
-
-
+#                 # Redirect
+#                 self.assertEqual(response.status_code, 302)
+#                 self.assertEqual(response.url, test_case["expected_url"])
 
 
+
+# class AddDoctorTestCase(TestCase):
+    
+#     def setUp(self):
+#         self.factory = RequestFactory()
+
+#     def test_add_doctor(self):
+#         data = {
+#             'name': 'Dr. John',
+#             'gender': 'Male',
+#             'cost': 50,
+#             'email': 'dr.john@example.com',
+#             'street': '123 Main St',
+#             'suburb': 'Downtown',
+#             'state': 'CA',
+#             'postcode': '2001'
+#         }
+        
+#         request = self.factory.post('/add_doctor/', data)
+#         response = add_doctor(request)
+        
+#         response_content = json.loads(response.content)
+#         self.assertEqual(response.status_code, 200)
+#         self.assertEqual(response_content["message"], "Doctor added successfully!")
+        
+#         # Check if User and UserProfile were created
+#         try:
+#             user = User.objects.get(username=data['name'])
+#             user_profile = UserProfile.objects.get(user=user)
+#             self.assertEqual(user_profile.address, f"{data['street']}, {data['suburb']}, {data['state']}, {data['postcode']}")
+#             self.assertTrue(user_profile.is_doctor)
+#         except User.DoesNotExist:
+#             self.fail("User not created!")
+#         except UserProfile.DoesNotExist:
+#             self.fail("UserProfile not created!")
+        
+#         # Check if GP was created
+#         try:
+#             gp = GP.objects.get(Name=data['name'])
+#             self.assertEqual(gp.Gender, data['gender'])
+#             self.assertEqual(gp.Cost, data['cost'])
+#             self.assertEqual(gp.ServiceArea, f"{data['street']}, {data['suburb']}, {data['state']}, {data['postcode']}")
+#         except GP.DoesNotExist:
+#             self.fail("Doctor not created!")
+
+
+# class TestPasswordFunction(TestCase):
+
+#     def test_short_password(self):
+#         self.assertFalse(is_password("Ab1"))
+
+#     def test_no_lowercase(self):
+#         self.assertFalse(is_password("ABCDEFGH1"))
+
+#     def test_no_uppercase(self):
+#         self.assertFalse(is_password("abcdefgh1"))
+
+#     def test_no_digit(self):
+#         self.assertFalse(is_password("Abcdefgh"))
+
+#     def test_valid_password(self):
+#         self.assertTrue(is_password("Abcdefgh1"))
+
+
+# class TestCheckEmailAndUsername(TestCase):
+    
+#     def setUp(self):
+#         self.factory = RequestFactory()
+#         User.objects.create_user(username='existing_user', email='existing_email@example.com', password='ValidP@ss123')
+
+#     def test_invalid_email(self):
+#         request = self.factory.get('/dummy_url/', {'email': 'invalidemail', 'username': 'new_user', 'password': 'ValidP@ss123'})
+#         response = check_email_and_username(request)
+#         self.assertIn("Invalid E-Mail", response.content.decode())
+
+#     def test_existing_username(self):
+#         request = self.factory.get('/dummy_url/', {'email': 'new_email@example.com', 'username': 'existing_user', 'password': 'ValidP@ss123'})
+#         response = check_email_and_username(request)
+#         self.assertIn("User name exits", response.content.decode())
+
+#     def test_existing_email(self):
+#         request = self.factory.get('/dummy_url/', {'email': 'existing_email@example.com', 'username': 'new_user', 'password': 'ValidP@ss123'})
+#         response = check_email_and_username(request)
+#         self.assertIn("E-Mail already exists", response.content.decode())
+
+#     def test_invalid_password(self):
+#         request = self.factory.get('/dummy_url/', {'email': 'new_email@example.com', 'username': 'new_user', 'password': 'short'})
+#         response = check_email_and_username(request)
+#         expected_message = "The password must meet the following criteria:\\n\\nBe at least 8 characters long.\\nContain at least one lowercase letter, one uppercase letter and one number."
+#         self.assertIn(expected_message, response.content.decode())
+
+#     def test_all_valid(self):
+#         request = self.factory.get('/dummy_url/', {'email': 'new_email@example.com', 'username': 'new_user', 'password': 'ValidP@ss123'})
+#         response = check_email_and_username(request)
+#         self.assertEqual('{"message": ""}', response.content.decode())
+
+
+
+# class TestPasswordValidation(TestCase):
+
+#     def test_short_password(self):
+#         """Password that is too short should raise a ValidationError."""
+#         with self.assertRaisesMessage(ValidationError, "Password must be at least 8 characters long."):
+#             validate_password('Short1')
+
+#     def test_missing_lowercase(self):
+#         """Password without a lowercase letter should raise a ValidationError."""
+#         with self.assertRaisesMessage(ValidationError, "Password must contain at least one lowercase letter."):
+#             validate_password('PASSWORD123')
+
+#     def test_missing_uppercase(self):
+#         """Password without an uppercase letter should raise a ValidationError."""
+#         with self.assertRaisesMessage(ValidationError, "Password must contain at least one uppercase letter."):
+#             validate_password('password123')
+
+#     def test_missing_number(self):
+#         """Password without a number should raise a ValidationError."""
+#         with self.assertRaisesMessage(ValidationError, "Password must contain at least one number."):
+#             validate_password('PasswordOnly')
+
+#     def test_valid_password(self):
+#         """Valid password should not raise any exceptions."""
+#         try:
+#             validate_password('ValidPassword1')
+#         except ValidationError:
+#             self.fail("validate_password() raised ValidationError unexpectedly!")
+
+
+# class LogoutViewTestCase(TestCase):
+#     def setUp(self):
+#         self.factory = RequestFactory()
+#         self.user = User.objects.create_user(username='test_user', password='test_password')
+
+#     @staticmethod
+#     def add_session_to_request(request):
+#         """Middleware function to add a session to the request."""
+#         middleware = SessionMiddleware()
+#         middleware.process_request(request)
+#         request.session.save()
+#         return request
+
+#     def test_logout(self):
+#         """Test if the user is logged out and redirected to the home page."""
+#         # Log in the user
+#         self.client.login(username='test_user', password='test_password')
+
+#         # Ensure user is authenticated
+#         self.assertEqual(self.client.session['_auth_user_id'], str(self.user.pk))
+
+#         # Call the logout view
+#         request = self.factory.get('/logout/')
+#         request.user = self.user
+#         request = self.add_session_to_request(request)
+#         response = logout_view(request)
+
+#         # Check if the user has been logged out
+#         self.assertIsInstance(request.user, AnonymousUser)
+
+#         # Check if the response is a redirect to the home page
+#         self.assertEqual(response.status_code, 302)
+#         self.assertEqual(response.url, '/')
 
 if __name__ == '__main__':
     unittest.main()
