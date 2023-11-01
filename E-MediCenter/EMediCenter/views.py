@@ -60,8 +60,8 @@ def get_place_details(place_id, api_key):
 def home_page(request):
     return render(request, 'index.html')
  
-def service_information_page(request):
-    return render(request, 'ServiceInformation.html')
+# def service_information_page(request):
+#     return render(request, 'ServiceInformation.html')
 
 def caregiver_dashboard(request):
     return render(request, 'caregiver_profile.html')
@@ -168,7 +168,9 @@ def donation(request):
     return render(request,'DonationPage.html')
 
 def is_valid_email(email):
-    email_regex = r"[^@]+@[^@]+\.[^@]+"
+    if not email or not isinstance(email, str) or email.isspace():
+        return False
+    email_regex = r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
     return re.match(email_regex, email) is not None
 
 # def login_view(request):
@@ -332,10 +334,6 @@ def validate_password(password):
     if not re.search(r'[0-9]', password):
         raise ValidationError("Password must contain at least one number.")
 
-def is_valid_email(email):
-    # Regular expression for a basic email format check
-    email_regex = r'^[\w\.-]+@[\w\.-]+\.\w+$'
-    return re.match(email_regex, email)
 
 def logout_view(request):
     logout(request)
@@ -345,7 +343,7 @@ def SignUp(request):
     error_message = ""
 
     if request.method == 'POST':
-        print(request.POST)
+        # print(request.POST)
         username = request.POST.get('Username2')
         email = request.POST.get('Email')
         password = request.POST.get('pw')
