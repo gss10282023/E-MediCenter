@@ -40,16 +40,21 @@ urlpatterns = [
     
     path("Edit_Admin/",views.Edit_Admin,name="Edit_Admin"),
     path('admin-profile/', views.Get_Admin, name='Get_Admin'),
-    path('caregiber_profile/', views.Edit_Caregiver,name='Edit_caregiver'),
-    path('caregiber_profile/', views.Get_Caregiver,name='Get_caregiver'),
+
+    path('Get_caregiver', views.Get_Caregiver,name='Get_caregiver'),
+    path("caregiver_profile",views.caregiver_profile,name="caregiver_profile"),
+
     path('get_caregiver_orders/', views.get_caregiver_orders, name='get_caregiver_orders'),
     path('caregiver_order/', views.caregiver_order, name='caregiver_order'),
-    path("doctor_profile",views.doctor_profile,name="doctor_profile"),
-    path('doctor_profile', views.Edit_doctor,name='Edit_doctor'),
+    path('caregiver_edit',views.Edit_Caregiver,name = "Edit_caregiver"),
+    
+    path("doctor_profile_view",views.doctor_profile,name="doctor_profile_view"),
+    path('doctor_edit', views.Edit_doctor,name='Edit_doctor'),
     path('doctor_profile', views.Get_doctor,name='Get_doctor'),
-    path('caregiber_profile/', views.Edit_customer,name='Edit_customer'),
-    path('caregiber_profile/', views.Get_customer,name='Get_customer'),
-    path("customer_profile",views.customer_profile,name="customer_profile"),
+
+    path('customer_profile/', views.Edit_customer,name='Edit_customer'),
+    path('get_profile/', views.Get_customer,name='Get_customer'),
+
     path("customer_order",views.customer_order,name="customer_order"),
     
     path("doctor_order",views.doctor_order,name="doctor_order"),
