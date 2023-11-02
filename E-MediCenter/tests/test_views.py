@@ -11,8 +11,10 @@ from unittest.mock import patch
 from django.urls import reverse
 from django.contrib.auth.models import AnonymousUser,User
 from django.contrib.sessions.middleware import SessionMiddleware
-from EMediCenter.models import GP, UserProfile, Caregiver
+from EMediCenter.models import GP, UserProfile, Caregiver, CaregiverOrder, GP, GPOrder
 from django.contrib.messages import get_messages
+import datetime
+
 
 
 # class CaregiverAvailabilityTest(TestCase):
@@ -880,161 +882,265 @@ class AdminProfileTestCase(TestCase):
         self.assertEqual(response.context['state'], "TestState")
         self.assertEqual(response.context['postcode'], "12345")
 
-#     def test_add_doctor(self):
-#         data = {
-#             'name': 'Dr. John',
-#             'gender': 'Male',
-#             'cost': 50,
-#             'email': 'dr.john@example.com',
-#             'street': '123 Main St',
-#             'suburb': 'Downtown',
-#             'state': 'CA',
-#             'postcode': '2001'
-#         }
-        
-#         request = self.factory.post('/add_doctor/', data)
-#         response = add_doctor(request)
-        
-#         response_content = json.loads(response.content)
-#         self.assertEqual(response.status_code, 200)
-#         self.assertEqual(response_content["message"], "Doctor added successfully!")
-        
-#         # Check if User and UserProfile were created
-#         try:
-#             user = User.objects.get(username=data['name'])
-#             user_profile = UserProfile.objects.get(user=user)
-#             self.assertEqual(user_profile.address, f"{data['street']}, {data['suburb']}, {data['state']}, {data['postcode']}")
-#             self.assertTrue(user_profile.is_doctor)
-#         except User.DoesNotExist:
-#             self.fail("User not created!")
-#         except UserProfile.DoesNotExist:
-#             self.fail("UserProfile not created!")
-        
-#         # Check if GP was created
-#         try:
-#             gp = GP.objects.get(Name=data['name'])
-#             self.assertEqual(gp.Gender, data['gender'])
-#             self.assertEqual(gp.Cost, data['cost'])
-#             self.assertEqual(gp.ServiceArea, f"{data['street']}, {data['suburb']}, {data['state']}, {data['postcode']}")
-#         except GP.DoesNotExist:
-#             self.fail("Doctor not created!")
-
-
-# class TestPasswordFunction(TestCase):
-
-#     def test_short_password(self):
-#         self.assertFalse(is_password("Ab1"))
-
-#     def test_no_lowercase(self):
-#         self.assertFalse(is_password("ABCDEFGH1"))
-
-#     def test_no_uppercase(self):
-#         self.assertFalse(is_password("abcdefgh1"))
-
-#     def test_no_digit(self):
-#         self.assertFalse(is_password("Abcdefgh"))
-
-#     def test_valid_password(self):
-#         self.assertTrue(is_password("Abcdefgh1"))
-
-
-# class TestCheckEmailAndUsername(TestCase):
+class CaregiverOrderTestCase(TestCase):
     
-#     def setUp(self):
-#         self.factory = RequestFactory()
-#         User.objects.create_user(username='existing_user', email='existing_email@example.com', password='ValidP@ss123')
+    def setUp(self):
+        self.user = User.objects.create_user(username="testuser", password="testpassword")
+        self.caregiver = Caregiver.objects.create(CaregiverID=self.user.id)
+        self.order = CaregiverOrder.objects.create(CaregiverID=self.caregiver, UserID=self.user, Cost=100, start_time="2023-11-01 09:00:00", end_time="2023-11-01 10:00:00")
+        
+        self.client = Client()
+        self.client.login(username="testuser", password="testpassword")
+    
+    def test_get_caregiver_orders(self):
+        response = self.client.get(reverse('get_caregiver_orders'))
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(len(data), 1)
+        self.assertEqual(data[0]['cost'], 100)
 
-#     def test_invalid_email(self):
-#         request = self.factory.get('/dummy_url/', {'email': 'invalidemail', 'username': 'new_user', 'password': 'ValidP@ss123'})
-#         response = check_email_and_username(request)
-#         self.assertIn("Invalid E-Mail", response.content.decode())
+class UserOrderTestCase(TestCase):
+    
+    def setUp(self):
+        self.user = User.objects.create_user(username="testuser", password="testpassword")
+        self.caregiver = Caregiver.objects.create(CaregiverID=self.user.id)
+        self.order = CaregiverOrder.objects.create(CaregiverID=self.caregiver, UserID=self.user, Cost=100, start_time="2023-11-01 09:00:00", end_time="2023-11-01 10:00:00")
+        
+        self.client = Client()
+        self.client.login(username="testuser", password="testpassword")
+    
+    def test_get_user_orders(self):
+        response = self.client.get(reverse('get_user_orders'))
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(len(data), 1)
+        self.assertEqual(data[0]['cost'], 100)
 
-#     def test_existing_username(self):
-#         request = self.factory.get('/dummy_url/', {'email': 'new_email@example.com', 'username': 'existing_user', 'password': 'ValidP@ss123'})
-#         response = check_email_and_username(request)
-#         self.assertIn("User name exits", response.content.decode())
+class DoctorOrderTestCase(TestCase):
+    
+    def setUp(self):
+        self.user = User.objects.create_user(username="testdoctor", password="testpassword")
+        self.doctor = GP.objects.create(GPID=self.user.id, Cost = 20)
+        self.order = GPOrder.objects.create(GPID=self.doctor, UserID=self.user, Cost=200, Date="2023-11-01")
+        
+        self.client = Client()
+        self.client.login(username="testdoctor", password="testpassword")
+    
+    def test_get_doctor_orders(self):
+        response = self.client.get(reverse('get_doctor_orders'))
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(len(data), 1)
+        self.assertEqual(data[0]['cost'], 200)
 
-#     def test_existing_email(self):
-#         request = self.factory.get('/dummy_url/', {'email': 'existing_email@example.com', 'username': 'new_user', 'password': 'ValidP@ss123'})
-#         response = check_email_and_username(request)
-#         self.assertIn("E-Mail already exists", response.content.decode())
+class AppointmentTestCase(TestCase):
 
-#     def test_invalid_password(self):
-#         request = self.factory.get('/dummy_url/', {'email': 'new_email@example.com', 'username': 'new_user', 'password': 'short'})
-#         response = check_email_and_username(request)
-#         expected_message = "The password must meet the following criteria:\\n\\nBe at least 8 characters long.\\nContain at least one lowercase letter, one uppercase letter and one number."
-#         self.assertIn(expected_message, response.content.decode())
+    def setUp(self):
+        # Setup a client for testing
+        self.client = Client()
 
-#     def test_all_valid(self):
-#         request = self.factory.get('/dummy_url/', {'email': 'new_email@example.com', 'username': 'new_user', 'password': 'ValidP@ss123'})
-#         response = check_email_and_username(request)
-#         self.assertEqual('{"message": ""}', response.content.decode())
+        # Setup a test user
+        self.user = User.objects.create_user(username="testuser", password="testpassword")
 
+        # Setup a test caregiver
+        self.caregiver = Caregiver.objects.create(CaregiverID=1, Name="Test Caregiver")
 
+    def test_successful_appointment(self):
+        # Login as the test user
+        self.client.login(username="testuser", password="testpassword")
 
-# class TestPasswordValidation(TestCase):
+        # Send a POST request to create an appointment
+        response = self.client.post(reverse('appointment'), data={
+            "start-time": "08:00",
+            "end-time": "09:00",
+            "caregiver_id": self.caregiver.CaregiverID,
+            "cost": "100",
+            "selected_date": "2023-11-02"
+        })
 
-#     def test_short_password(self):
-#         """Password that is too short should raise a ValidationError."""
-#         with self.assertRaisesMessage(ValidationError, "Password must be at least 8 characters long."):
-#             validate_password('Short1')
+        # Check if the response is a redirect as expected
+        self.assertEqual(response.status_code, 302)
 
-#     def test_missing_lowercase(self):
-#         """Password without a lowercase letter should raise a ValidationError."""
-#         with self.assertRaisesMessage(ValidationError, "Password must contain at least one lowercase letter."):
-#             validate_password('PASSWORD123')
+        # Check if the appointment order was created in the database
+        self.assertTrue(CaregiverOrder.objects.exists())
 
-#     def test_missing_uppercase(self):
-#         """Password without an uppercase letter should raise a ValidationError."""
-#         with self.assertRaisesMessage(ValidationError, "Password must contain at least one uppercase letter."):
-#             validate_password('password123')
+        # Check for a success message in the response
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(str(messages[0]), "Success")
 
-#     def test_missing_number(self):
-#         """Password without a number should raise a ValidationError."""
-#         with self.assertRaisesMessage(ValidationError, "Password must contain at least one number."):
-#             validate_password('PasswordOnly')
+    def test_invalid_time(self):
+        self.client.login(username="testuser", password="testpassword")
+        response = self.client.post(reverse('appointment'), data={
+            "start-time": "08:00",
+            "end-time": "08:30",
+            "caregiver_id": self.caregiver.CaregiverID,
+            "cost": "100",
+            "selected_date": "2023-11-02"
+        })
+        self.assertEqual(response.status_code, 302)
+        self.assertFalse(CaregiverOrder.objects.exists())
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(str(messages[0]), "The appointment must last at least 1 hour!")
 
-#     def test_valid_password(self):
-#         """Valid password should not raise any exceptions."""
-#         try:
-#             validate_password('ValidPassword1')
-#         except ValidationError:
-#             self.fail("validate_password() raised ValidationError unexpectedly!")
+    def test_caregiver_unavailability(self):
+        # Create an overlapping order in advance
+        CaregiverOrder.objects.create(
+            UserID=self.user,
+            CaregiverID=self.caregiver,
+            start_time=datetime.datetime(2023, 11, 2, 8, 0),
+            end_time=datetime.datetime(2023, 11, 2, 9, 0),
+            Cost=100
+        )
 
+        self.client.login(username="testuser", password="testpassword")
+        response = self.client.post(reverse('appointment'), data={
+            "start-time": "08:30",
+            "end-time": "09:30",
+            "caregiver_id": self.caregiver.CaregiverID,
+            "cost": "100",
+            "selected_date": "2023-11-02"
+        })
 
-# class LogoutViewTestCase(TestCase):
-#     def setUp(self):
-#         self.factory = RequestFactory()
-#         self.user = User.objects.create_user(username='test_user', password='test_password')
+        # Ensure only the original order exists and a new overlapping order was not created
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(CaregiverOrder.objects.count(), 1)
 
-#     @staticmethod
-#     def add_session_to_request(request):
-#         """Middleware function to add a session to the request."""
-#         middleware = SessionMiddleware()
-#         middleware.process_request(request)
-#         request.session.save()
-#         return request
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(str(messages[0]), "Not an available user")
 
-#     def test_logout(self):
-#         """Test if the user is logged out and redirected to the home page."""
-#         # Log in the user
-#         self.client.login(username='test_user', password='test_password')
+    def test_get_request(self):
+        response = self.client.get(reverse('appointment'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'select.html')
 
-#         # Ensure user is authenticated
-#         self.assertEqual(self.client.session['_auth_user_id'], str(self.user.pk))
+class AdminGetOrderTests(TestCase):
 
-#         # Call the logout view
-#         request = self.factory.get('/logout/')
-#         request.user = self.user
-#         request = self.add_session_to_request(request)
-#         response = logout_view(request)
+    def setUp(self):
+        self.client = Client()
 
-#         # Check if the user has been logged out
-#         self.assertIsInstance(request.user, AnonymousUser)
+        self.user = User.objects.create_user(
+            username='testuser',
+            password='testpassword'
+        )
+        self.caregiver_1 = Caregiver.objects.create(
+            Name="Caregiver 1",
+            Gender="Male",
+            Age=35,
+            Qualification="Nursing Degree",
+            Experience=5,
+            ServiceArea="Home Care",
+            Availability="Available",
+            Cost=500,
+            avatar="avatars/default_caregiver1.jpeg"
+        )
 
-#         # Check if the response is a redirect to the home page
-#         self.assertEqual(response.status_code, 302)
-#         self.assertEqual(response.url, '/')
+        self.caregiver_2 = Caregiver.objects.create(
+            Name="Caregiver 2",
+            Gender="Female",
+            Age=40,
+            Qualification="Advanced Nursing Diploma",
+            Experience=8,
+            ServiceArea="Special Needs",
+            Availability="Available",
+            Cost=600,
+            avatar="avatars/default_caregiver2.jpeg"
+        )
+
+        self.caregiver_order_1 = CaregiverOrder.objects.create(
+            start_time=datetime.datetime.now(),
+            end_time=datetime.datetime.now() + datetime.timedelta(hours=2),
+            Cost=100,
+            CaregiverID=self.caregiver_1,  # Assign Caregiver instance directly
+            UserID=self.user  # Assuming user instance exists
+        )
+
+        self.caregiver_order_2 = CaregiverOrder.objects.create(
+            start_time=datetime.datetime.now() - datetime.timedelta(days=1),
+            end_time=datetime.datetime.now() - datetime.timedelta(days=1, hours=-1),
+            Cost=200,
+            CaregiverID=self.caregiver_2,  # Assign Caregiver instance directly
+            UserID=self.user  # Assuming user instance exists
+        )
+
+        # Setting up mock data for GP
+        self.gp_1 = GP.objects.create(
+            Name="Dr. John",
+            Gender="Male",
+            Age=30,
+            Qualification="MBBS",
+            Experience=5,
+            ServiceArea="Cardiology",
+            Availability=True,
+            Cost=1000,
+            avatar="avatars/default2.jpeg"
+        )
+
+        self.gp_2 = GP.objects.create(
+            Name="Dr. Smith",
+            Gender="Female",
+            Age=35,
+            Qualification="MD",
+            Experience=7,
+            ServiceArea="Neurology",
+            Availability=True,
+            Cost=1500,
+            avatar="avatars/default2.jpeg"
+        )
+
+        # Link GP and Caregiver orders to the created GP and Caregiver
+        self.caregiver_order_1.CaregiverID = self.caregiver_1
+        self.caregiver_order_1.UserID = self.user  # Assuming user is created
+        self.caregiver_order_1.save()
+
+        self.caregiver_order_2.CaregiverID = self.caregiver_2
+        self.caregiver_order_2.UserID = self.user  # Assuming user is created
+        self.caregiver_order_2.save()
+
+        self.gp_order_1 = GPOrder.objects.create(
+            start_time=datetime.datetime.now(),
+            end_time=datetime.datetime.now() + datetime.timedelta(hours=2),
+            Cost=1000,
+            GPID=self.gp_1,
+            UserID=self.user  # Assuming user is created
+        )
+
+        self.gp_order_2 = GPOrder.objects.create(
+            start_time=datetime.datetime.now() - datetime.timedelta(days=1),
+            end_time=datetime.datetime.now() - datetime.timedelta(days=1, hours=-1),
+            Cost=2000,
+            GPID=self.gp_2,
+            UserID=self.user  # Assuming user is created
+        )
+
+    def test_get_all_orders(self):
+        response = self.client.get(reverse('get_all_orders'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()), 2)
+
+    def test_get_all_dockers(self):
+        response = self.client.get(reverse('path_to_get_all_GP_view/'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()), 2)
+
+    def test_get_five_GP(self):
+        response = self.client.get(reverse('get_recent_GP'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()), 2)  
+
+    def test_get_recent_GP_orders(self):
+        response = self.client.get(reverse('get_recent_GP_orders'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()), 2)
+
+    def test_get_all_GP_orders(self):
+        response = self.client.get(reverse('get_all_GP_orders'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()), 2)
+
+    def test_get_recent_orders(self):
+        response = self.client.get(reverse('get_recent_orders'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()), 2)
 
 if __name__ == '__main__':
     unittest.main()

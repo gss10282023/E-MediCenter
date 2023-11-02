@@ -407,7 +407,6 @@ def SignUp(request):
         error_message = ""
 
     error_message = error_message[2:-2]
-    print(error_message)
     return render(request, 'login.html', {'error_message': error_message})
 
 def get_all_orders(request):
@@ -432,13 +431,8 @@ def get_five_GP(request):
             'GPID', 'Name', 'Gender', 'Age', 'Qualification','Experience', 'ServiceArea', 'Availability', 'Cost', 'avatar'
         )
     data = list(docker_data)
-    print("yes")
     return JsonResponse(data, safe=False)
 
-
-def admin_add_doctor_dashboard(request):
-    
-    return render(request,"Dashboard_Admin_add_docker.html")
 
 def get_recent_GP_orders(request):
     GP_orders = GPOrder.objects.all().order_by('-start_time')[:5].values(
@@ -449,7 +443,7 @@ def get_recent_GP_orders(request):
 
 def get_all_GP_orders(request):
     GP_orders = GPOrder.objects.all().values(
-        'start_time', 'end_time', 'Cost', 'GPID__GpID', 'UserID__id'
+        'start_time', 'end_time', 'Cost', 'GPID__GPID', 'UserID__id'
     )
     data = list(GP_orders)
     return JsonResponse(data, safe=False)
@@ -460,6 +454,10 @@ def get_recent_orders(request):
     )
     data = list(caregiver_orders)
     return JsonResponse(data, safe=False)
+def admin_add_doctor_dashboard(request):
+    
+    return render(request,"Dashboard_Admin_add_docker.html")
+
 
 def admin_dashboard(request):
     return render(request,"Dashboard_Admin.html")
@@ -541,7 +539,6 @@ def get_unavailable_times(request, caregiver_id):
 
 def appointment(request):
     if request.method == "POST":
-        print(request)
         start_time = request.POST.get("start-time")
         end_time = request.POST.get("end-time")
         caregiver_id = request.POST.get("caregiver_id")
@@ -559,7 +556,7 @@ def appointment(request):
         # Check if the start_time is at least 1 hour before end_time
         if end_time - start_time < datetime.timedelta(hours=1):
             # Use messages to display an error
-            messages.error(request, "结束时间应该至少在开始时间之后1小时。")
+            messages.error(request, "The appointment must last at least 1 hour!")
             return redirect('appointment')  # Assume you want to redirect back to the appointment page
 
         # Check if caregiver is available
@@ -724,7 +721,6 @@ def get_gp_orders(request):
 
     # Fetch the orders associated with this user
     user_orders = GPOrder.objects.filter(UserID=user_id)
-    print(user_orders)
 
     orders_data = []
     for order in user_orders:
@@ -754,7 +750,6 @@ def get_doctor_orders(request):
     gp_orders = GPOrder.objects.filter(GPID=doctor)
     all_orders = GPOrder.objects.all()
     print(f"All Orders: {all_orders}")
-    # print(caregiver_orders)
 
     orders_data = []
     for order in gp_orders:
@@ -829,7 +824,6 @@ def Get_customer(request):
             'state': state,
             'postcode': postcode,
         }
-        print(context)
         return render(request, 'customer_profile.html', context)
     else:
         return HttpResponseBadRequest("Invalid request method.")
@@ -907,7 +901,6 @@ def Get_doctor(request):
             'state': state,
             'postcode': postcode,
         }
-        print(context)
         return render(request, 'doctor_profile.html', context)
     else:
         return HttpResponseBadRequest("Invalid request method.")
@@ -984,7 +977,6 @@ def Get_Caregiver(request):
             'state': state,
             'postcode': postcode,
         }
-        print(context)
         return render(request, 'caregiver_profile.html', context)
     else:
         return HttpResponseBadRequest("Invalid request method.")
