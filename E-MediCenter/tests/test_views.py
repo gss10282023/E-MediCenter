@@ -202,6 +202,12 @@ import datetime
 #         response = self.client.get(reverse('doctor_order'))
 #         self.assertEqual(response.status_code, 200)
 #         self.assertTemplateUsed(response, 'doctor_order.html')
+    
+#     def test_admin_add_doctor_dashboard(self):
+#         response = self.client.get(reverse('AddDockerPage')) 
+#         self.assertEqual(response.status_code, 200)
+#         self.assertTemplateUsed(response, "Dashboard_Admin_add_docker.html")
+
 
 
 # class BookGPTest(TestCase):
