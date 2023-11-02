@@ -10,8 +10,10 @@ from unittest.mock import patch
 from django.urls import reverse
 from django.contrib.auth.models import AnonymousUser,User
 from django.contrib.sessions.middleware import SessionMiddleware
-from EMediCenter.models import GP, UserProfile, Caregiver
+from EMediCenter.models import GP, UserProfile, Caregiver, CaregiverOrder, GP, GPOrder
 from django.contrib.messages import get_messages
+import datetime
+
 
 
 # class CaregiverAvailabilityTest(TestCase):
@@ -495,8 +497,6 @@ class LoginViewTestCase(TestCase):
                 self.assertEqual(response.status_code, 302)
                 self.assertEqual(response.url, test_case["expected_url"])
 
-
-
 class DoctorProfileTestCase(TestCase):
     
     def setUp(self):
@@ -869,6 +869,265 @@ class AdminProfileTestCase(TestCase):
         self.assertEqual(response.context['state'], "TestState")
         self.assertEqual(response.context['postcode'], "12345")
 
+class CaregiverOrderTestCase(TestCase):
+    
+    def setUp(self):
+        self.user = User.objects.create_user(username="testuser", password="testpassword")
+        self.caregiver = Caregiver.objects.create(CaregiverID=self.user.id)
+        self.order = CaregiverOrder.objects.create(CaregiverID=self.caregiver, UserID=self.user, Cost=100, start_time="2023-11-01 09:00:00", end_time="2023-11-01 10:00:00")
+        
+        self.client = Client()
+        self.client.login(username="testuser", password="testpassword")
+    
+    def test_get_caregiver_orders(self):
+        response = self.client.get(reverse('get_caregiver_orders'))
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(len(data), 1)
+        self.assertEqual(data[0]['cost'], 100)
+
+class UserOrderTestCase(TestCase):
+    
+    def setUp(self):
+        self.user = User.objects.create_user(username="testuser", password="testpassword")
+        self.caregiver = Caregiver.objects.create(CaregiverID=self.user.id)
+        self.order = CaregiverOrder.objects.create(CaregiverID=self.caregiver, UserID=self.user, Cost=100, start_time="2023-11-01 09:00:00", end_time="2023-11-01 10:00:00")
+        
+        self.client = Client()
+        self.client.login(username="testuser", password="testpassword")
+    
+    def test_get_user_orders(self):
+        response = self.client.get(reverse('get_user_orders'))
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(len(data), 1)
+        self.assertEqual(data[0]['cost'], 100)
+
+class DoctorOrderTestCase(TestCase):
+    
+    def setUp(self):
+        self.user = User.objects.create_user(username="testdoctor", password="testpassword")
+        self.doctor = GP.objects.create(GPID=self.user.id, Cost = 20)
+        self.order = GPOrder.objects.create(GPID=self.doctor, UserID=self.user, Cost=200, Date="2023-11-01")
+        
+        self.client = Client()
+        self.client.login(username="testdoctor", password="testpassword")
+    
+    def test_get_doctor_orders(self):
+        response = self.client.get(reverse('get_doctor_orders'))
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(len(data), 1)
+        self.assertEqual(data[0]['cost'], 200)
+
+class AppointmentTestCase(TestCase):
+
+    def setUp(self):
+        # Setup a client for testing
+        self.client = Client()
+
+        # Setup a test user
+        self.user = User.objects.create_user(username="testuser", password="testpassword")
+
+        # Setup a test caregiver
+        self.caregiver = Caregiver.objects.create(CaregiverID=1, Name="Test Caregiver")
+
+    def test_successful_appointment(self):
+        # Login as the test user
+        self.client.login(username="testuser", password="testpassword")
+
+        # Send a POST request to create an appointment
+        response = self.client.post(reverse('appointment'), data={
+            "start-time": "08:00",
+            "end-time": "09:00",
+            "caregiver_id": self.caregiver.CaregiverID,
+            "cost": "100",
+            "selected_date": "2023-11-02"
+        })
+
+        # Check if the response is a redirect as expected
+        self.assertEqual(response.status_code, 302)
+
+        # Check if the appointment order was created in the database
+        self.assertTrue(CaregiverOrder.objects.exists())
+
+        # Check for a success message in the response
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(str(messages[0]), "Success")
+
+    def test_invalid_time(self):
+        self.client.login(username="testuser", password="testpassword")
+        response = self.client.post(reverse('appointment'), data={
+            "start-time": "08:00",
+            "end-time": "08:30",
+            "caregiver_id": self.caregiver.CaregiverID,
+            "cost": "100",
+            "selected_date": "2023-11-02"
+        })
+        self.assertEqual(response.status_code, 302)
+        self.assertFalse(CaregiverOrder.objects.exists())
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(str(messages[0]), "The appointment must last at least 1 hour!")
+
+    def test_caregiver_unavailability(self):
+        # Create an overlapping order in advance
+        CaregiverOrder.objects.create(
+            UserID=self.user,
+            CaregiverID=self.caregiver,
+            start_time=datetime.datetime(2023, 11, 2, 8, 0),
+            end_time=datetime.datetime(2023, 11, 2, 9, 0),
+            Cost=100
+        )
+
+        self.client.login(username="testuser", password="testpassword")
+        response = self.client.post(reverse('appointment'), data={
+            "start-time": "08:30",
+            "end-time": "09:30",
+            "caregiver_id": self.caregiver.CaregiverID,
+            "cost": "100",
+            "selected_date": "2023-11-02"
+        })
+
+        # Ensure only the original order exists and a new overlapping order was not created
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(CaregiverOrder.objects.count(), 1)
+
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(str(messages[0]), "Not an available user")
+
+    def test_get_request(self):
+        response = self.client.get(reverse('appointment'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'select.html')
+
+class AdminGetOrderTests(TestCase):
+
+    def setUp(self):
+        self.client = Client()
+
+        self.user = User.objects.create_user(
+            username='testuser',
+            password='testpassword'
+        )
+        self.caregiver_1 = Caregiver.objects.create(
+            Name="Caregiver 1",
+            Gender="Male",
+            Age=35,
+            Qualification="Nursing Degree",
+            Experience=5,
+            ServiceArea="Home Care",
+            Availability="Available",
+            Cost=500,
+            avatar="avatars/default_caregiver1.jpeg"
+        )
+
+        self.caregiver_2 = Caregiver.objects.create(
+            Name="Caregiver 2",
+            Gender="Female",
+            Age=40,
+            Qualification="Advanced Nursing Diploma",
+            Experience=8,
+            ServiceArea="Special Needs",
+            Availability="Available",
+            Cost=600,
+            avatar="avatars/default_caregiver2.jpeg"
+        )
+
+        self.caregiver_order_1 = CaregiverOrder.objects.create(
+            start_time=datetime.datetime.now(),
+            end_time=datetime.datetime.now() + datetime.timedelta(hours=2),
+            Cost=100,
+            CaregiverID=self.caregiver_1,  # Assign Caregiver instance directly
+            UserID=self.user  # Assuming user instance exists
+        )
+
+        self.caregiver_order_2 = CaregiverOrder.objects.create(
+            start_time=datetime.datetime.now() - datetime.timedelta(days=1),
+            end_time=datetime.datetime.now() - datetime.timedelta(days=1, hours=-1),
+            Cost=200,
+            CaregiverID=self.caregiver_2,  # Assign Caregiver instance directly
+            UserID=self.user  # Assuming user instance exists
+        )
+
+        # Setting up mock data for GP
+        self.gp_1 = GP.objects.create(
+            Name="Dr. John",
+            Gender="Male",
+            Age=30,
+            Qualification="MBBS",
+            Experience=5,
+            ServiceArea="Cardiology",
+            Availability=True,
+            Cost=1000,
+            avatar="avatars/default2.jpeg"
+        )
+
+        self.gp_2 = GP.objects.create(
+            Name="Dr. Smith",
+            Gender="Female",
+            Age=35,
+            Qualification="MD",
+            Experience=7,
+            ServiceArea="Neurology",
+            Availability=True,
+            Cost=1500,
+            avatar="avatars/default2.jpeg"
+        )
+
+        # Link GP and Caregiver orders to the created GP and Caregiver
+        self.caregiver_order_1.CaregiverID = self.caregiver_1
+        self.caregiver_order_1.UserID = self.user  # Assuming user is created
+        self.caregiver_order_1.save()
+
+        self.caregiver_order_2.CaregiverID = self.caregiver_2
+        self.caregiver_order_2.UserID = self.user  # Assuming user is created
+        self.caregiver_order_2.save()
+
+        self.gp_order_1 = GPOrder.objects.create(
+            start_time=datetime.datetime.now(),
+            end_time=datetime.datetime.now() + datetime.timedelta(hours=2),
+            Cost=1000,
+            GPID=self.gp_1,
+            UserID=self.user  # Assuming user is created
+        )
+
+        self.gp_order_2 = GPOrder.objects.create(
+            start_time=datetime.datetime.now() - datetime.timedelta(days=1),
+            end_time=datetime.datetime.now() - datetime.timedelta(days=1, hours=-1),
+            Cost=2000,
+            GPID=self.gp_2,
+            UserID=self.user  # Assuming user is created
+        )
+
+    def test_get_all_orders(self):
+        response = self.client.get(reverse('get_all_orders'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()), 2)
+
+    def test_get_all_dockers(self):
+        response = self.client.get(reverse('path_to_get_all_GP_view/'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()), 2)
+
+    def test_get_five_GP(self):
+        response = self.client.get(reverse('get_recent_GP'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()), 2)  
+
+    def test_get_recent_GP_orders(self):
+        response = self.client.get(reverse('get_recent_GP_orders'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()), 2)
+
+    def test_get_all_GP_orders(self):
+        response = self.client.get(reverse('get_all_GP_orders'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()), 2)
+
+    def test_get_recent_orders(self):
+        response = self.client.get(reverse('get_recent_orders'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()), 2)
 
 if __name__ == '__main__':
     unittest.main()
