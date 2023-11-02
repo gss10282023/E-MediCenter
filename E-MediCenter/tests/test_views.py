@@ -16,7 +16,6 @@ from django.contrib.messages import get_messages
 import datetime
 
 
-
 # class CaregiverAvailabilityTest(TestCase):
 #     def setUp(self):
 #         # Create a Caregiver instance
@@ -1177,6 +1176,119 @@ import datetime
 #         response = self.client.post(reverse('SignUp'))
 #         self.assertEqual(response.status_code, 200)  # Assuming it's a successful render of the page.
 #         self.assertNotIn("error_message", response.content.decode())  # Assuming no error messages are shown on GET.
+
+# class TestPasswordFunction(TestCase):
+
+#     def test_short_password(self):
+#         self.assertFalse(is_password("Ab1"))
+
+#     def test_no_lowercase(self):
+#         self.assertFalse(is_password("ABCDEFGH1"))
+
+#     def test_no_uppercase(self):
+#         self.assertFalse(is_password("abcdefgh1"))
+
+#     def test_no_digit(self):
+#         self.assertFalse(is_password("Abcdefgh"))
+
+#     def test_valid_password(self):
+#         self.assertTrue(is_password("Abcdefgh1"))
+
+# class TestCheckEmailAndUsername(TestCase):
+    
+#     def setUp(self):
+#         self.factory = RequestFactory()
+#         User.objects.create_user(username='existing_user', email='existing_email@example.com', password='ValidP@ss123')
+
+#     def test_invalid_email(self):
+#         request = self.factory.get('/dummy_url/', {'email': 'invalidemail', 'username': 'new_user', 'password': 'ValidP@ss123'})
+#         response = check_email_and_username(request)
+#         self.assertIn("Invalid E-Mail", response.content.decode())
+
+#     def test_existing_username(self):
+#         request = self.factory.get('/dummy_url/', {'email': 'new_email@example.com', 'username': 'existing_user', 'password': 'ValidP@ss123'})
+#         response = check_email_and_username(request)
+#         self.assertIn("User name exits", response.content.decode())
+
+#     def test_existing_email(self):
+#         request = self.factory.get('/dummy_url/', {'email': 'existing_email@example.com', 'username': 'new_user', 'password': 'ValidP@ss123'})
+#         response = check_email_and_username(request)
+#         self.assertIn("E-Mail already exists", response.content.decode())
+
+#     def test_invalid_password(self):
+#         request = self.factory.get('/dummy_url/', {'email': 'new_email@example.com', 'username': 'new_user', 'password': 'short'})
+#         response = check_email_and_username(request)
+#         expected_message = "The password must meet the following criteria:\\n\\nBe at least 8 characters long.\\nContain at least one lowercase letter, one uppercase letter and one number."
+#         self.assertIn(expected_message, response.content.decode())
+
+#     def test_all_valid(self):
+#         request = self.factory.get('/dummy_url/', {'email': 'new_email@example.com', 'username': 'new_user', 'password': 'ValidP@ss123'})
+#         response = check_email_and_username(request)
+#         self.assertEqual('{"message": ""}', response.content.decode())
+
+# class TestPasswordValidation(TestCase):
+
+#     def test_short_password(self):
+#         """Password that is too short should raise a ValidationError."""
+#         with self.assertRaisesMessage(ValidationError, "Password must be at least 8 characters long."):
+#             validate_password('Short1')
+
+#     def test_missing_lowercase(self):
+#         """Password without a lowercase letter should raise a ValidationError."""
+#         with self.assertRaisesMessage(ValidationError, "Password must contain at least one lowercase letter."):
+#             validate_password('PASSWORD123')
+
+#     def test_missing_uppercase(self):
+#         """Password without an uppercase letter should raise a ValidationError."""
+#         with self.assertRaisesMessage(ValidationError, "Password must contain at least one uppercase letter."):
+#             validate_password('password123')
+
+#     def test_missing_number(self):
+#         """Password without a number should raise a ValidationError."""
+#         with self.assertRaisesMessage(ValidationError, "Password must contain at least one number."):
+#             validate_password('PasswordOnly')
+
+#     def test_valid_password(self):
+#         """Valid password should not raise any exceptions."""
+#         try:
+#             validate_password('ValidPassword1')
+#         except ValidationError:
+#             self.fail("validate_password() raised ValidationError unexpectedly!")
+
+# class LogoutViewTestCase(TestCase):
+#     def setUp(self):
+#         self.factory = RequestFactory()
+#         self.user = User.objects.create_user(username='test_user', password='test_password')
+
+#     @staticmethod
+#     def add_session_to_request(request):
+#         """Middleware function to add a session to the request."""
+#         middleware = SessionMiddleware()
+#         middleware.process_request(request)
+#         request.session.save()
+#         return request
+
+#     def test_logout(self):
+#         """Test if the user is logged out and redirected to the home page."""
+#         # Log in the user
+#         self.client.login(username='test_user', password='test_password')
+
+#         # Ensure user is authenticated
+#         self.assertEqual(self.client.session['_auth_user_id'], str(self.user.pk))
+
+#         # Call the logout view
+#         request = self.factory.get('/logout/')
+#         request.user = self.user
+#         request = self.add_session_to_request(request)
+#         response = logout_view(request)
+
+#         # Check if the user has been logged out
+#         self.assertIsInstance(request.user, AnonymousUser)
+
+#         # Check if the response is a redirect to the home page
+#         self.assertEqual(response.status_code, 302)
+#         self.assertEqual(response.url, '/')
+
 
 if __name__ == '__main__':
     unittest.main()
