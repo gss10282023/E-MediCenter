@@ -109,6 +109,9 @@
             <form action="{% url 'SignUp' %}" method="post" class="signUpForm">
                 {% csrf_token %}
                 <h2 class="title">Sign up</h2>
+                {% if error_message %}
+                    <div class="alert alert-danger">{{ error_message }}</div>
+                {% endif %}
 
                 <div class="form-group-1" id="form-group-1">
                 <div class="input-field">
@@ -156,7 +159,7 @@
                         <label class="custom-label" for="custom-checkbox" id="custom-label"> Book as a Caregiver</label>
                     </div>
                 </div>
-                <input type="button"  class="btn" value="Next" id="next-button" onclick="clickme() "method = "post" action="{% url 'SignUp' %}"></input>
+                <input type="submit"  class="btn" value="Next" id="next-button" onclick="clickme() "method = "post" action="{% url 'SignUp' %}"></input>
             </form>
         </div>
     </div>

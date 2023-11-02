@@ -328,17 +328,18 @@ def check_email_and_username(request):
     return JsonResponse({"message": message})
 
 def validate_password(password):
-    if len(password) < 8:
-        raise ValidationError("Password must be at least 8 characters long.")
+    if password != None: 
+        if  len(password) < 8:
+            raise ValidationError("Password must be at least 8 characters long.")
 
-    if not re.search(r'[a-z]', password):
-        raise ValidationError("Password must contain at least one lowercase letter.")
+        if not re.search(r'[a-z]', password):
+            raise ValidationError("Password must contain at least one lowercase letter.")
 
-    if not re.search(r'[A-Z]', password):
-        raise ValidationError("Password must contain at least one uppercase letter.")
+        if not re.search(r'[A-Z]', password):
+            raise ValidationError("Password must contain at least one uppercase letter.")
 
-    if not re.search(r'[0-9]', password):
-        raise ValidationError("Password must contain at least one number.")
+        if not re.search(r'[0-9]', password):
+            raise ValidationError("Password must contain at least one number.")
 
 
 def logout_view(request):
@@ -396,7 +397,7 @@ def SignUp(request):
                     Cost = 20,
                 )
             login(request, user)
-            if is_caregiver == "on":
+            if is_caregiver:
                 return HttpResponseRedirect('/caregiver_dashboard/')
             else:
                 return HttpResponseRedirect('/user_dashboard/')

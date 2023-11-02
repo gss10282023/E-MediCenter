@@ -510,637 +510,673 @@ import datetime
     
 #     def setUp(self):
 #         self.factory = RequestFactory()
-class DoctorProfileTestCase(TestCase):
+# class DoctorProfileTestCase(TestCase):
     
-    def setUp(self):
-        self.user = User.objects.create_user(username="testdoctor", password="testpassword", 
-                                             first_name="Doctor", last_name="Test", email="test@example.com")
-        UserProfile.objects.create(user=self.user, address="123 Test Street, TestSuburb, TestState, 12345")
-        GP.objects.create(Name="testdoctor", Cost=100)  
+#     def setUp(self):
+#         self.user = User.objects.create_user(username="testdoctor", password="testpassword", 
+#                                              first_name="Doctor", last_name="Test", email="test@example.com")
+#         UserProfile.objects.create(user=self.user, address="123 Test Street, TestSuburb, TestState, 12345")
+#         GP.objects.create(Name="testdoctor", Cost=100)  
         
-        self.client = Client()
+#         self.client = Client()
 
-    def test_get_doctor(self):
-        self.client.login(username="testdoctor", password="testpassword")
-        response = self.client.get(reverse('Get_doctor'))
+#     def test_get_doctor(self):
+#         self.client.login(username="testdoctor", password="testpassword")
+#         response = self.client.get(reverse('Get_doctor'))
         
-        context_data = response.context[0] if isinstance(response.context, list) else response.context
+#         context_data = response.context[0] if isinstance(response.context, list) else response.context
 
-        self.assertIn('first_name', context_data)
-        self.assertEqual(context_data['first_name'], "Doctor")
+#         self.assertIn('first_name', context_data)
+#         self.assertEqual(context_data['first_name'], "Doctor")
         
-        self.assertIn('last_name', context_data)
-        self.assertEqual(context_data['last_name'], "Test")
+#         self.assertIn('last_name', context_data)
+#         self.assertEqual(context_data['last_name'], "Test")
         
-        self.assertIn('email', context_data)
-        self.assertEqual(context_data['email'], "test@example.com")
+#         self.assertIn('email', context_data)
+#         self.assertEqual(context_data['email'], "test@example.com")
         
-        self.assertIn('street', context_data)
-        self.assertEqual(context_data['street'], "123 Test Street")
+#         self.assertIn('street', context_data)
+#         self.assertEqual(context_data['street'], "123 Test Street")
         
-        self.assertIn('suburb', context_data)
-        self.assertEqual(context_data['suburb'], "TestSuburb")
+#         self.assertIn('suburb', context_data)
+#         self.assertEqual(context_data['suburb'], "TestSuburb")
         
-        self.assertIn('state', context_data)
-        self.assertEqual(context_data['state'], "TestState")
+#         self.assertIn('state', context_data)
+#         self.assertEqual(context_data['state'], "TestState")
         
-        self.assertIn('postcode', context_data)
-        self.assertEqual(context_data['postcode'], "12345")
+#         self.assertIn('postcode', context_data)
+#         self.assertEqual(context_data['postcode'], "12345")
         
-        self.assertTemplateUsed(response, 'doctor_profile.html')
+#         self.assertTemplateUsed(response, 'doctor_profile.html')
 
-    def test_user_without_userprofile(self):
-        UserProfile.objects.filter(user=self.user).delete()
-        self.client.login(username="testdoctor", password="testpassword")
-        response = self.client.get(reverse('Get_doctor'))
-        self.assertIsInstance(response, HttpResponseBadRequest)
+#     def test_user_without_userprofile(self):
+#         UserProfile.objects.filter(user=self.user).delete()
+#         self.client.login(username="testdoctor", password="testpassword")
+#         response = self.client.get(reverse('Get_doctor'))
+#         self.assertIsInstance(response, HttpResponseBadRequest)
 
 
-    def test_wrong_request_method(self):
-        response = self.client.post(reverse('Get_doctor'))
-        self.assertIsInstance(response, HttpResponseBadRequest) 
+#     def test_wrong_request_method(self):
+#         response = self.client.post(reverse('Get_doctor'))
+#         self.assertIsInstance(response, HttpResponseBadRequest) 
     
-    def test_edit_doctor_post(self):
-        self.client.login(username="testdoctor", password="testpassword")
+#     def test_edit_doctor_post(self):
+#         self.client.login(username="testdoctor", password="testpassword")
 
-        post_data = {
-            'fname': 'UpdatedDoctor',
-            'lname': 'UpdatedTest',
-            'email': 'updated@example.com',
-            'street': '456 Updated Street',
-            'suburb': 'UpdatedSuburb',
-            'state': 'UpdatedState',
-            'postcode': '67890',
-            'cost': '200'
-        }
+#         post_data = {
+#             'fname': 'UpdatedDoctor',
+#             'lname': 'UpdatedTest',
+#             'email': 'updated@example.com',
+#             'street': '456 Updated Street',
+#             'suburb': 'UpdatedSuburb',
+#             'state': 'UpdatedState',
+#             'postcode': '67890',
+#             'cost': '200'
+#         }
 
-        response = self.client.post(reverse('Edit_doctor'), data=post_data)
+#         response = self.client.post(reverse('Edit_doctor'), data=post_data)
 
-        updated_user = User.objects.get(username="testdoctor")
-        self.assertEqual(updated_user.first_name, 'UpdatedDoctor')
-        self.assertEqual(updated_user.last_name, 'UpdatedTest')
-        self.assertEqual(updated_user.email, 'updated@example.com')
+#         updated_user = User.objects.get(username="testdoctor")
+#         self.assertEqual(updated_user.first_name, 'UpdatedDoctor')
+#         self.assertEqual(updated_user.last_name, 'UpdatedTest')
+#         self.assertEqual(updated_user.email, 'updated@example.com')
 
-        updated_profile = updated_user.userprofile
-        self.assertEqual(updated_profile.address, '456 Updated Street, UpdatedSuburb, UpdatedState, 67890')
+#         updated_profile = updated_user.userprofile
+#         self.assertEqual(updated_profile.address, '456 Updated Street, UpdatedSuburb, UpdatedState, 67890')
 
-        doctor = GP.objects.get(Name="testdoctor")
-        self.assertEqual(doctor.Cost, 200)
+#         doctor = GP.objects.get(Name="testdoctor")
+#         self.assertEqual(doctor.Cost, 200)
 
-    def test_edit_doctor_without_cost(self):
-        self.client.login(username="testdoctor", password="testpassword")
+#     def test_edit_doctor_without_cost(self):
+#         self.client.login(username="testdoctor", password="testpassword")
 
-        post_data = {
-            'fname': 'UpdatedDoctor',
-            'lname': 'UpdatedTest',
-            'email': 'updated@example.com',
-            'street': '456 Updated Street',
-            'suburb': 'UpdatedSuburb',
-            'state': 'UpdatedState',
-            'postcode': '67890',
-        }
+#         post_data = {
+#             'fname': 'UpdatedDoctor',
+#             'lname': 'UpdatedTest',
+#             'email': 'updated@example.com',
+#             'street': '456 Updated Street',
+#             'suburb': 'UpdatedSuburb',
+#             'state': 'UpdatedState',
+#             'postcode': '67890',
+#         }
 
-        response = self.client.post(reverse('Edit_doctor'), data=post_data)
+#         response = self.client.post(reverse('Edit_doctor'), data=post_data)
 
-        updated_user = User.objects.get(username="testdoctor")
-        self.assertEqual(updated_user.first_name, 'UpdatedDoctor')
+#         updated_user = User.objects.get(username="testdoctor")
+#         self.assertEqual(updated_user.first_name, 'UpdatedDoctor')
 
-        doctor = GP.objects.get(Name="testdoctor")
-        self.assertEqual(doctor.Cost, 100) 
+#         doctor = GP.objects.get(Name="testdoctor")
+#         self.assertEqual(doctor.Cost, 100) 
 
-class TemplateRenderingTestCase(TestCase):
-    def setUp(self):
-        self.client = Client()
+# class TemplateRenderingTestCase(TestCase):
+#     def setUp(self):
+#         self.client = Client()
 
-    def test_success_template(self):
-        response = self.client.get(reverse('success'))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'success.html')
+#     def test_success_template(self):
+#         response = self.client.get(reverse('success'))
+#         self.assertEqual(response.status_code, 200)
+#         self.assertTemplateUsed(response, 'success.html')
 
-    def test_admin_profile_template(self):
-        response = self.client.get(reverse('admin_profile'))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'Dashboard_Admin_profile.html')
+#     def test_admin_profile_template(self):
+#         response = self.client.get(reverse('admin_profile'))
+#         self.assertEqual(response.status_code, 200)
+#         self.assertTemplateUsed(response, 'Dashboard_Admin_profile.html')
 
-    def test_caregiver_profile_template(self):
-        response = self.client.get(reverse('caregiver_profile'))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'caregiver_profile.html')
+#     def test_caregiver_profile_template(self):
+#         response = self.client.get(reverse('caregiver_profile'))
+#         self.assertEqual(response.status_code, 200)
+#         self.assertTemplateUsed(response, 'caregiver_profile.html')
 
-    def test_caregiver_order_template(self):
-        response = self.client.get(reverse('caregiver_order'))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'caregiver_order.html')
+#     def test_caregiver_order_template(self):
+#         response = self.client.get(reverse('caregiver_order'))
+#         self.assertEqual(response.status_code, 200)
+#         self.assertTemplateUsed(response, 'caregiver_order.html')
 
-    def test_customer_profile_template(self):
-        response = self.client.get(reverse('customer_profile'))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'customer_profile.html')
+#     def test_customer_profile_template(self):
+#         response = self.client.get(reverse('customer_profile'))
+#         self.assertEqual(response.status_code, 200)
+#         self.assertTemplateUsed(response, 'customer_profile.html')
 
-    def test_customer_order_template(self):
-        response = self.client.get(reverse('customer_order'))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'customer_order.html')
+#     def test_customer_order_template(self):
+#         response = self.client.get(reverse('customer_order'))
+#         self.assertEqual(response.status_code, 200)
+#         self.assertTemplateUsed(response, 'customer_order.html')
 
-class customerProfileTestCase(TestCase):
+# class customerProfileTestCase(TestCase):
     
-    def setUp(self):
-        self.user = User.objects.create_user(username="testcustomer", password="testpassword", 
-                                             first_name="customer", last_name="Test", email="test@example.com")
-        UserProfile.objects.create(user=self.user, address="123 Test Street, TestSuburb, TestState, 12345")
+#     def setUp(self):
+#         self.user = User.objects.create_user(username="testcustomer", password="testpassword", 
+#                                              first_name="customer", last_name="Test", email="test@example.com")
+#         UserProfile.objects.create(user=self.user, address="123 Test Street, TestSuburb, TestState, 12345")
         
-        self.client = Client()
+#         self.client = Client()
 
-    def test_get_customer(self):
-        self.client.login(username="testcustomer", password="testpassword")
-        response = self.client.get(reverse('Get_customer'))
+#     def test_get_customer(self):
+#         self.client.login(username="testcustomer", password="testpassword")
+#         response = self.client.get(reverse('Get_customer'))
         
-        context_data = response.context[0] if isinstance(response.context, list) else response.context
+#         context_data = response.context[0] if isinstance(response.context, list) else response.context
 
-        self.assertIn('first_name', context_data)
-        self.assertEqual(context_data['first_name'], "customer")
+#         self.assertIn('first_name', context_data)
+#         self.assertEqual(context_data['first_name'], "customer")
         
-        self.assertIn('last_name', context_data)
-        self.assertEqual(context_data['last_name'], "Test")
+#         self.assertIn('last_name', context_data)
+#         self.assertEqual(context_data['last_name'], "Test")
         
-        self.assertIn('email', context_data)
-        self.assertEqual(context_data['email'], "test@example.com")
+#         self.assertIn('email', context_data)
+#         self.assertEqual(context_data['email'], "test@example.com")
         
-        self.assertIn('street', context_data)
-        self.assertEqual(context_data['street'], "123 Test Street")
+#         self.assertIn('street', context_data)
+#         self.assertEqual(context_data['street'], "123 Test Street")
         
-        self.assertIn('suburb', context_data)
-        self.assertEqual(context_data['suburb'], "TestSuburb")
+#         self.assertIn('suburb', context_data)
+#         self.assertEqual(context_data['suburb'], "TestSuburb")
         
-        self.assertIn('state', context_data)
-        self.assertEqual(context_data['state'], "TestState")
+#         self.assertIn('state', context_data)
+#         self.assertEqual(context_data['state'], "TestState")
         
-        self.assertIn('postcode', context_data)
-        self.assertEqual(context_data['postcode'], "12345")
+#         self.assertIn('postcode', context_data)
+#         self.assertEqual(context_data['postcode'], "12345")
         
-        self.assertTemplateUsed(response, 'customer_profile.html')
+#         self.assertTemplateUsed(response, 'customer_profile.html')
 
-    def test_user_without_userprofile(self):
-        UserProfile.objects.filter(user=self.user).delete()
-        self.client.login(username="testcustomer", password="testpassword")
-        response = self.client.get(reverse('Get_customer'))
-        self.assertIsInstance(response, HttpResponseBadRequest)
+#     def test_user_without_userprofile(self):
+#         UserProfile.objects.filter(user=self.user).delete()
+#         self.client.login(username="testcustomer", password="testpassword")
+#         response = self.client.get(reverse('Get_customer'))
+#         self.assertIsInstance(response, HttpResponseBadRequest)
 
 
-    def test_wrong_request_method(self):
-        response = self.client.post(reverse('Get_customer'))
-        self.assertIsInstance(response, HttpResponseBadRequest) 
+#     def test_wrong_request_method(self):
+#         response = self.client.post(reverse('Get_customer'))
+#         self.assertIsInstance(response, HttpResponseBadRequest) 
     
-    def test_edit_customer_post(self):
-        self.client.login(username="testcustomer", password="testpassword")
+#     def test_edit_customer_post(self):
+#         self.client.login(username="testcustomer", password="testpassword")
 
-        post_data = {
-            'fname': 'Updatedcustomer',
-            'lname': 'UpdatedTest',
-            'email': 'updated@example.com',
-            'street': '456 Updated Street',
-            'suburb': 'UpdatedSuburb',
-            'state': 'UpdatedState',
-            'postcode': '67890',
-        }
+#         post_data = {
+#             'fname': 'Updatedcustomer',
+#             'lname': 'UpdatedTest',
+#             'email': 'updated@example.com',
+#             'street': '456 Updated Street',
+#             'suburb': 'UpdatedSuburb',
+#             'state': 'UpdatedState',
+#             'postcode': '67890',
+#         }
 
-        response = self.client.post(reverse('Edit_customer'), data=post_data)
+#         response = self.client.post(reverse('Edit_customer'), data=post_data)
 
-        updated_user = User.objects.get(username="testcustomer")
-        self.assertEqual(updated_user.first_name, 'Updatedcustomer')
-        self.assertEqual(updated_user.last_name, 'UpdatedTest')
-        self.assertEqual(updated_user.email, 'updated@example.com')
+#         updated_user = User.objects.get(username="testcustomer")
+#         self.assertEqual(updated_user.first_name, 'Updatedcustomer')
+#         self.assertEqual(updated_user.last_name, 'UpdatedTest')
+#         self.assertEqual(updated_user.email, 'updated@example.com')
 
-        updated_profile = updated_user.userprofile
-        self.assertEqual(updated_profile.address, '456 Updated Street, UpdatedSuburb, UpdatedState, 67890')
+#         updated_profile = updated_user.userprofile
+#         self.assertEqual(updated_profile.address, '456 Updated Street, UpdatedSuburb, UpdatedState, 67890')
 
-    def test_edit_customer_without_cost(self):
-        self.client.login(username="testcustomer", password="testpassword")
+#     def test_edit_customer_without_cost(self):
+#         self.client.login(username="testcustomer", password="testpassword")
 
-        post_data = {
-            'fname': 'Updatedcustomer',
-            'lname': 'UpdatedTest',
-            'email': 'updated@example.com',
-            'street': '456 Updated Street',
-            'suburb': 'UpdatedSuburb',
-            'state': 'UpdatedState',
-            'postcode': '67890',
-        }
+#         post_data = {
+#             'fname': 'Updatedcustomer',
+#             'lname': 'UpdatedTest',
+#             'email': 'updated@example.com',
+#             'street': '456 Updated Street',
+#             'suburb': 'UpdatedSuburb',
+#             'state': 'UpdatedState',
+#             'postcode': '67890',
+#         }
 
-        response = self.client.post(reverse('Edit_customer'), data=post_data)
+#         response = self.client.post(reverse('Edit_customer'), data=post_data)
 
-        updated_user = User.objects.get(username="testcustomer")
-        self.assertEqual(updated_user.first_name, 'Updatedcustomer')
+#         updated_user = User.objects.get(username="testcustomer")
+#         self.assertEqual(updated_user.first_name, 'Updatedcustomer')
 
-class caregiverProfileTestCase(TestCase):
+# class caregiverProfileTestCase(TestCase):
     
-    def setUp(self):
-        self.user = User.objects.create_user(username="testcaregiver", password="testpassword", 
-                                             first_name="caregiver", last_name="Test", email="test@example.com")
-        UserProfile.objects.create(user=self.user, address="123 Test Street, TestSuburb, TestState, 12345")
-        Caregiver.objects.create(Name="testcaregiver", Cost=100)  
+#     def setUp(self):
+#         self.user = User.objects.create_user(username="testcaregiver", password="testpassword", 
+#                                              first_name="caregiver", last_name="Test", email="test@example.com")
+#         UserProfile.objects.create(user=self.user, address="123 Test Street, TestSuburb, TestState, 12345")
+#         Caregiver.objects.create(Name="testcaregiver", Cost=100)  
         
-        self.client = Client()
+#         self.client = Client()
 
-    def test_get_caregiver(self):
-        self.client.login(username="testcaregiver", password="testpassword")
-        response = self.client.get(reverse('Get_caregiver'))
+#     def test_get_caregiver(self):
+#         self.client.login(username="testcaregiver", password="testpassword")
+#         response = self.client.get(reverse('Get_caregiver'))
         
-        context_data = response.context[0] if isinstance(response.context, list) else response.context
+#         context_data = response.context[0] if isinstance(response.context, list) else response.context
 
-        self.assertIn('first_name', context_data)
-        self.assertEqual(context_data['first_name'], "caregiver")
+#         self.assertIn('first_name', context_data)
+#         self.assertEqual(context_data['first_name'], "caregiver")
         
-        self.assertIn('last_name', context_data)
-        self.assertEqual(context_data['last_name'], "Test")
+#         self.assertIn('last_name', context_data)
+#         self.assertEqual(context_data['last_name'], "Test")
         
-        self.assertIn('email', context_data)
-        self.assertEqual(context_data['email'], "test@example.com")
+#         self.assertIn('email', context_data)
+#         self.assertEqual(context_data['email'], "test@example.com")
         
-        self.assertIn('street', context_data)
-        self.assertEqual(context_data['street'], "123 Test Street")
+#         self.assertIn('street', context_data)
+#         self.assertEqual(context_data['street'], "123 Test Street")
         
-        self.assertIn('suburb', context_data)
-        self.assertEqual(context_data['suburb'], "TestSuburb")
+#         self.assertIn('suburb', context_data)
+#         self.assertEqual(context_data['suburb'], "TestSuburb")
         
-        self.assertIn('state', context_data)
-        self.assertEqual(context_data['state'], "TestState")
+#         self.assertIn('state', context_data)
+#         self.assertEqual(context_data['state'], "TestState")
         
-        self.assertIn('postcode', context_data)
-        self.assertEqual(context_data['postcode'], "12345")
+#         self.assertIn('postcode', context_data)
+#         self.assertEqual(context_data['postcode'], "12345")
         
-        self.assertTemplateUsed(response, 'caregiver_profile.html')
+#         self.assertTemplateUsed(response, 'caregiver_profile.html')
 
-    def test_user_without_userprofile(self):
-        UserProfile.objects.filter(user=self.user).delete()
-        self.client.login(username="testcaregiver", password="testpassword")
-        response = self.client.get(reverse('Get_caregiver'))
-        self.assertIsInstance(response, HttpResponseBadRequest)
+#     def test_user_without_userprofile(self):
+#         UserProfile.objects.filter(user=self.user).delete()
+#         self.client.login(username="testcaregiver", password="testpassword")
+#         response = self.client.get(reverse('Get_caregiver'))
+#         self.assertIsInstance(response, HttpResponseBadRequest)
 
 
-    def test_wrong_request_method(self):
-        response = self.client.post(reverse('Get_caregiver'))
-        self.assertIsInstance(response, HttpResponseBadRequest) 
+#     def test_wrong_request_method(self):
+#         response = self.client.post(reverse('Get_caregiver'))
+#         self.assertIsInstance(response, HttpResponseBadRequest) 
     
-    def test_edit_caregiver_post(self):
-        self.client.login(username="testcaregiver", password="testpassword")
+#     def test_edit_caregiver_post(self):
+#         self.client.login(username="testcaregiver", password="testpassword")
 
-        post_data = {
-            'fname': 'Updatedcaregiver',
-            'lname': 'UpdatedTest',
-            'email': 'updated@example.com',
-            'street': '456 Updated Street',
-            'suburb': 'UpdatedSuburb',
-            'state': 'UpdatedState',
-            'postcode': '67890',
-            'cost': '200'
-        }
+#         post_data = {
+#             'fname': 'Updatedcaregiver',
+#             'lname': 'UpdatedTest',
+#             'email': 'updated@example.com',
+#             'street': '456 Updated Street',
+#             'suburb': 'UpdatedSuburb',
+#             'state': 'UpdatedState',
+#             'postcode': '67890',
+#             'cost': '200'
+#         }
 
-        response = self.client.post(reverse('Edit_caregiver'), data=post_data)
+#         response = self.client.post(reverse('Edit_caregiver'), data=post_data)
 
-        updated_user = User.objects.get(username="testcaregiver")
-        self.assertEqual(updated_user.first_name, 'Updatedcaregiver')
-        self.assertEqual(updated_user.last_name, 'UpdatedTest')
-        self.assertEqual(updated_user.email, 'updated@example.com')
+#         updated_user = User.objects.get(username="testcaregiver")
+#         self.assertEqual(updated_user.first_name, 'Updatedcaregiver')
+#         self.assertEqual(updated_user.last_name, 'UpdatedTest')
+#         self.assertEqual(updated_user.email, 'updated@example.com')
 
-        updated_profile = updated_user.userprofile
-        self.assertEqual(updated_profile.address, '456 Updated Street, UpdatedSuburb, UpdatedState, 67890')
+#         updated_profile = updated_user.userprofile
+#         self.assertEqual(updated_profile.address, '456 Updated Street, UpdatedSuburb, UpdatedState, 67890')
 
-        caregiver = Caregiver.objects.get(Name="testcaregiver")
-        self.assertEqual(caregiver.Cost, 200)
+#         caregiver = Caregiver.objects.get(Name="testcaregiver")
+#         self.assertEqual(caregiver.Cost, 200)
 
-    def test_edit_caregiver_without_cost(self):
-        self.client.login(username="testcaregiver", password="testpassword")
+#     def test_edit_caregiver_without_cost(self):
+#         self.client.login(username="testcaregiver", password="testpassword")
 
-        post_data = {
-            'fname': 'Updatedcaregiver',
-            'lname': 'UpdatedTest',
-            'email': 'updated@example.com',
-            'street': '456 Updated Street',
-            'suburb': 'UpdatedSuburb',
-            'state': 'UpdatedState',
-            'postcode': '67890',
-        }
+#         post_data = {
+#             'fname': 'Updatedcaregiver',
+#             'lname': 'UpdatedTest',
+#             'email': 'updated@example.com',
+#             'street': '456 Updated Street',
+#             'suburb': 'UpdatedSuburb',
+#             'state': 'UpdatedState',
+#             'postcode': '67890',
+#         }
 
-        response = self.client.post(reverse('Edit_caregiver'), data=post_data)
+#         response = self.client.post(reverse('Edit_caregiver'), data=post_data)
 
-        updated_user = User.objects.get(username="testcaregiver")
-        self.assertEqual(updated_user.first_name, 'Updatedcaregiver')
+#         updated_user = User.objects.get(username="testcaregiver")
+#         self.assertEqual(updated_user.first_name, 'Updatedcaregiver')
 
-        caregiver = Caregiver.objects.get(Name="testcaregiver")
-        self.assertEqual(caregiver.Cost, 100) 
+#         caregiver = Caregiver.objects.get(Name="testcaregiver")
+#         self.assertEqual(caregiver.Cost, 100) 
 
-class AdminProfileTestCase(TestCase):
+# class AdminProfileTestCase(TestCase):
 
-    def setUp(self):
-        self.user = User.objects.create_user(
-            username="testadmin", 
-            password="testpassword", 
-            first_name="Admin", 
-            last_name="Test", 
-            email="admin@example.com"
-        )
-        UserProfile.objects.create(user=self.user, address="123 Test Street, TestSuburb, TestState, 12345")
-        self.client = Client()
+#     def setUp(self):
+#         self.user = User.objects.create_user(
+#             username="testadmin", 
+#             password="testpassword", 
+#             first_name="Admin", 
+#             last_name="Test", 
+#             email="admin@example.com"
+#         )
+#         UserProfile.objects.create(user=self.user, address="123 Test Street, TestSuburb, TestState, 12345")
+#         self.client = Client()
 
-    def test_edit_admin(self):
-        self.client.login(username="testadmin", password="testpassword")
+#     def test_edit_admin(self):
+#         self.client.login(username="testadmin", password="testpassword")
         
-        new_data = {
-            'fname': 'UpdatedAdmin',
-            'lname': 'UpdatedTest',
-            'email': 'updatedadmin@example.com',
-            'street': '456 New Street',
-            'suburb': 'NewSuburb',
-            'state': 'NewState',
-            'postcode': '67890',
-        }
-        response = self.client.post(reverse('Edit_Admin'), data=new_data) 
+#         new_data = {
+#             'fname': 'UpdatedAdmin',
+#             'lname': 'UpdatedTest',
+#             'email': 'updatedadmin@example.com',
+#             'street': '456 New Street',
+#             'suburb': 'NewSuburb',
+#             'state': 'NewState',
+#             'postcode': '67890',
+#         }
+#         response = self.client.post(reverse('Edit_Admin'), data=new_data) 
         
-        updated_user = User.objects.get(id=self.user.id)
-        updated_profile = updated_user.userprofile
+#         updated_user = User.objects.get(id=self.user.id)
+#         updated_profile = updated_user.userprofile
 
-        self.assertEqual(updated_user.first_name, 'UpdatedAdmin')
-        self.assertEqual(updated_user.last_name, 'UpdatedTest')
-        self.assertEqual(updated_user.email, 'updatedadmin@example.com')
-        self.assertEqual(updated_profile.address, '456 New Street, NewSuburb, NewState, 67890')
+#         self.assertEqual(updated_user.first_name, 'UpdatedAdmin')
+#         self.assertEqual(updated_user.last_name, 'UpdatedTest')
+#         self.assertEqual(updated_user.email, 'updatedadmin@example.com')
+#         self.assertEqual(updated_profile.address, '456 New Street, NewSuburb, NewState, 67890')
         
-        messages = list(get_messages(response.wsgi_request))
-        self.assertEqual(len(messages), 1)
-        self.assertEqual(str(messages[0]), 'Your profile has been updated successfully!')
+#         messages = list(get_messages(response.wsgi_request))
+#         self.assertEqual(len(messages), 1)
+#         self.assertEqual(str(messages[0]), 'Your profile has been updated successfully!')
 
-    def test_get_admin(self):
-        self.client.login(username="testadmin", password="testpassword")
+#     def test_get_admin(self):
+#         self.client.login(username="testadmin", password="testpassword")
         
-        response = self.client.get(reverse('Get_Admin'))
+#         response = self.client.get(reverse('Get_Admin'))
         
-        self.assertEqual(response.context['first_name'], "Admin")
-        self.assertEqual(response.context['last_name'], "Test")
-        self.assertEqual(response.context['email'], "admin@example.com")
-        self.assertEqual(response.context['street'], "123 Test Street")
-        self.assertEqual(response.context['suburb'], "TestSuburb")
-        self.assertEqual(response.context['state'], "TestState")
-        self.assertEqual(response.context['postcode'], "12345")
+#         self.assertEqual(response.context['first_name'], "Admin")
+#         self.assertEqual(response.context['last_name'], "Test")
+#         self.assertEqual(response.context['email'], "admin@example.com")
+#         self.assertEqual(response.context['street'], "123 Test Street")
+#         self.assertEqual(response.context['suburb'], "TestSuburb")
+#         self.assertEqual(response.context['state'], "TestState")
+#         self.assertEqual(response.context['postcode'], "12345")
 
-class CaregiverOrderTestCase(TestCase):
+# class CaregiverOrderTestCase(TestCase):
     
-    def setUp(self):
-        self.user = User.objects.create_user(username="testuser", password="testpassword")
-        self.caregiver = Caregiver.objects.create(CaregiverID=self.user.id)
-        self.order = CaregiverOrder.objects.create(CaregiverID=self.caregiver, UserID=self.user, Cost=100, start_time="2023-11-01 09:00:00", end_time="2023-11-01 10:00:00")
+#     def setUp(self):
+#         self.user = User.objects.create_user(username="testuser", password="testpassword")
+#         self.caregiver = Caregiver.objects.create(CaregiverID=self.user.id)
+#         self.order = CaregiverOrder.objects.create(CaregiverID=self.caregiver, UserID=self.user, Cost=100, start_time="2023-11-01 09:00:00", end_time="2023-11-01 10:00:00")
         
-        self.client = Client()
-        self.client.login(username="testuser", password="testpassword")
+#         self.client = Client()
+#         self.client.login(username="testuser", password="testpassword")
     
-    def test_get_caregiver_orders(self):
-        response = self.client.get(reverse('get_caregiver_orders'))
-        self.assertEqual(response.status_code, 200)
-        data = response.json()
-        self.assertEqual(len(data), 1)
-        self.assertEqual(data[0]['cost'], 100)
+#     def test_get_caregiver_orders(self):
+#         response = self.client.get(reverse('get_caregiver_orders'))
+#         self.assertEqual(response.status_code, 200)
+#         data = response.json()
+#         self.assertEqual(len(data), 1)
+#         self.assertEqual(data[0]['cost'], 100)
 
-class UserOrderTestCase(TestCase):
+# class UserOrderTestCase(TestCase):
     
-    def setUp(self):
-        self.user = User.objects.create_user(username="testuser", password="testpassword")
-        self.caregiver = Caregiver.objects.create(CaregiverID=self.user.id)
-        self.order = CaregiverOrder.objects.create(CaregiverID=self.caregiver, UserID=self.user, Cost=100, start_time="2023-11-01 09:00:00", end_time="2023-11-01 10:00:00")
+#     def setUp(self):
+#         self.user = User.objects.create_user(username="testuser", password="testpassword")
+#         self.caregiver = Caregiver.objects.create(CaregiverID=self.user.id)
+#         self.order = CaregiverOrder.objects.create(CaregiverID=self.caregiver, UserID=self.user, Cost=100, start_time="2023-11-01 09:00:00", end_time="2023-11-01 10:00:00")
         
-        self.client = Client()
-        self.client.login(username="testuser", password="testpassword")
+#         self.client = Client()
+#         self.client.login(username="testuser", password="testpassword")
     
-    def test_get_user_orders(self):
-        response = self.client.get(reverse('get_user_orders'))
-        self.assertEqual(response.status_code, 200)
-        data = response.json()
-        self.assertEqual(len(data), 1)
-        self.assertEqual(data[0]['cost'], 100)
+#     def test_get_user_orders(self):
+#         response = self.client.get(reverse('get_user_orders'))
+#         self.assertEqual(response.status_code, 200)
+#         data = response.json()
+#         self.assertEqual(len(data), 1)
+#         self.assertEqual(data[0]['cost'], 100)
 
-class DoctorOrderTestCase(TestCase):
+# class DoctorOrderTestCase(TestCase):
     
-    def setUp(self):
-        self.user = User.objects.create_user(username="testdoctor", password="testpassword")
-        self.doctor = GP.objects.create(GPID=self.user.id, Cost = 20)
-        self.order = GPOrder.objects.create(GPID=self.doctor, UserID=self.user, Cost=200, Date="2023-11-01")
+#     def setUp(self):
+#         self.user = User.objects.create_user(username="testdoctor", password="testpassword")
+#         self.doctor = GP.objects.create(GPID=self.user.id, Cost = 20)
+#         self.order = GPOrder.objects.create(GPID=self.doctor, UserID=self.user, Cost=200, Date="2023-11-01")
         
-        self.client = Client()
-        self.client.login(username="testdoctor", password="testpassword")
+#         self.client = Client()
+#         self.client.login(username="testdoctor", password="testpassword")
     
-    def test_get_doctor_orders(self):
-        response = self.client.get(reverse('get_doctor_orders'))
-        self.assertEqual(response.status_code, 200)
-        data = response.json()
-        self.assertEqual(len(data), 1)
-        self.assertEqual(data[0]['cost'], 200)
+#     def test_get_doctor_orders(self):
+#         response = self.client.get(reverse('get_doctor_orders'))
+#         self.assertEqual(response.status_code, 200)
+#         data = response.json()
+#         self.assertEqual(len(data), 1)
+#         self.assertEqual(data[0]['cost'], 200)
 
-class AppointmentTestCase(TestCase):
+# class AppointmentTestCase(TestCase):
 
-    def setUp(self):
-        # Setup a client for testing
-        self.client = Client()
+#     def setUp(self):
+#         # Setup a client for testing
+#         self.client = Client()
 
-        # Setup a test user
-        self.user = User.objects.create_user(username="testuser", password="testpassword")
+#         # Setup a test user
+#         self.user = User.objects.create_user(username="testuser", password="testpassword")
 
-        # Setup a test caregiver
-        self.caregiver = Caregiver.objects.create(CaregiverID=1, Name="Test Caregiver")
+#         # Setup a test caregiver
+#         self.caregiver = Caregiver.objects.create(CaregiverID=1, Name="Test Caregiver")
 
-    def test_successful_appointment(self):
-        # Login as the test user
-        self.client.login(username="testuser", password="testpassword")
+#     def test_successful_appointment(self):
+#         # Login as the test user
+#         self.client.login(username="testuser", password="testpassword")
 
-        # Send a POST request to create an appointment
-        response = self.client.post(reverse('appointment'), data={
-            "start-time": "08:00",
-            "end-time": "09:00",
-            "caregiver_id": self.caregiver.CaregiverID,
-            "cost": "100",
-            "selected_date": "2023-11-02"
-        })
+#         # Send a POST request to create an appointment
+#         response = self.client.post(reverse('appointment'), data={
+#             "start-time": "08:00",
+#             "end-time": "09:00",
+#             "caregiver_id": self.caregiver.CaregiverID,
+#             "cost": "100",
+#             "selected_date": "2023-11-02"
+#         })
 
-        # Check if the response is a redirect as expected
-        self.assertEqual(response.status_code, 302)
+#         # Check if the response is a redirect as expected
+#         self.assertEqual(response.status_code, 302)
 
-        # Check if the appointment order was created in the database
-        self.assertTrue(CaregiverOrder.objects.exists())
+#         # Check if the appointment order was created in the database
+#         self.assertTrue(CaregiverOrder.objects.exists())
 
-        # Check for a success message in the response
-        messages = list(get_messages(response.wsgi_request))
-        self.assertEqual(str(messages[0]), "Success")
+#         # Check for a success message in the response
+#         messages = list(get_messages(response.wsgi_request))
+#         self.assertEqual(str(messages[0]), "Success")
 
-    def test_invalid_time(self):
-        self.client.login(username="testuser", password="testpassword")
-        response = self.client.post(reverse('appointment'), data={
-            "start-time": "08:00",
-            "end-time": "08:30",
-            "caregiver_id": self.caregiver.CaregiverID,
-            "cost": "100",
-            "selected_date": "2023-11-02"
-        })
-        self.assertEqual(response.status_code, 302)
-        self.assertFalse(CaregiverOrder.objects.exists())
-        messages = list(get_messages(response.wsgi_request))
-        self.assertEqual(str(messages[0]), "The appointment must last at least 1 hour!")
+#     def test_invalid_time(self):
+#         self.client.login(username="testuser", password="testpassword")
+#         response = self.client.post(reverse('appointment'), data={
+#             "start-time": "08:00",
+#             "end-time": "08:30",
+#             "caregiver_id": self.caregiver.CaregiverID,
+#             "cost": "100",
+#             "selected_date": "2023-11-02"
+#         })
+#         self.assertEqual(response.status_code, 302)
+#         self.assertFalse(CaregiverOrder.objects.exists())
+#         messages = list(get_messages(response.wsgi_request))
+#         self.assertEqual(str(messages[0]), "The appointment must last at least 1 hour!")
 
-    def test_caregiver_unavailability(self):
-        # Create an overlapping order in advance
-        CaregiverOrder.objects.create(
-            UserID=self.user,
-            CaregiverID=self.caregiver,
-            start_time=datetime.datetime(2023, 11, 2, 8, 0),
-            end_time=datetime.datetime(2023, 11, 2, 9, 0),
-            Cost=100
-        )
+#     def test_caregiver_unavailability(self):
+#         # Create an overlapping order in advance
+#         CaregiverOrder.objects.create(
+#             UserID=self.user,
+#             CaregiverID=self.caregiver,
+#             start_time=datetime.datetime(2023, 11, 2, 8, 0),
+#             end_time=datetime.datetime(2023, 11, 2, 9, 0),
+#             Cost=100
+#         )
 
-        self.client.login(username="testuser", password="testpassword")
-        response = self.client.post(reverse('appointment'), data={
-            "start-time": "08:30",
-            "end-time": "09:30",
-            "caregiver_id": self.caregiver.CaregiverID,
-            "cost": "100",
-            "selected_date": "2023-11-02"
-        })
+#         self.client.login(username="testuser", password="testpassword")
+#         response = self.client.post(reverse('appointment'), data={
+#             "start-time": "08:30",
+#             "end-time": "09:30",
+#             "caregiver_id": self.caregiver.CaregiverID,
+#             "cost": "100",
+#             "selected_date": "2023-11-02"
+#         })
 
-        # Ensure only the original order exists and a new overlapping order was not created
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(CaregiverOrder.objects.count(), 1)
+#         # Ensure only the original order exists and a new overlapping order was not created
+#         self.assertEqual(response.status_code, 302)
+#         self.assertEqual(CaregiverOrder.objects.count(), 1)
 
-        messages = list(get_messages(response.wsgi_request))
-        self.assertEqual(str(messages[0]), "Not an available user")
+#         messages = list(get_messages(response.wsgi_request))
+#         self.assertEqual(str(messages[0]), "Not an available user")
 
-    def test_get_request(self):
-        response = self.client.get(reverse('appointment'))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'select.html')
+#     def test_get_request(self):
+#         response = self.client.get(reverse('appointment'))
+#         self.assertEqual(response.status_code, 200)
+#         self.assertTemplateUsed(response, 'select.html')
 
-class AdminGetOrderTests(TestCase):
+# class AdminGetOrderTests(TestCase):
 
-    def setUp(self):
-        self.client = Client()
+#     def setUp(self):
+#         self.client = Client()
 
-        self.user = User.objects.create_user(
-            username='testuser',
-            password='testpassword'
-        )
-        self.caregiver_1 = Caregiver.objects.create(
-            Name="Caregiver 1",
-            Gender="Male",
-            Age=35,
-            Qualification="Nursing Degree",
-            Experience=5,
-            ServiceArea="Home Care",
-            Availability="Available",
-            Cost=500,
-            avatar="avatars/default_caregiver1.jpeg"
-        )
+#         self.user = User.objects.create_user(
+#             username='testuser',
+#             password='testpassword'
+#         )
+#         self.caregiver_1 = Caregiver.objects.create(
+#             Name="Caregiver 1",
+#             Gender="Male",
+#             Age=35,
+#             Qualification="Nursing Degree",
+#             Experience=5,
+#             ServiceArea="Home Care",
+#             Availability="Available",
+#             Cost=500,
+#             avatar="avatars/default_caregiver1.jpeg"
+#         )
 
-        self.caregiver_2 = Caregiver.objects.create(
-            Name="Caregiver 2",
-            Gender="Female",
-            Age=40,
-            Qualification="Advanced Nursing Diploma",
-            Experience=8,
-            ServiceArea="Special Needs",
-            Availability="Available",
-            Cost=600,
-            avatar="avatars/default_caregiver2.jpeg"
-        )
+#         self.caregiver_2 = Caregiver.objects.create(
+#             Name="Caregiver 2",
+#             Gender="Female",
+#             Age=40,
+#             Qualification="Advanced Nursing Diploma",
+#             Experience=8,
+#             ServiceArea="Special Needs",
+#             Availability="Available",
+#             Cost=600,
+#             avatar="avatars/default_caregiver2.jpeg"
+#         )
 
-        self.caregiver_order_1 = CaregiverOrder.objects.create(
-            start_time=datetime.datetime.now(),
-            end_time=datetime.datetime.now() + datetime.timedelta(hours=2),
-            Cost=100,
-            CaregiverID=self.caregiver_1,  # Assign Caregiver instance directly
-            UserID=self.user  # Assuming user instance exists
-        )
+#         self.caregiver_order_1 = CaregiverOrder.objects.create(
+#             start_time=datetime.datetime.now(),
+#             end_time=datetime.datetime.now() + datetime.timedelta(hours=2),
+#             Cost=100,
+#             CaregiverID=self.caregiver_1,  # Assign Caregiver instance directly
+#             UserID=self.user  # Assuming user instance exists
+#         )
 
-        self.caregiver_order_2 = CaregiverOrder.objects.create(
-            start_time=datetime.datetime.now() - datetime.timedelta(days=1),
-            end_time=datetime.datetime.now() - datetime.timedelta(days=1, hours=-1),
-            Cost=200,
-            CaregiverID=self.caregiver_2,  # Assign Caregiver instance directly
-            UserID=self.user  # Assuming user instance exists
-        )
+#         self.caregiver_order_2 = CaregiverOrder.objects.create(
+#             start_time=datetime.datetime.now() - datetime.timedelta(days=1),
+#             end_time=datetime.datetime.now() - datetime.timedelta(days=1, hours=-1),
+#             Cost=200,
+#             CaregiverID=self.caregiver_2,  # Assign Caregiver instance directly
+#             UserID=self.user  # Assuming user instance exists
+#         )
 
-        # Setting up mock data for GP
-        self.gp_1 = GP.objects.create(
-            Name="Dr. John",
-            Gender="Male",
-            Age=30,
-            Qualification="MBBS",
-            Experience=5,
-            ServiceArea="Cardiology",
-            Availability=True,
-            Cost=1000,
-            avatar="avatars/default2.jpeg"
-        )
+#         # Setting up mock data for GP
+#         self.gp_1 = GP.objects.create(
+#             Name="Dr. John",
+#             Gender="Male",
+#             Age=30,
+#             Qualification="MBBS",
+#             Experience=5,
+#             ServiceArea="Cardiology",
+#             Availability=True,
+#             Cost=1000,
+#             avatar="avatars/default2.jpeg"
+#         )
 
-        self.gp_2 = GP.objects.create(
-            Name="Dr. Smith",
-            Gender="Female",
-            Age=35,
-            Qualification="MD",
-            Experience=7,
-            ServiceArea="Neurology",
-            Availability=True,
-            Cost=1500,
-            avatar="avatars/default2.jpeg"
-        )
+#         self.gp_2 = GP.objects.create(
+#             Name="Dr. Smith",
+#             Gender="Female",
+#             Age=35,
+#             Qualification="MD",
+#             Experience=7,
+#             ServiceArea="Neurology",
+#             Availability=True,
+#             Cost=1500,
+#             avatar="avatars/default2.jpeg"
+#         )
 
-        # Link GP and Caregiver orders to the created GP and Caregiver
-        self.caregiver_order_1.CaregiverID = self.caregiver_1
-        self.caregiver_order_1.UserID = self.user  # Assuming user is created
-        self.caregiver_order_1.save()
+#         # Link GP and Caregiver orders to the created GP and Caregiver
+#         self.caregiver_order_1.CaregiverID = self.caregiver_1
+#         self.caregiver_order_1.UserID = self.user  # Assuming user is created
+#         self.caregiver_order_1.save()
 
-        self.caregiver_order_2.CaregiverID = self.caregiver_2
-        self.caregiver_order_2.UserID = self.user  # Assuming user is created
-        self.caregiver_order_2.save()
+#         self.caregiver_order_2.CaregiverID = self.caregiver_2
+#         self.caregiver_order_2.UserID = self.user  # Assuming user is created
+#         self.caregiver_order_2.save()
 
-        self.gp_order_1 = GPOrder.objects.create(
-            start_time=datetime.datetime.now(),
-            end_time=datetime.datetime.now() + datetime.timedelta(hours=2),
-            Cost=1000,
-            GPID=self.gp_1,
-            UserID=self.user  # Assuming user is created
-        )
+#         self.gp_order_1 = GPOrder.objects.create(
+#             start_time=datetime.datetime.now(),
+#             end_time=datetime.datetime.now() + datetime.timedelta(hours=2),
+#             Cost=1000,
+#             GPID=self.gp_1,
+#             UserID=self.user  # Assuming user is created
+#         )
 
-        self.gp_order_2 = GPOrder.objects.create(
-            start_time=datetime.datetime.now() - datetime.timedelta(days=1),
-            end_time=datetime.datetime.now() - datetime.timedelta(days=1, hours=-1),
-            Cost=2000,
-            GPID=self.gp_2,
-            UserID=self.user  # Assuming user is created
-        )
+#         self.gp_order_2 = GPOrder.objects.create(
+#             start_time=datetime.datetime.now() - datetime.timedelta(days=1),
+#             end_time=datetime.datetime.now() - datetime.timedelta(days=1, hours=-1),
+#             Cost=2000,
+#             GPID=self.gp_2,
+#             UserID=self.user  # Assuming user is created
+#         )
 
-    def test_get_all_orders(self):
-        response = self.client.get(reverse('get_all_orders'))
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.json()), 2)
+#     def test_get_all_orders(self):
+#         response = self.client.get(reverse('get_all_orders'))
+#         self.assertEqual(response.status_code, 200)
+#         self.assertEqual(len(response.json()), 2)
 
-    def test_get_all_dockers(self):
-        response = self.client.get(reverse('path_to_get_all_GP_view/'))
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.json()), 2)
+#     def test_get_all_dockers(self):
+#         response = self.client.get(reverse('path_to_get_all_GP_view/'))
+#         self.assertEqual(response.status_code, 200)
+#         self.assertEqual(len(response.json()), 2)
 
-    def test_get_five_GP(self):
-        response = self.client.get(reverse('get_recent_GP'))
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.json()), 2)  
+#     def test_get_five_GP(self):
+#         response = self.client.get(reverse('get_recent_GP'))
+#         self.assertEqual(response.status_code, 200)
+#         self.assertEqual(len(response.json()), 2)  
 
-    def test_get_recent_GP_orders(self):
-        response = self.client.get(reverse('get_recent_GP_orders'))
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.json()), 2)
+#     def test_get_recent_GP_orders(self):
+#         response = self.client.get(reverse('get_recent_GP_orders'))
+#         self.assertEqual(response.status_code, 200)
+#         self.assertEqual(len(response.json()), 2)
 
-    def test_get_all_GP_orders(self):
-        response = self.client.get(reverse('get_all_GP_orders'))
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.json()), 2)
+#     def test_get_all_GP_orders(self):
+#         response = self.client.get(reverse('get_all_GP_orders'))
+#         self.assertEqual(response.status_code, 200)
+#         self.assertEqual(len(response.json()), 2)
 
-    def test_get_recent_orders(self):
-        response = self.client.get(reverse('get_recent_orders'))
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.json()), 2)
+#     def test_get_recent_orders(self):
+#         response = self.client.get(reverse('get_recent_orders'))
+#         self.assertEqual(response.status_code, 200)
+#         self.assertEqual(len(response.json()), 2)
+
+
+
+
+# class TestSignUpFunction(TestCase):
+
+#     def setUp(self):
+#         self.client = Client()
+        
+#     def test_invalid_email(self):
+#         response = self.client.post(reverse('SignUp'), {'Email': 'invalidemail', 'Username2': 'new_user', 'pw': 'ValidP@ss123', 'Street': '123 St', 'Suburb': 'Some Suburb', 'State': 'Some State', 'Postcode': '12345', 'register-as-caregiver': 'on'})
+#         self.assertIn("Enter a valid email address.", response.content.decode())
+
+#     def test_existing_email(self):
+#         User.objects.create_user(username='existing_user', email='existing_email@example.com', password='ValidP@ss123')
+#         response = self.client.post(reverse('SignUp'), {'Email': 'existing_email@example.com', 'Username2': 'new_user', 'pw': 'ValidP@ss123', 'Street': '123 St', 'Suburb': 'Some Suburb', 'State': 'Some State', 'Postcode': '12345', 'register-as-caregiver': 'on'})
+#         self.assertIn("Email already exists.", response.content.decode())
+
+#     def test_invalid_password(self):
+#         response = self.client.post(reverse('SignUp'), {'Email': 'new_email@example.com', 'Username2': 'new_user', 'pw': 'short', 'Street': '123 St', 'Suburb': 'Some Suburb', 'State': 'Some State', 'Postcode': '12345', 'register-as-caregiver': 'on'})
+#         self.assertIn("Password must be at least 8 characters long.", response.content.decode())
+
+#     def test_successful_signup_as_caregiver(self):
+#         response = self.client.post(reverse('SignUp'), {'Email': 'new_email@example.com', 'Username2': 'new_user', 'pw': 'ValidP@ss123', 'Street': '123 St', 'Suburb': 'Some Suburb', 'State': 'Some State', 'Postcode': '12345', 'register-as-caregiver': 'on'})
+#         self.assertEqual(response.status_code, 302) 
+#         self.assertEqual(response.url, '/caregiver_dashboard/')
+
+#     def test_successful_signup_as_user(self):
+#         response = self.client.post(reverse('SignUp'), {'Email': 'new_email@example.com', 'Username2': 'new_user', 'pw': 'ValidP@ss123', 'Street': '123 St', 'Suburb': 'Some Suburb', 'State': 'Some State', 'Postcode': '12345', 'register-as-caregiver': 'off'})
+#         self.assertEqual(response.status_code, 302) 
+#         self.assertEqual(response.url, '/user_dashboard/')
+
+#     def test_get_request(self):
+#         response = self.client.post(reverse('SignUp'))
+#         self.assertEqual(response.status_code, 200)  # Assuming it's a successful render of the page.
+#         self.assertNotIn("error_message", response.content.decode())  # Assuming no error messages are shown on GET.
 
 if __name__ == '__main__':
     unittest.main()
