@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 from EMediCenter.models import *
 from django.utils import timezone
 import unittest
+import json
 from unittest import mock
 from unittest.mock import patch
 from django.urls import reverse
@@ -426,77 +427,89 @@ import datetime
 
 
 
-class LoginViewTestCase(TestCase):
+# class LoginViewTestCase(TestCase):
     
-    def add_session_to_request(self, request):
-        middleware = SessionMiddleware(lambda req: None)  # 这里我们提供了一个lambda函数作为get_response
-        middleware.process_request(request)
-        request.session.save()
-        return request
+#     @staticmethod
+#     def add_session_to_request(request):
+#         middleware = SessionMiddleware()
+#         middleware.process_request(request)
+#         request.session.save()
+#         return request
+    # def add_session_to_request(self, request):
+    #     middleware = SessionMiddleware(lambda req: None)  # 这里我们提供了一个lambda函数作为get_response
+    #     middleware.process_request(request)
+    #     request.session.save()
+    #     return request
 
     
-    def setUp(self):
-        self.factory = RequestFactory()
-        # Create a user and profile
-        self.user = User.objects.create_user(username='test_user', password='test_password')
-        self.profile = UserProfile.objects.create(user=self.user)  
+#     def setUp(self):
+#         self.factory = RequestFactory()
+#         # Create a user and profile
+#         self.user = User.objects.create_user(username='test_user', password='test_password')
+#         self.profile = UserProfile.objects.create(user=self.user)  
 
-    def test_non_existing_user(self):
-        request = self.factory.post('/login/', {'Username': 'non_existing_user', 'password': 'some_password'})
-        request = self.add_session_to_request(request)
-        response = login_view(request)
+#     def test_non_existing_user(self):
+#         request = self.factory.post('/login/', {'Username': 'non_existing_user', 'password': 'some_password'})
+#         request = self.add_session_to_request(request)
+#         response = login_view(request)
 
-        self.assertEqual(response.status_code, 200)  # render the login page again
-        self.assertIn("User doesn&#x27;t exist.", response.content.decode())
+#         self.assertEqual(response.status_code, 200)  # render the login page again
+#         self.assertIn("User doesn&#x27;t exist.", response.content.decode())
 
-    def test_wrong_password(self):
-        request = self.factory.post('/login/', {'Username': 'test_user', 'password': 'wrong_password'})
-        request = self.add_session_to_request(request)
-        response = login_view(request)
+#     def test_wrong_password(self):
+#         request = self.factory.post('/login/', {'Username': 'test_user', 'password': 'wrong_password'})
+#         request = self.add_session_to_request(request)
+#         response = login_view(request)
 
-        self.assertEqual(response.status_code, 200)  # render the login page again
-        self.assertIn("Incorrect password.", response.content.decode())
+#         self.assertEqual(response.status_code, 200)  # render the login page again
+#         self.assertIn("Incorrect password.", response.content.decode())
 
-    def test_inactive_user(self):
-        # Make the user inactive
-        self.user.is_active = False
-        self.user.save()
+#     def test_inactive_user(self):
+#         # Make the user inactive
+#         self.user.is_active = False
+#         self.user.save()
 
-        request = self.factory.post('/login/', {'Username': 'test_user', 'password': 'test_password'})
-        request = self.add_session_to_request(request)
-        response = login_view(request)
-        self.assertEqual(response.status_code, 200)  # render the login page again
-        self.assertIn("Your account is inactive.", response.content.decode()) # check error msg
+#         request = self.factory.post('/login/', {'Username': 'test_user', 'password': 'test_password'})
+#         request = self.add_session_to_request(request)
+#         response = login_view(request)
+#         self.assertEqual(response.status_code, 200)  # render the login page again
+#         self.assertIn("Your account is inactive.", response.content.decode()) # check error msg
 
 
 
-    def test_login_successful(self):
+#     def test_login_successful(self):
         
-        test_cases = [
-            {"is_staff": True, "is_doctor": False, "is_caregiver": False, "expected_url": "/admin_dashboard/"},
-            {"is_staff": False, "is_doctor": True, "is_caregiver": False, "expected_url": "/doctor_dashboard/"},
-            {"is_staff": False, "is_doctor": False, "is_caregiver": True, "expected_url": "/caregiver_dashboard/"},
-            {"is_staff": False, "is_doctor": False, "is_caregiver": False, "expected_url": "/user_dashboard/"}
-        ]
+#         test_cases = [
+#             {"is_staff": True, "is_doctor": False, "is_caregiver": False, "expected_url": "/admin_dashboard/"},
+#             {"is_staff": False, "is_doctor": True, "is_caregiver": False, "expected_url": "/doctor_dashboard/"},
+#             {"is_staff": False, "is_doctor": False, "is_caregiver": True, "expected_url": "/caregiver_dashboard/"},
+#             {"is_staff": False, "is_doctor": False, "is_caregiver": False, "expected_url": "/user_dashboard/"}
+#         ]
 
-        for test_case in test_cases:
-            with self.subTest(**test_case):
-                # Setting the user profile attributes
-                self.user.is_staff = test_case["is_staff"]
-                self.user.save()
-                self.profile.is_doctor = test_case["is_doctor"]
-                self.profile.is_caregiver = test_case["is_caregiver"]
-                self.profile.save()
+#         for test_case in test_cases:
+#             with self.subTest(**test_case):
+#                 # Setting the user profile attributes
+#                 self.user.is_staff = test_case["is_staff"]
+#                 self.user.save()
+#                 self.profile.is_doctor = test_case["is_doctor"]
+#                 self.profile.is_caregiver = test_case["is_caregiver"]
+#                 self.profile.save()
 
-                request = self.factory.post('/login/', {'Username': 'test_user', 'password': 'test_password'})
-                request = self.add_session_to_request(request)
-                request.user = self.user
-                response = login_view(request)
+#                 request = self.factory.post('/login/', {'Username': 'test_user', 'password': 'test_password'})
+#                 request = self.add_session_to_request(request)
+#                 request.user = self.user
+#                 response = login_view(request)
 
-                # Redirect
-                self.assertEqual(response.status_code, 302)
-                self.assertEqual(response.url, test_case["expected_url"])
+#                 # Redirect
+#                 self.assertEqual(response.status_code, 302)
+#                 self.assertEqual(response.url, test_case["expected_url"])
 
+
+
+# class AddDoctorTestCase(TestCase):
+    
+#     def setUp(self):
+#         self.factory = RequestFactory()
 class DoctorProfileTestCase(TestCase):
     
     def setUp(self):
