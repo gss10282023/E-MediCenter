@@ -88,7 +88,6 @@ def book_GP_page(request):
         for gp in GPs:
             serve_area_address = gp.ServiceArea  
             matrix = gmaps.distance_matrix(user_address, serve_area_address)
-            print(matrix)
             if matrix.get("status") == "OK" and matrix.get("rows"):
                 row = matrix["rows"][0]
                 if row["elements"][0].get("status") == "OK":
@@ -114,7 +113,6 @@ def book_GP_page(request):
     return render(request, 'BookGPPage.html')
 
 def book_caregiver_page(request):
-    print(request.user.is_authenticated)
     caregivers_matched = []
     gmaps = googlemaps.Client(key='AIzaSyBlGBJ1MbtPawltq76TsrzHzrFPFi_uMig')  
     page_number = request.GET.get('page', 1)
@@ -136,7 +134,6 @@ def book_caregiver_page(request):
         for caregiver in caregivers:
             serve_area_address = caregiver.ServiceArea  
             matrix = gmaps.distance_matrix(user_address, serve_area_address)
-            print(matrix)
             if matrix.get("status") == "OK" and matrix.get("rows"):
                 row = matrix["rows"][0]
                 if row["elements"][0].get("status") == "OK":
@@ -178,10 +175,8 @@ def is_valid_email(email):
 #     if request.method == 'POST':
 #         username = request.POST.get('Username')
 #         password = request.POST.get('password')
-#         print(request.POST)
 #         try:
 #             user = authenticate(request, username= username, password=password)
-#             print(user)
 #             if user:
 #                 if user.is_active:
 #                     login(request, user)
@@ -255,7 +250,6 @@ def login_view(request):
 
 
 def is_password(password):
-    print(password)
     if len(password) < 8:
         return False
 
@@ -350,7 +344,6 @@ def SignUp(request):
     error_message = ""
 
     if request.method == 'POST':
-        # print(request.POST)
         username = request.POST.get('Username2')
         email = request.POST.get('Email')
         password = request.POST.get('pw')
@@ -665,7 +658,6 @@ from django.views.decorators.http import require_http_methods
 @require_http_methods(["GET"])
 def get_caregiver_orders(request):
     user_id = request.user.id
-    # print(f"User ID: {user_id}")
 
     # Fetch the caregiver object associated with the user_id
     try:
@@ -739,7 +731,6 @@ def get_gp_orders(request):
 @require_http_methods(["GET"])
 def get_doctor_orders(request):
     user_id = request.user.id
-    # print(f"User ID: {user_id}")
 
     # Fetch the caregiver object associated with the user_id
     try:
