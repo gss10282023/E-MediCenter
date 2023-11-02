@@ -21,6 +21,9 @@ body {
 
 }
 
+.content, .content2 {
+    transition: opacity 2s ease-in-out;
+}
 
 .content{
     display: flex;
@@ -30,6 +33,9 @@ body {
     width: 50%;
     height: 60vh;
     background-color: black;
+    transition-delay: 1s;
+    transition-duration: 2s;
+    transition-timing-function: ease-in-out;
 
 
 }
@@ -87,6 +93,108 @@ body {
     opacity: 1;
     right: 0;
 }
+
+
+.content2{
+    display:flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 28vh 5vw 20vh;
+    width: 50%;
+    height: 60vh;
+    opacity: 0;  /* 设置初始透明度为0 */
+    z-index: 5;
+
+
+    backdrop-filter: blur(25px) saturate(200%);
+    -webkit-backdrop-filter: blur(25px) saturate(200%);
+    background-color: rgba(255, 255, 255, 0.13);
+    border-radius: 25px;
+    border: 1px solid rgba(255, 255, 255, 0.125);
+    font-family: "Apple Braille";
+
+
+
+
+
+}
+
+#chat-box{
+
+    width: 100%;
+    height: 90%;
+    overflow: scroll;
+
+
+}
+#send-area{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+    height: 10%;
+
+}
+
+#user-input {
+    width: 30%;  /* 调整宽度 */
+    margin-top: 0.8vh;
+    margin-bottom: 0.8vh;
+    padding: 10px;  /* 增加内边距 */
+    border-radius: 20px;  /* 圆角边框 */
+    border: 1px solid rgba(255, 255, 255, 0.2);;  /* 边框样式 */
+
+    font-size: 1rem;  /* 字体大小 */
+    margin-right: 10px;  /* 与按钮之间的间距 */
+    backdrop-filter: blur(0px) saturate(200%);
+    -webkit-backdrop-filter: blur(25px) saturate(200%);
+    background-color: rgba(255, 255, 255, 0.02);
+    outline: none;  /* 移除焦点轮廓 */
+    color: white;
+
+}
+
+#user-input:focus {
+    border-color: black;  /* 焦点时的边框颜色 */
+    color: white;
+}
+
+#chat-button {
+    padding: 10px 20px;  /* 内边距 */
+    border-radius: 20px;  /* 圆角边框 */
+    border: none;  /* 移除边框 */
+    background-color: rgb(0, 0, 0,0.5);  /* 背景颜色 */
+    color: #fff;  /* 文字颜色 */
+    font-size: 1rem;  /* 字体大小 */
+    cursor: pointer;  /* 指针样式 */
+    outline: none;  /* 移除焦点轮廓 */
+    margin-top: 0.8vh;
+    margin-bottom: 0.8vh;
+}
+
+#chat-button:hover {
+    background-color: rgb(0, 0, 0);   /* 鼠标悬停时的背景颜色 */
+}
+@keyframes blink {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.cursor {
+    animation: blink 1s infinite;
+    display: inline-block;
+    width: 1ch;
+    background-color: #fff !important;
+}
+
+
 
 
 #caregiver{

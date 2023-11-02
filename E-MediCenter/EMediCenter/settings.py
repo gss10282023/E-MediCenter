@@ -134,3 +134,5 @@ AUTHENTICATION_BACKENDS = [
 MEDIA_URL = '/avatars/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'EMediCenter/')
 
+ASGI_APPLICATION = '<EMediCenter>.asgi.application'
+

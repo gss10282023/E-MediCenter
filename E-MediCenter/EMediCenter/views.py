@@ -19,6 +19,13 @@ import datetime
 from django.contrib import messages
 from django.views.decorators.http import require_http_methods
 from .models import CaregiverOrder, Caregiver, GPOrder
+from django.views.decorators.http import require_POST
+import httpx
+import asyncio
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from asgiref.sync import async_to_sync
+
 
 
 
@@ -972,3 +979,39 @@ def Get_Caregiver(request):
         return render(request, 'caregiver_profile.html', context)
     else:
         return HttpResponseBadRequest("Invalid request method.")
+
+
+async def get_bot_reply(user_message):
+    api_key = "REDACTED"  # 替换成你自己的API密钥
+    headers = {"Authorization": f"Bearer {api_key}"}
+    data = {
+        "messages": [{"role": "system", "content": "You are a helpful assistant."},
+                     {"role": "user", "content": user_message}],
+        "model": "gpt-4",
+    }
+
+    try:
+        async with httpx.AsyncClient(timeout=30.0) as client:  # 设置 30 秒超时
+            response = await client.post(
+                "https://api.openai.com/v1/chat/completions",  # 注意这里使用了chat/completions而不是completions
+                headers=headers,
+                json=data
+            )
+    except httpx.ReadTimeout:
+        print("Request timed out")  # 打印超时错误信息
+        return "Sorry, the request timed out, please send again"  # 返回超时错误信息
+
+    response_data = response.json()
+
+    if 'choices' in response_data:
+        return response_data["choices"][0]["message"]["content"].strip()  # 修改获取回复内容的方式
+    else:
+        print(f"API Error: {response_data.get('error', 'Unknown error')}")
+        return "Sorry, I encountered an error."
+
+@async_to_sync
+@require_POST
+async def ask_view(request):
+    user_message = request.POST.get('user_message')
+    bot_reply = await get_bot_reply(user_message)
+    return JsonResponse({'bot_reply': bot_reply})
