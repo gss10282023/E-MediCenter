@@ -1,0 +1,158 @@
+/* Reset some basic elements */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Helvetica Neue', sans-serif;
+}
+
+/* Body styling */
+body {
+    background-color: #f7f7f9;
+    color: #333;
+
+
+    min-height: 120vh;
+
+}
+
+/* Container */
+.container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+}
+
+/* Card styles */
+.card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    margin: 20px;
+    overflow: hidden;
+    transition: transform .2s ease-in;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 4rem;
+}
+
+.card:hover {
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    transform: scale(1.05);
+}
+
+.card img {
+
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+
+    max-width: 5vw;
+    height:8vh;
+    border-radius: 100%;
+    object-fit:cover;
+    margin: 0 auto;
+    margin-top: 1vh;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+.card-title {
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+
+.card-text {
+    font-size: 16px;
+    color: #777;
+}
+
+/* Button */
+.btn {
+    background-color: #007bff;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.btn:hover {
+    background-color: #0056b3;
+}
+
+.time-selection {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 0;
+}
+
+.time-selection label, .time-selection input {
+    margin: 0 10px;
+    font-size: 0.8rem;
+
+}
+
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+}
+
+.pagination a, .pagination span {
+    margin: 0 5px;
+    padding: 5px 15px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #007aff; /* iOS blue */
+    text-decoration: none;
+    border-radius: 8px; /* Rounded corners */
+    transition: background-color 0.3s;
+}
+
+.pagination a.active, .pagination a:hover {
+    background-color: #007aff; /* Active/hover background */
+    color: #ffffff; /* Active/hover text color */
+}
+
+.pagination span {
+    color: #b2b2b2; /* Disabled color */
+    pointer-events: none; /* Disable pointer events */
+}
+
+
+/* Back button */
+.previous {
+    position: absolute; /* Fixed position */
+    margin-top:1vh;
+    left: 15vw;
+    padding: 10px 20px; /* Padding */
+    font-size: 4rem; /* Font size */
+    color: #007aff; /* iOS blue */
+    background-color: transparent; /* Transparent background */
+    border: none; /* No border */
+    border-radius: 8px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor */
+    transition: background-color 0.3s; /* Background transition */
+
+
+}
+
+/* Back button hover */
+.previous:hover {
+    background-color: rgba(0, 122, 255, 0.1); /* Hover background */
+}
+
+#background{
+    width: 100vw;
+    min-height: 120vh;
+    background-color: #f7f7f9;
+    margin-top: 15vh;
+}

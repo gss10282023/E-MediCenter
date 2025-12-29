@@ -1,0 +1,159 @@
+body {
+
+    min-height: 100vh;
+    background-color: white;
+
+}
+
+header {
+
+    background-color: rgb(120,120,120);
+}
+
+header.sticky {
+    padding: 6px 100px;
+    background-color: rgb(220,220,220);
+}
+
+.section-container-1 {
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    width: 85%;
+    height: 500px;
+    margin-top: 5%;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-size: cover;
+    background-position: center;
+}
+
+.section-container-2 {
+    border-bottom: 1px solid #ccc;
+    width: 85%;
+    height: 500px;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-size: cover;
+    background-position: center;
+    padding-left: 100px;
+}
+
+.section-container-3 {
+
+    border-bottom: 1px solid #ccc;
+    width: 85%;
+    height: 500px;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-size: cover;
+    background-position: center;
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'Poppins'
+}
+
+.left-side {
+    flex: 1;
+    padding: 20px;
+    text-align: left;
+}
+
+.right-side {
+    flex: 1;
+    padding: 20px;
+    text-align: right;
+}
+.section-container-1 .right-side {
+    margin-left: -20px;
+    margin-top: 70px;
+}
+
+.section-container-2 .left-side {
+    margin-right: -20px;
+    margin-top: 50px;
+}
+
+.section-container-3 .right-side {
+    margin-left: -20px;
+    margin-top: 50px;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+
+
+
+h1 {
+    font-size: 60px;
+    margin: 40px 0;
+    margin-left: 100px;
+}
+
+h2 {
+    font-size: 20px;
+    margin-left: 100px;
+    margin-bottom: 15px;
+}
+
+h3 {
+    font-size: 60px;
+    margin: 40px 0;
+    margin-right: 100px;
+}
+
+h4 {
+    font-size: 20px;
+    margin-right: 100px;
+    margin-bottom: 15px;
+}
+
+
+.button-left {
+    margin-left: 100px;
+    background-color: black;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    outline: none;
+}
+
+.button-right {
+    margin-right: 100px;
+    background-color: black;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    outline: none;
+}
+
+button:hover {
+    background-color: grey;
+}
+
+
+
+
+
+
+
+
+

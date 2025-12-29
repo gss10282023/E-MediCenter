@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Caregiver</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.9/dist/flatpickr.min.css">
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/navBar.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/select.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/newFooter.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/selection.css' %}"/>
+    <style>
+        .user-avatar {
+            vertical-align: middle;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+</head>
+
+<body>
+<header>
+    <a href="{% url 'HomePage' %}" class="logo">E-MedCenter</a >
+    <div class="navbar">
+        <ul>
+            <li><a href="{% url 'HomePage' %}">Home</a >
+            </li>
+            <li><a href="#">Book</a >
+                <ul>
+                    <li><a href="{% url 'BookCaregiverPage' %}">Book Caregiver</a ></li>
+                    <li><a href="{% url 'BookGPPage' %}">Book GP</a >
+                </ul>
+            </li>
+            <li><a href="{% url 'Donation' %}">Donation</a ></li>
+            {% comment %} <li><a href="{% url 'ServiceInformationPage' %}">About us</a ></li> {% endcomment %}
+            <li><a href="{% url 'AboutusPage' %}">About Us</a ></li>
+            {% if user.is_authenticated %}
+            <li>
+                <a href="{% url 'profile' %}">
+                    <img src="{{ user.userprofile.avatar.url }}" alt="{{ user.username }}" class="user-avatar" >
+                </a >
+            </li>
+
+            {% else %}
+            <li><a href="{% url 'Login' %}">Login/Sign up</a ></li>
+            {% endif %}
+        </ul>
+    </div>
+</header>
+
+<section class="background" id="background">
+<div class="container mt-5">
+    <a href="{% url 'BookCaregiverPage' %}" class="previous round">&#8249;</a >
+    <div class="row">
+        {% for caregiver in page_obj %}
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <img src="{{ caregiver.avatar.url }}" alt="Avatar" class="card-img-top" style="width:25%">
+                <div class="card-body">
+                    <h5 class="card-title">{{ caregiver.Name }}</h5>
+                    <p class="card-text">
+                        <strong>Gender</strong>: {{ caregiver.Gender }}<br>
+                        <strong>Age</strong>: {{ caregiver.Age }}<br>
+                        <strong>Qualification</strong>: {{ caregiver.Qualification }}<br>
+                        <strong>Experience</strong>: {{ caregiver.Experience }}<br>
+                        <strong>ServiceArea</strong>: {{ caregiver.ServiceArea }}<br>
+                        <strong>Availability</strong>: {{ caregiver.Availability }}
+                    </p >
+                </div>
+
+                <form action="{% url 'appointment' %}" method="post">
+                    {% csrf_token %}
+                    <div class="time-selection">
+
+                        <label for="start-time">Start Time:</label>
+                        <input type="text" class="start-time" name="start-time" placeholder="Select start time" required>
+
+                        <label for="end-time">End Time:</label>
+                        <input type="text" class="end-time" name="end-time" placeholder="Select end time" required >
+                    </div>
+                    <input type="hidden" name="selected_date" value="{{ date }}">
+                    <input type="hidden" name="cost" value="{{ caregiver.Cost }}">
+                    <input type="hidden" name="caregiver_id" value="{{ caregiver.CaregiverID }}">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+        {% if forloop.counter|divisibleby:4 and not forloop.last %}
+    </div>
+    <div class="row">
+        {% endif %}
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-warning">
+                <strong>Sorry!</strong> No Caregivers matched your criteria.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="pagination-container">
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+        <a href="{% url 'paginated_caregivers' %}?page=1">&laquo;</a >
+        {% else %}
+        <span>&laquo;</span>
+        {% endif %}
+
+        {% for i in page_obj.paginator.page_range %}
+        {% if i == page_obj.number %}
+        <a class="active" href="{% url 'paginated_caregivers' %}?page={{ i }}">{{ i }}</a >
+        {% else %}
+        <a href="{% url 'paginated_caregivers' %}?page={{ i }}">{{ i }}</a >
+        {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+        <a href="{% url 'paginated_caregivers' %}?page={{ page_obj.paginator.num_pages }}">&raquo;</a >
+        {% else %}
+        <span>&raquo;</span>
+        {% endif %}
+    </div>
+</div>
+</section>
+
+
+<section>
+    <div class="footer">
+        <ul class="footer-links">
+            <li><a href="#">Site Map</a ></li>
+            <li><a href="#">Privacy Policy</a ></li>
+            <li><a href="#">Terms of Use</a ></li>
+            <li><a href="#">Support</a ></li>
+        </ul>
+    </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.9/dist/flatpickr.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        let selectedDate = new Date("{{ date }}");
+        let now = new Date();
+
+        let isToday = selectedDate.toISOString().split("T")[0] === now.toISOString().split("T")[0];
+        let minTimeValue = isToday ? now.getHours() + ":" + (now.getMinutes() < 10 ? "0" : "") + now.getMinutes() : "08:00";
+        let maxTimeValue = "22:00";
+
+        flatpickr(".start-time", {
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "H:i",
+            minTime: minTimeValue,
+            maxTime: maxTimeValue,
+            onChange: function (selectedTimes) {
+                const selectedTime = selectedTimes[0];
+                const minEndTime = selectedTime.setHours(selectedTime.getHours() + 1);
+                const formattedMinEndTime = new Date(minEndTime).getHours() + ":" + (new Date(minEndTime).getMinutes() < 10 ? "0" : "") + new Date(minEndTime).getMinutes();
+
+                document.querySelector(".end-time").flatpickr({
+                    enableTime: true,
+                    noCalendar: true,
+                    dateFormat: "H:i",
+                    minTime: formattedMinEndTime,
+                    maxTime: maxTimeValue
+                });
+            }
+        });
+
+        flatpickr(".end-time", {
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "H:i",
+            minTime: minTimeValue,
+            maxTime: maxTimeValue
+        });
+        const forms = document.querySelectorAll('form');  // Get all forms
+        for (let form of forms) {
+            form.addEventListener('submit', function(event) {
+                const startTime = form.querySelector('.start-time').value;
+                const endTime = form.querySelector('.end-time').value;
+                if (!startTime || !endTime) {
+                    event.preventDefault();  // Prevent form submission
+                    alert('Must select time first');
+                }
+            });
+        }
+        });
+</script>
+
+<script>
+    window.addEventListener("scroll",()=>{
+        let header=document.querySelector("header");
+        header.classList.toggle("sticky",window.scrollY>0);
+    })
+    function navigateToPage(url) {
+        window.location.href = url;
+    }
+
+</script>
+
+</body>
+
+</html>
