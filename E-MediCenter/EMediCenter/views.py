@@ -1,4 +1,5 @@
 import random
+import os
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -982,7 +983,9 @@ def Get_Caregiver(request):
 
 
 async def get_bot_reply(user_message):
-    api_key = "REDACTED"  # 替换成你自己的API密钥
+    api_key = os.environ.get("OPENAI_API_KEY")
+    if not api_key:
+        return "OpenAI API key is not configured."
     headers = {"Authorization": f"Bearer {api_key}"}
     data = {
         "messages": [{"role": "system", "content": "You are a helpful assistant."},
